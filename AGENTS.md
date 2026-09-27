@@ -6,7 +6,11 @@ Guide for AI coding agents (Claude Code, Codex, Copilot, Cursor…) and humans w
 
 A personal website for **meowzers**: a first-year engineering student who makes music as a hobby.
 He doesn't publish his music, so the music page is about what he's making and his setup, not a track list. It has a soft, cute,
-pastel "handmade web / Neocities" look with ribbons, gingham, little window boxes and pixel fonts.
+**Theme: a pink engineering notebook.** Pink graph-paper background, cream "paper" cards with torn-tape labels
+numbered like figures (01, 02…), a header styled like the title block on an engineering drawing (drawn by / sheet /
+rev. / scale), a ruler along the top, and a line-drawn cat with a bow as the portrait. It's cute but specific to him
+(engineering + music + pink). Avoid generic Neocities tropes like gingham, macOS-style window buttons, marquees,
+sparkle cursors and blinkies.
 
 - Hosted on **GitHub Pages only**. No servers, databases, Node build steps, or paid services.
 - Built with **Jekyll**, which GitHub Pages runs automatically on every push to `main`.
@@ -20,7 +24,7 @@ pastel "handmade web / Neocities" look with ribbons, gingham, little window boxe
    add gems to `Gemfile` other than `github-pages` and `webrick`.
 3. **No npm/bundler build step.** Don't add React, Tailwind, Vite, Sass pipelines, etc. Write plain CSS in `assets/css/cute.css`.
 4. **Always use `relative_url` for internal links and assets**, because the site lives under `/website/`:
-   `{{ '/music/' | relative_url }}` and `{{ '/assets/img/sparkle.svg' | relative_url }}`.
+   `{{ '/music/' | relative_url }}` and `{{ '/assets/img/cat.svg' | relative_url }}`.
    A bare `href="/music/"` will break on GitHub Pages.
 5. **Keep `theme: null`** in `_config.yml`. Otherwise GitHub's default theme adds its own `assets/css/style.css`.
    That's also why our stylesheet is called `cute.css`, not `style.css`.
@@ -31,7 +35,7 @@ pastel "handmade web / Neocities" look with ribbons, gingham, little window boxe
 
 | I want to change…                        | Edit this file                                  |
 |------------------------------------------|-------------------------------------------------|
-| name, tagline, mood/status, socials, marquee text, guestbook link | `_config.yml` |
+| name, tagline, mood/status, social links, guestbook link | `_config.yml` |
 | music page: what he's making, setup, on repeat, optional links (also "making lately" on home) | `_data/music.yml` |
 | the "updates" log on the home page       | `_data/updates.yml`                             |
 | classes, to-do list, semester dates, study tips | `_data/uni.yml`                          |
@@ -39,14 +43,14 @@ pastel "handmade web / Neocities" look with ribbons, gingham, little window boxe
 | friends / cool links                     | `_data/links.yml`                               |
 | about-me text (Markdown)                 | `about.md`                                      |
 | home page text                           | `index.html`                                    |
-| menu items                               | `_includes/nav-items.html`                      |
-| sidebar (status, socials)                | `_includes/sidebar.html`                        |
+| menu items (also sets the "sheet" numbers) | `_includes/nav-items.html`                    |
+| sidebar (status, links)                  | `_includes/sidebar.html`                        |
 | colors, fonts, everything visual         | `assets/css/cute.css` (colors are variables at the top, in `:root`) |
-| sparkle cursor trail, semester progress bar | `assets/js/main.js`                          |
+| semester progress bar                    | `assets/js/main.js`                             |
 | page skeleton (`<head>`, fonts)          | `_layouts/default.html`                         |
 
 Other files:
-- `assets/img/` holds the original SVG decorations (ribbon, sparkle, favicon).
+- `assets/img/` holds the original SVG drawings: `cat.svg` (portrait on the home page), `ribbon.svg` (bow on the header) and `favicon.svg`.
 - `404.html` is the "page not found" page. GitHub Pages picks it up automatically.
 
 ## Common tasks
@@ -62,32 +66,34 @@ Other files:
    title: my new page
    ---
    ```
-2. Wrap content in the window box markup used everywhere:
+2. Wrap content in the card markup used everywhere. The first card's label is the page's `<h1>`; the rest are `<h2>`.
+   Labels are numbered automatically.
    ```html
-   <section class="window">
-     <div class="window-bar"><span>♡ title</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-     <div class="window-body"> …content… </div>
+   <section class="card">
+     <h2 class="label">title</h2>
+     …content…
    </section>
    ```
-3. Add it to the menu in `_includes/nav-items.html`: `;/newpage/|label|emoji` (URL with trailing slash).
+3. Add it to the menu in `_includes/nav-items.html`: `;/newpage/|label` (URL with trailing slash).
 
 **Change colors.** Edit only the CSS variables in `:root` at the top of `assets/css/cute.css`.
 Keep text readable: dark text on pastel backgrounds, not white text on pale pink.
 
-**Use a real avatar.** In `index.html`, replace the `<div class="avatar">…</div>` with
-`<img class="avatar" src="{{ '/assets/img/me.png' | relative_url }}" alt="…">`, and add the image file.
+**Use a real photo.** Add the image to `assets/img/`, then in `index.html` change the `src` and `alt` of the
+image inside `<figure class="portrait">`.
 
-**Useful CSS classes:** `window`, `grid-2` (two columns that stack on phones), `btn`, `btn lav`, `pill`, `tag`,
-`facts`, `plain-list`, `tiny`, `center`.
+**Useful CSS classes:** `card` + `label`, `note` (blue-tape sidebar card), `grid-2` (two columns that stack on phones),
+`spec` / `spec spec-grid` (key/value spec sheet, use with `<dl>`), `plain-list`, `numbered`, `log`, `staff`
+(music-staff divider), `btn`, `pill`, `tiny`, `center`.
 
 ## Style & tone
 
 - **The visuals are cute; the writing is not corny.** Copy is lowercase, casual and plain, like a normal
   person talking. Avoid gushing, "hiii", strings of kaomoji, "soft boy", or overdone jokes. Put the cuteness in the
-  design (colors, window boxes, symbols in window titles), not in the sentences.
+  design (colors, tape labels, drawings), not in the sentences.
 - The owner uses he/him, is a feminine guy, and likes pink. Keep the site respectful of that without making a big deal of it.
 - Don't invent facts about him. Use obvious `(placeholder)` text where real info is needed.
-- No filler: don't add decorative buttons, badges, blinkies, stamps, fake widgets or links to
+- No filler: don't add decorative buttons, badges, blinkies, stamps, fake widgets, window close buttons or links to
   placeholder URLs. Every button or link should go somewhere real. There's intentionally no footer.
 - Accessibility matters. Keep `alt` text on meaningful images, `alt=""` plus `aria-hidden` on decorations,
   enough color contrast, the `prefers-reduced-motion` block in the CSS, and a working layout at phone widths (under 760px).

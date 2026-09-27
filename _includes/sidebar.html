@@ -1,28 +1,25 @@
 <aside class="sidebar">
-  <section class="window">
-    <div class="window-bar"><span>♡ status</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-    <div class="window-body">
-      <dl class="status">
-        <dt>mood</dt><dd>{{ site.status.mood }}</dd>
-        <dt>listening to</dt><dd>{{ site.status.listening }}</dd>
-        <dt>working on</dt><dd>{{ site.status.working_on }}</dd>
-        <dt>studying</dt><dd>{{ site.status.studying }}</dd>
-      </dl>
-    </div>
+  <section class="card note">
+    <h2 class="label">status</h2>
+    <dl class="spec">
+      <dt>mood</dt><dd>{{ site.status.mood }}</dd>
+      <dt>listening to</dt><dd>{{ site.status.listening }}</dd>
+      <dt>working on</dt><dd>{{ site.status.working_on }}</dd>
+      <dt>studying</dt><dd>{{ site.status.studying }}</dd>
+    </dl>
   </section>
 
-  <section class="window">
-    <div class="window-bar"><span>✿ find me</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-    <div class="window-body">
-      <ul class="socials">
-        {% for s in site.socials %}
-          <li><a href="{{ s.url }}" target="_blank" rel="noopener"><span aria-hidden="true">{{ s.icon }}</span> {{ s.name }}</a></li>
-        {% endfor %}
-      </ul>
-      {% if site.guestbook_url != "" %}
-        <a class="btn" href="{{ site.guestbook_url }}" target="_blank" rel="noopener">✎ sign my guestbook</a>
-      {% endif %}
-    </div>
+  {% if site.socials.size > 0 %}
+  <section class="card note">
+    <h2 class="label">elsewhere</h2>
+    <ul class="plain-list">
+      {% for s in site.socials %}
+        <li><a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.name }}</a></li>
+      {% endfor %}
+    </ul>
+    {% if site.guestbook_url != "" %}
+      <p><a class="btn" href="{{ site.guestbook_url }}" target="_blank" rel="noopener">sign my guestbook</a></p>
+    {% endif %}
   </section>
-
+  {% endif %}
 </aside>

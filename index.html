@@ -1,55 +1,46 @@
 ---
 layout: default
 ---
-<section class="window hero">
-  <div class="window-bar"><span>♡ welcome</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-  <div class="window-body">
-    <div class="hero-inner">
-      <div class="avatar" aria-hidden="true">
-        <!-- Want a real photo/drawing? Replace this div with:
-             <img class="avatar" src="{{ '/assets/img/me.png' | relative_url }}" alt="me"> -->
-        <span>ʕ•ᴥ•ʔ</span>
-      </div>
-      <div>
-        <h2>hi, i'm {{ site.author }} <img class="inline-icon" src="{{ '/assets/img/sparkle.svg' | relative_url }}" alt="" width="22" height="22"></h2>
-        <p>i'm in my first year of engineering. outside of classes i make music, mostly for myself.</p>
-        <p>this is my personal site: some notes on uni, what i'm working on, and things i like.</p>
-      </div>
-    </div>
+<section class="card hero">
+  <figure class="portrait">
+    <!-- Want a real photo/drawing? Replace the img src with your own picture,
+         e.g. {{ '/assets/img/me.png' | relative_url }}, and update the alt text. -->
+    <img src="{{ '/assets/img/cat.svg' | relative_url }}" alt="line drawing of a cat wearing a bow" width="220" height="200">
+    <figcaption>fig. 0 · me, roughly</figcaption>
+  </figure>
+  <div>
+    <h1>hi, i'm {{ site.author }}.</h1>
+    <p>i'm in my first year of engineering. outside of classes i make music, mostly for myself.</p>
+    <p>this is my personal site: some notes on uni, what i'm working on, and things i like.</p>
   </div>
 </section>
 
 <div class="grid-2">
-  <section class="window">
-    <div class="window-bar"><span>♫ making lately</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-    <div class="window-body">
-      <ul class="plain-list">
-        {% for m in site.data.music.making limit: 3 %}<li>{{ m }}</li>{% endfor %}
-      </ul>
-      <p><a href="{{ '/music/' | relative_url }}">more on the music page →</a></p>
-    </div>
+  <section class="card">
+    <h2 class="label">making lately</h2>
+    <ul class="plain-list">
+      {% for m in site.data.music.making limit: 3 %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+    <p><a href="{{ '/music/' | relative_url }}">more on the music page →</a></p>
   </section>
 
-  <section class="window">
-    <div class="window-bar"><span>✎ updates</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-    <div class="window-body">
-      <ul class="updates">
-        {% for u in site.data.updates limit: 5 %}
-          <li><time datetime="{{ u.date | date: '%Y-%m-%d' }}">{{ u.date | date: "%b %-d" | downcase }}</time> {{ u.text }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+  <section class="card">
+    <h2 class="label">updates</h2>
+    <ul class="log">
+      {% for u in site.data.updates limit: 5 %}
+        <li><time datetime="{{ u.date | date: '%Y-%m-%d' }}">{{ u.date | date: "%Y.%m.%d" }}</time> {{ u.text }}</li>
+      {% endfor %}
+    </ul>
   </section>
 </div>
 
-<section class="window">
-  <div class="window-bar"><span>✧ quick facts</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-  <div class="window-body">
-    <ul class="facts">
-      <li><span>⚙</span> {{ site.data.uni.year }} {{ site.data.uni.degree }}</li>
-      <li><span>♫</span> makes music for fun</li>
-      <li><span>🎀</span> likes pink</li>
-      <li><span>☕</span> runs on coffee</li>
-    </ul>
-  </div>
+<section class="card">
+  <h2 class="label">specs</h2>
+  <dl class="spec spec-grid">
+    <dt>year</dt><dd>{{ site.data.uni.year }}</dd>
+    <dt>program</dt><dd>{{ site.data.uni.degree }}</dd>
+    <dt>hobby</dt><dd>making music</dd>
+    <dt>color</dt><dd><span class="swatch" aria-hidden="true"></span>pink</dd>
+    <dt>fuel</dt><dd>coffee</dd>
+  </dl>
 </section>

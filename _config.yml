@@ -27,19 +27,14 @@ status:
 # Your social links. Add more like this (real links only):
 #   - name: "instagram"
 #     url: "https://instagram.com/yourname"
-#     icon: "✿"
-# "icon" is just an emoji or short text.
 socials:
   - name: "github"
     url: "https://github.com/meowzerskittycat"
-    icon: "⌨"
 
 # Optional: link to a free guestbook (e.g. https://www.smartguestbook.com
 # or https://atabook.org). Leave empty ("") to hide the button.
 guestbook_url: ""
 
-# Scrolling message at the top of every page
-marquee: "welcome ✿ first year engineering ✿ making music in my spare time ✿ thanks for stopping by ✿"
 
 # ── Jekyll stuff (you normally don't need to touch this) ──
 theme: null           # no GitHub theme ─ this site has its own look

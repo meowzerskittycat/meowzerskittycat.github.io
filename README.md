@@ -1,6 +1,6 @@
 # ♡ meowzers ♡
 
-A handmade-style personal site (uni, music, things I like), hosted free on **GitHub Pages**.
+A handmade personal site (uni, music, things I like), hosted free on **GitHub Pages**.
 
 🌸 **Live at:** https://meowzerskittycat.github.io/website/
 
@@ -15,7 +15,7 @@ A handmade-style personal site (uni, music, things I like), hosted free on **Git
 
 Most things are just text files, so you can edit them right on github.com (click a file, then the ✏️ pencil):
 
-- `_config.yml`: your name, tagline, mood, social links, scrolling message
+- `_config.yml`: your name, tagline, status, social links
 - `_data/music.yml`: the music page (what you're making, setup, what you listen to)
 - `_data/uni.yml`: classes, to-do list, semester dates
 - `_data/updates.yml`: little news log on the home page
