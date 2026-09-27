@@ -1,11 +1,14 @@
 ---
 layout: default
-title: page not found
+title: 404
 permalink: /404.html
 ---
-<section class="card center">
-  <h1 class="label">error 404</h1>
-  <p class="big">page not found</p>
-  <p>this page doesn't exist, or it moved.</p>
-  <p><a class="btn" href="{{ '/' | relative_url }}">back to home</a></p>
-</section>
+<article class="post op">
+  {% include post-head.html op=true subject="404 - not found" %}
+  <blockquote class="post-body">
+    <span class="quote">&gt;click link</span><br>
+    <span class="quote">&gt;page doesn't exist</span><br>
+    <br>
+    it was probably moved or deleted. <a href="{{ '/' | relative_url }}">back to home</a>
+  </blockquote>
+</article>

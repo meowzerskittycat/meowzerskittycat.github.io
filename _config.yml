@@ -1,11 +1,12 @@
 # ─────────────────────────────────────────────────────────────
-#  ♡ site settings ♡
+#  site settings
 #  Edit the values below to change your name, bio, mood, links…
 #  After editing this file, GitHub Pages rebuilds automatically
 #  (give it a minute or two). Locally, restart `jekyll serve`.
 # ─────────────────────────────────────────────────────────────
 
 title: "meowzers"
+board: "mz"                 # shown as /mz/ in the title, like a board name
 author: "meowzers"          # your name / nickname, shown in the header
 tagline: "engineering student · makes music on the side"
 description: "personal site of a first-year engineering student who makes music for fun"
@@ -17,7 +18,8 @@ description: "personal site of a first-year engineering student who makes music 
 url: "https://meowzerskittycat.github.io"
 baseurl: "/website"
 
-# Little status box in the sidebar ─ change whenever you like!
+# Status table on the home page ─ change whenever you like.
+# You can rename, add or remove lines; the part before the colon is the label.
 status:
   mood: "tired but fine"
   listening: "(an album you like)"

@@ -1,0 +1,14 @@
+# Home page text.
+
+# The greentext story in the first post. Write each line without the ">";
+# it gets added automatically. Keep it short.
+greentext:
+  - "be me"
+  - "first year engineering"
+  - "calc problem set due tomorrow"
+  - "open daw instead"
+  - "4 hours later"
+  - "8 bar loop"
+
+# Normal text shown under the greentext
+intro: "this is my site. uni stuff, music stuff, whatever else."

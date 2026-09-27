@@ -4,43 +4,45 @@ title: uni
 description: first year of engineering
 ---
 {% assign uni = site.data.uni %}
-<section class="card">
-  <h1 class="label">uni</h1>
-  <p><strong>{{ uni.year }}</strong>, <strong>{{ uni.degree }}</strong>. here's what this semester looks like.</p>
+<article class="post op">
+  {% include post-head.html op=true subject="uni" %}
+  <blockquote class="post-body">
+    {{ uni.year }}, {{ uni.degree }}. here's what this semester looks like.
 
-  <div class="progress-wrap" data-start="{{ uni.semester.start | date: '%Y-%m-%d' }}" data-end="{{ uni.semester.end | date: '%Y-%m-%d' }}">
-    <p class="progress-label"><span>{{ uni.semester.name }}</span> <strong class="progress-text">…</strong></p>
-    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="{{ uni.semester.name }} progress">
-      <div class="progress-fill"></div>
+    <div class="progress-wrap" data-start="{{ uni.semester.start | date: '%Y-%m-%d' }}" data-end="{{ uni.semester.end | date: '%Y-%m-%d' }}">
+      <p class="progress-label">{{ uni.semester.name }} ({{ uni.semester.start | date: "%m/%d" }} to {{ uni.semester.end | date: "%m/%d" }}): <strong class="progress-text">…</strong></p>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="{{ uni.semester.name }} progress">
+        <div class="progress-fill"></div>
+      </div>
     </div>
-    <p class="progress-ends"><span>{{ uni.semester.start | date: "%b %-d" | downcase }}</span><span>{{ uni.semester.end | date: "%b %-d" | downcase }}</span></p>
-  </div>
-</section>
+  </blockquote>
+</article>
 
-<div class="grid-2">
-  <section class="card">
-    <h2 class="label">classes</h2>
-    <ul class="classes">
-      {% for c in uni.classes %}
-        <li><span class="class-no" aria-hidden="true">{{ c.emoji }}</span>
-          <div><strong>{{ c.name }}</strong><br><span class="tiny">{{ c.note }}</span></div></li>
-      {% endfor %}
+<article class="post reply">
+  {% include post-head.html subject="classes" %}
+  <blockquote class="post-body">
+    <ul class="plain-list">
+      {% for c in uni.classes %}<li><strong>{{ c.name }}</strong> <span class="muted">- {{ c.note }}</span></li>{% endfor %}
     </ul>
-  </section>
+  </blockquote>
+</article>
 
-  <section class="card">
-    <h2 class="label">to-do</h2>
+<article class="post reply">
+  {% include post-head.html subject="to-do" %}
+  <blockquote class="post-body">
     <ul class="todo">
       {% for t in uni.todo %}
-        <li class="{% if t.done %}done{% endif %}"><span class="box" aria-hidden="true">{% if t.done %}✓{% endif %}</span><span class="todo-text">{{ t.text }}</span>{% if t.done %}<span class="sr-only"> (done)</span>{% endif %}</li>
+        <li{% if t.done %} class="done"{% endif %}><span class="box" aria-hidden="true">[{% if t.done %}x{% else %}&nbsp;{% endif %}]</span> <span class="todo-text">{{ t.text }}</span>{% if t.done %}<span class="sr-only"> (done)</span>{% endif %}</li>
       {% endfor %}
     </ul>
-  </section>
-</div>
+  </blockquote>
+</article>
 
-<section class="card">
-  <h2 class="label">things that help</h2>
-  <ol class="numbered">
-    {% for tip in uni.study_tips %}<li>{{ tip }}</li>{% endfor %}
-  </ol>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="things that help" %}
+  <blockquote class="post-body">
+    <ol class="numbered">
+      {% for tip in uni.study_tips %}<li>{{ tip }}</li>{% endfor %}
+    </ol>
+  </blockquote>
+</article>

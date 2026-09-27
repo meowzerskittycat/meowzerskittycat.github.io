@@ -13,19 +13,14 @@ semester:
 classes:
   - name: "calculus i"
     note: "limits, derivatives, a lot of practice problems"
-    emoji: "∫"
   - name: "physics i (mechanics)"
     note: "free-body diagrams everywhere"
-    emoji: "⚙"
   - name: "chemistry"
     note: "labs on thursdays"
-    emoji: "⚗"
   - name: "intro to programming"
     note: "the one i look forward to"
-    emoji: "⌨"
   - name: "engineering design"
     note: "first group project"
-    emoji: "✎"
 
 # To-do list. done: true shows a tick.
 todo:

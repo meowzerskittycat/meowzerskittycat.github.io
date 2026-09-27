@@ -3,34 +3,37 @@ layout: default
 title: about
 description: a bit about me
 ---
-<section class="card" markdown="1">
-<h1 class="label">about</h1>
+<article class="post op" markdown="1">
+{% include post-head.html op=true subject="about" %}
+<blockquote class="post-body" markdown="1">
 
-i'm **{{ site.author }}**. i'm a first-year engineering student, and in my spare time i make music.
+i'm **{{ site.author }}**. first-year engineering student, and i make music in my spare time.
 i like figuring out how stuff works.
 
-i made this site as a small place online that's mine. i'll add to it when i have time.
+made this site so i'd have a small place online that's mine. i'll add to it when i have time.
 
-</section>
+</blockquote>
+</article>
 
-<section class="card">
-  <h2 class="label">profile</h2>
-  <dl class="spec spec-grid">
-    <dt>name</dt><dd>{{ site.author }}</dd>
-    <dt>pronouns</dt><dd>he/him</dd>
-    <dt>studying</dt><dd>{{ site.data.uni.degree }}, {{ site.data.uni.year }}</dd>
-    <dt>hobbies</dt><dd>making music</dd>
-  </dl>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="profile" %}
+  <blockquote class="post-body">
+    <dl class="spec">
+      <dt>name</dt><dd>{{ site.author }}</dd>
+      <dt>pronouns</dt><dd>he/him</dd>
+      <dt>studying</dt><dd>{{ site.data.uni.degree }}, {{ site.data.uni.year }}</dd>
+      <dt>hobbies</dt><dd>making music</dd>
+    </dl>
+  </blockquote>
+</article>
 
-<section class="card">
-  <h2 class="label">favorite things</h2>
-  <div class="favorites">
-    {% for f in site.data.favorites %}
-      <div class="fav">
-        <h3>{{ f.category }}</h3>
-        <ul>{% for i in f.items %}<li>{{ i }}</li>{% endfor %}</ul>
-      </div>
-    {% endfor %}
-  </div>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="things i like" %}
+  <blockquote class="post-body">
+    <dl class="spec">
+      {% for f in site.data.favorites %}
+        <dt>{{ f.category }}</dt><dd>{{ f.items | join: ", " }}</dd>
+      {% endfor %}
+    </dl>
+  </blockquote>
+</article>
