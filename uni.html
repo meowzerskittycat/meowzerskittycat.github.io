@@ -1,14 +1,13 @@
 ---
 layout: default
-title: uni life
-description: surviving university one lecture at a time
+title: uni
+description: first year of engineering
 ---
 {% assign uni = site.data.uni %}
 <section class="window">
-  <div class="window-bar"><span>✎ uni life</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-bar"><span>✎ uni</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
   <div class="window-body">
-    <p class="intro">currently a <strong>{{ uni.year }}</strong> student studying <strong>{{ uni.degree }}</strong>.
-      here's what i'm up to this semester ~</p>
+    <p class="intro"><strong>{{ uni.year }}</strong>, <strong>{{ uni.degree }}</strong>. here's what this semester looks like.</p>
 
     <div class="progress-wrap" data-start="{{ uni.semester.start | date: '%Y-%m-%d' }}" data-end="{{ uni.semester.end | date: '%Y-%m-%d' }}">
       <p class="progress-label">{{ uni.semester.name }} progress: <strong class="progress-text">…</strong></p>
@@ -21,7 +20,7 @@ description: surviving university one lecture at a time
 
 <div class="grid-2">
   <section class="window">
-    <div class="window-bar"><span>📚 my classes</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-bar"><span>📚 classes</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
     <div class="window-body">
       <ul class="classes">
         {% for c in uni.classes %}
@@ -33,7 +32,7 @@ description: surviving university one lecture at a time
   </section>
 
   <section class="window">
-    <div class="window-bar"><span>☑ to-do list</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-bar"><span>☑ to-do</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
     <div class="window-body">
       <ul class="todo">
         {% for t in uni.todo %}
@@ -45,7 +44,7 @@ description: surviving university one lecture at a time
 </div>
 
 <section class="window">
-  <div class="window-bar"><span>✿ study tips from me to you</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-bar"><span>✿ things that help</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
   <div class="window-body">
     <ul class="facts">
       {% for tip in uni.study_tips %}<li><span>✿</span> {{ tip }}</li>{% endfor %}

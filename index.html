@@ -2,7 +2,7 @@
 layout: default
 ---
 <section class="window hero">
-  <div class="window-bar"><span>♡ welcome.exe</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-bar"><span>♡ welcome</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
   <div class="window-body">
     <div class="hero-inner">
       <div class="avatar" aria-hidden="true">
@@ -11,13 +11,11 @@ layout: default
         <span>ʕ•ᴥ•ʔ</span>
       </div>
       <div>
-        <h2>hiii, i'm {{ site.author }}! <img class="inline-icon" src="{{ '/assets/img/sparkle.svg' | relative_url }}" alt="" width="22" height="22"></h2>
-        <p>welcome to my little corner of the internet ♡ i make music (mostly soft, dreamy, sparkly things)
-          and i'm currently surviving university one coffee at a time.</p>
-        <p>this site is my scrapbook: my songs, my uni life, my favorite things and whatever else
-          makes me happy. take off your shoes, grab a snack &amp; stay a while ~</p>
-        <p><a class="btn" href="{{ '/music/' | relative_url }}">♫ listen to my music</a>
-           <a class="btn lav" href="{{ '/about/' | relative_url }}">♡ about me</a></p>
+        <h2>hi, i'm {{ site.author }} <img class="inline-icon" src="{{ '/assets/img/sparkle.svg' | relative_url }}" alt="" width="22" height="22"></h2>
+        <p>i'm in my first year of engineering. outside of classes i make music, mostly for myself.</p>
+        <p>this is my personal site: some notes on uni, what i'm working on, and things i like.</p>
+        <p><a class="btn" href="{{ '/about/' | relative_url }}">about me</a>
+           <a class="btn lav" href="{{ '/uni/' | relative_url }}">uni</a></p>
       </div>
     </div>
   </div>
@@ -25,14 +23,12 @@ layout: default
 
 <div class="grid-2">
   <section class="window">
-    <div class="window-bar"><span>♫ latest track</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-bar"><span>♫ making lately</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
     <div class="window-body">
-      {% assign latest = site.data.music | first %}
-      {% if latest %}
-        {% include track.html track=latest compact=true %}
-      {% else %}
-        <p>no songs yet… stay tuned!</p>
-      {% endif %}
+      <ul class="plain-list">
+        {% for m in site.data.music.making limit: 3 %}<li>{{ m }}</li>{% endfor %}
+      </ul>
+      <p><a href="{{ '/music/' | relative_url }}">more on the music page →</a></p>
     </div>
   </section>
 
@@ -49,13 +45,13 @@ layout: default
 </div>
 
 <section class="window">
-  <div class="window-bar"><span>✧ little facts</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-bar"><span>✧ quick facts</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
   <div class="window-body">
     <ul class="facts">
-      <li><span>♫</span> i make music in my bedroom</li>
-      <li><span>✎</span> uni student ({{ site.data.uni.year }})</li>
-      <li><span>🎀</span> ribbons are always a good idea</li>
-      <li><span>☕</span> powered by iced lattes</li>
+      <li><span>⚙</span> {{ site.data.uni.year }} {{ site.data.uni.degree }}</li>
+      <li><span>♫</span> makes music for fun</li>
+      <li><span>🎀</span> likes pink</li>
+      <li><span>☕</span> runs on coffee</li>
     </ul>
   </div>
 </section>

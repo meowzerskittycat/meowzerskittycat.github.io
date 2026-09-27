@@ -4,7 +4,8 @@ Guide for AI coding agents (Claude Code, Codex, Copilot, Cursor…) and humans w
 
 ## What this is
 
-A personal website for **meowzers**: a music maker and university student. It has a soft, cute,
+A personal website for **meowzers**: a first-year engineering student who makes music as a hobby.
+He doesn't publish his music, so the music page is about what he's making and his setup, not a track list. It has a soft, cute,
 pastel "handmade web / Neocities" look with ribbons, gingham, little window boxes, blinkies, stamps and pixel fonts.
 
 - Hosted on **GitHub Pages only**. No servers, databases, Node build steps, or paid services.
@@ -31,7 +32,7 @@ pastel "handmade web / Neocities" look with ribbons, gingham, little window boxe
 | I want to change…                        | Edit this file                                  |
 |------------------------------------------|-------------------------------------------------|
 | name, tagline, mood/status, socials, marquee text, guestbook link | `_config.yml` |
-| songs on the music page (and "latest track" on home) | `_data/music.yml`                  |
+| music page: what he's making, setup, on repeat, optional links (also "making lately" on home) | `_data/music.yml` |
 | the "updates" log on the home page       | `_data/updates.yml`                             |
 | classes, to-do list, semester dates, study tips | `_data/uni.yml`                          |
 | favorite things on the about page        | `_data/favorites.yml`                           |
@@ -46,18 +47,14 @@ pastel "handmade web / Neocities" look with ribbons, gingham, little window boxe
 | page skeleton (`<head>`, fonts)          | `_layouts/default.html`                         |
 
 Other files:
-- `_includes/track.html` renders one song. It's shared by the home and music pages.
-- `assets/img/` holds the original SVG decorations (ribbon, heart, sparkle, default cover art, favicon).
+- `assets/img/` holds the original SVG decorations (ribbon, heart, sparkle, favicon).
   `assets/img/buttons/my-button.svg` is the site's 88×31 link-back button.
 - `404.html` is the "page not found" page. GitHub Pages picks it up automatically.
 
 ## Common tasks
 
-**Add a song.** Copy an entry in `_data/music.yml` and put it at the **top** (newest first). The fields are
-explained in the comment at the top of that file. For an on-page player, set `embed:` to the *embed* URL
-(for example `https://www.youtube.com/embed/ID` or the `w.soundcloud.com/player/?url=…` src from SoundCloud's
-share → embed). A plain page URL won't work there. For cover art, put the image in `assets/img/covers/` and set
-`cover: /assets/img/covers/name.jpg`.
+**Update the music page.** Edit the lists in `_data/music.yml`. If he ever wants to share tracks, add
+`name` + `url` entries under `links:` and a "listen" box appears. Don't add fake releases or placeholder tracks.
 
 **Add a page.**
 1. Create `newpage.html` (or `.md`) at the repo root with front matter:
@@ -87,8 +84,11 @@ Keep text readable: dark text on pastel backgrounds, not white text on pale pink
 
 ## Style & tone
 
-- Voice: lowercase, soft and friendly, with cute symbols like ♡ ✿ ✧ ♫ ✎ and kaomoji. Keep that tone in new copy.
-- The owner uses he/him and is a feminine guy. Keep the site affirming ("pink is for everyone").
+- **The visuals are cute; the writing is not corny.** Copy is lowercase, casual and plain, like a normal
+  person talking. Avoid gushing, "hiii", strings of kaomoji, "soft boy", or overdone jokes. Put the cuteness in the
+  design (symbols in window titles, blinkies, stamps), not in the sentences.
+- The owner uses he/him, is a feminine guy, and likes pink. Keep the site respectful of that without making a big deal of it.
+- Don't invent facts about him. Use obvious `(placeholder)` text where real info is needed.
 - Accessibility matters. Keep `alt` text on meaningful images, `alt=""` plus `aria-hidden` on decorations,
   enough color contrast, the `prefers-reduced-motion` block in the CSS, and a working layout at phone widths (under 760px).
 - Keep it simple enough that a non-programmer can edit it. Prefer data files and comments over clever code.

@@ -328,24 +328,12 @@ img { max-width: 100%; }
 .facts li { padding: .5em .8em; background: var(--pink-pale); border: 1.5px dashed var(--border); border-radius: 10px; }
 .facts li span { margin-right: .3em; }
 
-/* ── music ───────────────────────────────────────────────── */
+.plain-list { list-style: none; padding: 0; margin: 0 0 .5em; }
+.plain-list li { padding: .3em 0 .3em 1.3em; position: relative; border-bottom: 1.5px dashed var(--pink-light); }
+.plain-list li:last-child { border-bottom: 0; }
+.plain-list li::before { content: "♡"; position: absolute; left: 0; color: var(--pink-deep); }
 
-.track { display: flex; gap: 1rem; align-items: flex-start; }
-.track-cover {
-  flex: 0 0 120px;
-  width: 120px; height: 120px;
-  object-fit: cover;
-  border: 3px solid #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 0 2px var(--border), 3px 3px 0 3px var(--shadow);
-  transform: rotate(-2deg);
-}
-.track-info { flex: 1; min-width: 0; }
-.track-info p { margin: .3em 0; }
-.track-meta { font-size: .85rem; color: var(--text-soft); }
-.embed { margin: .6em 0; border-radius: 10px; overflow: hidden; border: 2px solid var(--pink-light); }
-.embed iframe { display: block; width: 100%; height: 166px; border: 0; }
-audio { width: 100%; margin: .5em 0; }
+/* ── music ───────────────────────────────────────────────── */
 
 .now-playing {
   display: flex; align-items: center; gap: .6rem;
@@ -484,7 +472,6 @@ audio { width: 100%; margin: .5em 0; }
   .layout { grid-template-columns: 1fr; }
   .sidebar { order: 2; }           /* content first, sidebar after */
   .hero-inner { flex-direction: column; text-align: center; }
-  .track { flex-direction: column; align-items: center; text-align: center; }
   .site-header { padding-top: 2.2rem; }
 }
 

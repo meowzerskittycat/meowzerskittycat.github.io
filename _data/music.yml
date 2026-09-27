@@ -1,40 +1,27 @@
-# ♫ your tracks ♫
-# Newest at the top. Copy one block (from "- title" down) to add a song.
-#
-#   title:  song name (required)
-#   date:   YYYY-MM-DD (required)
-#   type:   single / ep / album / demo / cover / remix  (anything you like)
-#   blurb:  a short sentence about it
-#   cover:  optional image path, e.g. /assets/img/covers/my-song.jpg
-#           (put the picture in assets/img/covers/). Leave out for a cute default.
-#   links:  any number of name + url pairs (soundcloud, spotify, bandcamp…)
-#   embed:  optional player URL shown right on the page. Use the "embed" /
-#           "share → embed" src URL from SoundCloud, Bandcamp or YouTube,
-#           e.g. https://www.youtube.com/embed/VIDEO_ID
-#           or   https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/you/track
-#   audio:  optional path to an mp3 you uploaded to assets/audio/
-#           (keep files small! GitHub dislikes files over ~25MB)
+# ♫ music page
+# He makes music for himself and doesn't release it, so this page is
+# about the process, not a track list. Edit freely.
 
-- title: "strawberry static"
-  date: 2026-09-01
-  type: single
-  blurb: "a dreamy bedroom-pop song i made at 3am instead of doing homework."
-  links:
-    - name: soundcloud
-      url: "https://soundcloud.com/"
-    - name: bandcamp
-      url: "https://bandcamp.com/"
+# What you're making / learning right now (one line each)
+making:
+  - "short loops and beats, mostly late at night"
+  - "learning how chords actually work"
+  - "trying to get better at mixing"
 
-- title: "lecture hall lullabies"
-  date: 2026-05-14
-  type: ep
-  blurb: "four soft tracks written between classes. headphones recommended ♡"
-  links:
-    - name: soundcloud
-      url: "https://soundcloud.com/"
+# Your setup. "what" is the thing, "note" is optional.
+setup:
+  - what: "DAW"
+    note: "(the program you use)"
+  - what: "a small midi keyboard"
+  - what: "headphones"
+    note: "(model)"
 
-- title: "ribbon (demo)"
-  date: 2026-02-02
-  type: demo
-  blurb: "an early sketch ─ just synths, a music box and a lot of feelings."
-  links: []
+# Artists / albums you've had on repeat
+listening:
+  - "(artist or album)"
+  - "(artist or album)"
+  - "(artist or album)"
+
+# If you ever do want to share a track, you can add links here
+# (name + url), e.g. a SoundCloud page. Leave empty to hide the box.
+links: []

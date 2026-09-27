@@ -4,15 +4,15 @@
 friends:
   - name: "add a friend here"
     url: "https://example.com"
-    note: "a very cool person"
+    note: "(a few words about them)"
 
 cool:
   - name: "neocities"
     url: "https://neocities.org"
-    note: "a whole world of handmade sites"
+    note: "free hosting for handmade sites"
   - name: "petrapixel's coding help"
     url: "https://petrapixel.neocities.org"
-    note: "super helpful tutorials for making cute sites"
+    note: "tutorials for building personal sites"
   - name: "freesound"
     url: "https://freesound.org"
-    note: "free samples for music making"
+    note: "free sound samples"

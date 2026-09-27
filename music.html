@@ -1,39 +1,53 @@
 ---
 layout: default
 title: music
-description: songs, demos and little sound experiments
+description: the music i make for myself
 ---
+{% assign music = site.data.music %}
 <section class="window">
-  <div class="window-bar"><span>♫ my music</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-bar"><span>♫ music</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
   <div class="window-body">
-    <p class="intro">here's everything i've made so far, newest first ♡
-      if you like something, sharing it with a friend means the world to me!</p>
+    <p class="intro">i make music in my free time. i don't really post it; it's more of a way to unwind after classes.
+      here's what i'm working on and what i use.</p>
     <div class="now-playing" aria-hidden="true">
       <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
-      <span>now playing: my heart ♡</span>
+      <span>working on something</span>
     </div>
   </div>
 </section>
 
-{% for t in site.data.music %}
+<div class="grid-2">
   <section class="window">
-    <div class="window-bar"><span>♪ {{ t.title }}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-bar"><span>✎ working on</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
     <div class="window-body">
-      {% include track.html track=t %}
+      <ul class="plain-list">{% for m in music.making %}<li>{{ m }}</li>{% endfor %}</ul>
     </div>
   </section>
-{% else %}
-  <p>no songs yet… stay tuned!</p>
-{% endfor %}
+
+  <section class="window">
+    <div class="window-bar"><span>🎧 on repeat</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-body">
+      <ul class="plain-list">{% for l in music.listening %}<li>{{ l }}</li>{% endfor %}</ul>
+    </div>
+  </section>
+</div>
 
 <section class="window">
-  <div class="window-bar"><span>🎛 my setup</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-bar"><span>🎛 setup</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
   <div class="window-body">
     <ul class="facts">
-      <li><span>💻</span> daw: (your DAW here)</li>
-      <li><span>🎹</span> a tiny midi keyboard</li>
-      <li><span>🎧</span> headphones that have seen things</li>
-      <li><span>✨</span> lots of free plugins &amp; samples</li>
+      {% for s in music.setup %}
+        <li><strong>{{ s.what }}</strong>{% if s.note %}<br><span class="tiny">{{ s.note }}</span>{% endif %}</li>
+      {% endfor %}
     </ul>
   </div>
 </section>
+
+{% if music.links and music.links.size > 0 %}
+<section class="window">
+  <div class="window-bar"><span>♪ listen</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <p>{% for l in music.links %}<a class="pill" href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }} ↗</a>{% endfor %}</p>
+  </div>
+</section>
+{% endif %}

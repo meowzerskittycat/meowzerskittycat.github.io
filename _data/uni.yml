@@ -1,8 +1,8 @@
-# ✐ uni life
+# ✐ uni
 # Everything on the "uni" page comes from here.
 
-degree: "your degree here (e.g. BA in Music Production)"
-year: "2nd year"
+degree: "engineering"
+year: "1st year"
 
 # Semester progress bar ─ dates as YYYY-MM-DD
 semester:
@@ -11,29 +11,33 @@ semester:
   end: 2026-12-18
 
 classes:
-  - name: "music theory ii"
-    note: "harmony homework is eating me alive"
-    emoji: "♬"
-  - name: "audio engineering"
-    note: "learning to love compressors"
-    emoji: "🎚"
-  - name: "intro to composition"
-    note: "my favorite class!!"
+  - name: "calculus i"
+    note: "limits, derivatives, a lot of practice problems"
+    emoji: "∫"
+  - name: "physics i (mechanics)"
+    note: "free-body diagrams everywhere"
+    emoji: "⚙"
+  - name: "chemistry"
+    note: "labs on thursdays"
+    emoji: "⚗"
+  - name: "intro to programming"
+    note: "the one i look forward to"
+    emoji: "⌨"
+  - name: "engineering design"
+    note: "first group project"
     emoji: "✎"
-  - name: "an elective i picked for fun"
-    note: "no regrets"
-    emoji: "✿"
 
-# A little to-do / study checklist. done: true shows a tick.
+# To-do list. done: true shows a tick.
 todo:
-  - text: "finish theory worksheet"
+  - text: "calc problem set"
     done: true
-  - text: "mix the final assignment"
+  - text: "physics lab report"
     done: false
-  - text: "actually sleep before the exam"
+  - text: "study for the first midterm"
     done: false
 
+# Things that have actually helped
 study_tips:
-  - "pomodoro: 25 minutes focus, 5 minutes snack"
-  - "make a playlist that is only for studying"
-  - "drink water. yes, right now."
+  - "do the practice problems before looking at the solutions"
+  - "go to office hours early in the term, not the week before exams"
+  - "study with people from your classes"
