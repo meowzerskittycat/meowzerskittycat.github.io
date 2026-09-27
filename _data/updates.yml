@@ -1,6 +1,9 @@
-# ✎ site updates / little log
-# Newest at the top. The homepage shows the latest few.
+# Site updates, newest first. Shown on the status page.
 - date: 2026-09-27
-  text: "site is up."
+  text: "Moved music into the blog and removed the uni page."
+- date: 2026-09-27
+  text: "Added a blog, with posts written in Markdown."
+- date: 2026-09-27
+  text: "Site is up."
 - date: 2026-09-20
-  text: "started building this."
+  text: "Started building this."

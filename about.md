@@ -1,39 +1,25 @@
 ---
 layout: default
-title: about
-description: a bit about me
+title: About
+description: A bit about me.
 ---
-<article class="post op" markdown="1">
-{% include post-head.html op=true subject="about" %}
-<blockquote class="post-body" markdown="1">
+# About
 
-i'm **{{ site.author }}**. first-year engineering student, and i make music in my spare time.
-i like figuring out how stuff works.
+I'm a first-year software engineering student. I like figuring out how things work, and most of
+the time that means writing code. Outside of that I make music.
 
-made this site so i'd have a small place online that's mine. i'll add to it when i have time.
+I made this site so I'd have a place online that's mine, and somewhere to write things up properly
+instead of leaving notes scattered in folders.
 
-</blockquote>
-</article>
+## Profile
 
-<article class="post reply">
-  {% include post-head.html subject="profile" %}
-  <blockquote class="post-body">
-    <dl class="spec">
-      <dt>name</dt><dd>{{ site.author }}</dd>
-      <dt>pronouns</dt><dd>he/him</dd>
-      <dt>studying</dt><dd>{{ site.data.uni.degree }}, {{ site.data.uni.year }}</dd>
-      <dt>hobbies</dt><dd>making music</dd>
-    </dl>
-  </blockquote>
-</article>
+<table class="status">
+<tr><th scope="row">Pronouns</th><td>he/him</td></tr>
+<tr><th scope="row">Studying</th><td>Software engineering, 1st year</td></tr>
+</table>
 
-<article class="post reply">
-  {% include post-head.html subject="things i like" %}
-  <blockquote class="post-body">
-    <dl class="spec">
-      {% for f in site.data.favorites %}
-        <dt>{{ f.category }}</dt><dd>{{ f.items | join: ", " }}</dd>
-      {% endfor %}
-    </dl>
-  </blockquote>
-</article>
+## Things I like
+
+<table class="status">
+{% for f in site.data.favorites %}<tr><th scope="row">{{ f.category }}</th><td>{{ f.items | join: ", " }}</td></tr>
+{% endfor %}</table>

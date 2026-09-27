@@ -1,47 +1,59 @@
-# ─────────────────────────────────────────────────────────────
-#  site settings
-#  Edit the values below to change your name, bio, mood, links…
+# -----------------------------------------------------------------
+#  Site settings
 #  After editing this file, GitHub Pages rebuilds automatically
 #  (give it a minute or two). Locally, restart `jekyll serve`.
-# ─────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 
-title: "meowzers"
-board: "mz"                 # shown as /mz/ in the title, like a board name
-author: "meowzers"          # your name / nickname, shown in the header
-tagline: "engineering student · makes music on the side"
-description: "personal site of a first-year engineering student who makes music for fun"
+title: "Vivien"
+author: "Vivien"
+tagline: "software engineering student"
+description: "Personal site and blog of a software engineering student."
 
-# The repo is called "website", so GitHub serves it at
-#   https://meowzerskittycat.github.io/website/
-# If you ever rename the repo to "meowzerskittycat.github.io"
-# or add a custom domain, change baseurl to "" (empty).
+# The site is served from the root of the domain (no sub-folder).
+# For that to work on GitHub Pages, the repository has to be named
+# "meowzerskittycat.github.io", or a custom domain has to be set up.
+# See "Deploying" in AGENTS.md.
 url: "https://meowzerskittycat.github.io"
-baseurl: "/website"
+baseurl: ""
 
-# Status table on the home page ─ change whenever you like.
+# Status page. Change whenever you like.
 # You can rename, add or remove lines; the part before the colon is the label.
 status:
-  mood: "tired but fine"
+  mood: "Tired but fine"
   listening: "(an album you like)"
-  working_on: "a beat that might never be finished"
-  studying: "calculus"
+  working_on: "A beat that might never be finished"
+  studying: "Calculus"
 
-# Your social links. Add more like this (real links only):
-#   - name: "instagram"
-#     url: "https://instagram.com/yourname"
-socials:
-  - name: "github"
-    url: "https://github.com/meowzerskittycat"
+# Links shown on the right of the menu bar. Empty for now.
+# Add real links only, like this:
+#   socials:
+#     - name: "instagram"
+#       url: "https://instagram.com/yourname"
+socials: []
 
-# Optional: link to a free guestbook (e.g. https://www.smartguestbook.com
-# or https://atabook.org). Leave empty ("") to hide the button.
+# Optional: link to a guestbook (e.g. https://atabook.org).
+# Leave empty ("") to hide it.
 guestbook_url: ""
 
 
-# ── Jekyll stuff (you normally don't need to touch this) ──
-theme: null           # no GitHub theme ─ this site has its own look
+# Jekyll settings (you normally don't need to touch these)
+theme: null           # no GitHub theme; this site has its own stylesheet
 markdown: kramdown
 permalink: pretty
+
+# Blog posts in _posts/ appear on the Blog page, each at /blog/<name>/
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      permalink: /blog/:title/
+
+# Atom feed of the posts, at /feed.xml (the plugin is built into GitHub Pages)
+plugins:
+  - jekyll-feed
+
 exclude:
   - AGENTS.md
   - README.md

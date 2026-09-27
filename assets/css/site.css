@@ -1,214 +1,108 @@
-/* ─────────────────────────────────────────────────────────────
-   site.css
-   Theme: an old-school imageboard (tan "yotsuba" style).
-   Board list at the top, a 300x100 banner, posts with greentext,
-   and ms paint drawings.
-
-   Want different colors? Change the variables in :root below.
-   The greentext, name and subject colors are a bit darker than the
-   classic ones so they stay readable.
-   ───────────────────────────────────────────────────────────── */
+/*
+ * site.css
+ * Plain, text-first style in the spirit of suckless.org.
+ * No web fonts, no animation, no JavaScript.
+ * Colors are the variables below.
+ */
 
 :root {
-  --bg:          #ffffee;   /* page background */
-  --bg-top:      #fed6af;   /* peach fade at the top of the page */
-  --text:        #800000;   /* maroon body text */
-  --reply:       #f0e0d6;   /* reply post boxes */
-  --reply-edge:  #d9bfb7;   /* reply borders, hr lines */
-  --link:        #0000ee;
-  --link-hover:  #dd0000;
-  --name:        #0e6a3a;   /* poster name */
-  --subject:     #b50f04;   /* post subject */
-  --greentext:   #4d6a12;   /* >lines like this */
-  --label:       #eeaa88;   /* status table labels */
-  --muted:       #5c5c5c;
-
-  --font:        arial, helvetica, sans-serif;
-  --font-title:  tahoma, "Trebuchet MS", sans-serif;
+	--text: #000;
+	--muted: #555;
+	--bg: #fff;
+	--bar: #eee;
+	--line: #ccc;
+	--link: #1a4ba6;
+	--visited: #5b2a86;
 }
 
-/* ── base ─────────────────────────────────────────────────── */
-
-*, *::before, *::after { box-sizing: border-box; }
-
 body {
-  margin: 0;
-  padding: 0 1rem 1rem;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 15px;
-  line-height: 1.45;
-  background: var(--bg) linear-gradient(var(--bg-top), var(--bg) 220px) no-repeat;
+	margin: 0;
+	color: var(--text);
+	background: var(--bg);
+	font-family: sans-serif;
+	line-height: 1.45;
 }
 
 a { color: var(--link); }
-a:hover { color: var(--link-hover); }
-:focus-visible { outline: 2px dotted var(--text); outline-offset: 2px; }
+a:visited { color: var(--visited); }
 
-hr { border: 0; border-top: 1px solid var(--reply-edge); margin: .8rem 0; clear: both; }
+/* header + menu bar */
+
+#header { padding: .6em 1em; }
+#headerLink {
+	font-size: 1.6em;
+	font-weight: bold;
+	color: var(--text);
+	text-decoration: none;
+}
+#headerTitle { display: inline; margin: 0; font-size: 1em; }
+#headerSubtitle { margin-left: .6em; color: var(--muted); }
+
+#menu {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: .2em 1em;
+	padding: .3em 1em;
+	background: var(--bar);
+	border-top: 1px solid var(--line);
+	border-bottom: 1px solid var(--line);
+}
+#menu a { margin-right: .8em; color: var(--text); text-decoration: none; }
+#menu .right a { margin: 0 0 0 .8em; }
+#menu a:hover { text-decoration: underline; }
+#menu a.thisSite { font-weight: bold; }
+
+/* main text */
+
+#main { max-width: 46em; padding: 0 1em 2em; }
+
+h1 { font-size: 1.5em; margin: .8em 0 .4em; }
+h2 { font-size: 1.2em; margin: 1.5em 0 .4em; }
+h3 { font-size: 1.05em; margin: 1.2em 0 .3em; }
+h4 { font-size: 1em; margin: 1em 0 .3em; }
+
+.meta, .muted { color: var(--muted); }
+.meta { margin-top: 0; }
 
 img { max-width: 100%; height: auto; }
-.pixel { image-rendering: pixelated; vertical-align: middle; }
-.muted { color: var(--muted); }
+hr { border: 0; border-top: 1px solid var(--line); margin: 1.5em 0; }
 
-.sr-only {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip: rect(0 0 0 0); white-space: nowrap;
-}
-.skip-link {
-  position: absolute; left: -999px; top: 4px; z-index: 10;
-  background: var(--reply); padding: .3em .6em; border: 1px solid var(--reply-edge);
-}
-.skip-link:focus { left: 4px; }
-
-/* ── top board list + header ─────────────────────────────── */
-
-.boardlist {
-  display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem 1rem;
-  padding: .35rem 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-.boardlist a { text-decoration: none; }
-.boardlist a:hover { text-decoration: underline; }
-.boardlist a[aria-current="page"] { font-weight: bold; color: var(--text); }
-
-.board-header { text-align: center; margin-top: .6rem; }
-.banner { display: block; margin: 0 auto .5rem; border: 1px solid var(--text); }
-.board-title {
-  margin: 0;
-  font-family: var(--font-title);
-  font-size: 28px;
-  font-weight: bold;
-  letter-spacing: -2px;
-}
-.board-title a { color: var(--text); text-decoration: none; }
-.board-subtitle { margin: .1rem 0 0; font-size: 13px; }
-
-/* ── status table (styled like a post form) + blotter ────── */
-
-.postform {
-  margin: .8rem auto .4rem;
-  border-spacing: 1px;
-  font-size: 13px;
-}
-.postform th {
-  padding: .25em .6em;
-  min-width: 7em;
-  text-align: left;
-  color: var(--text);
-  background: var(--label);
-  border: 1px solid #800000;
-}
-.postform td { padding: .25em .6em; background: #fff; border: 1px solid #aaa; color: #000; min-width: 16em; }
-
-.blotter {
-  list-style: none;
-  width: fit-content;
-  max-width: 100%;
-  margin: .6rem auto 0;
-  padding: .3rem 0 0;
-  border-top: 1px solid var(--reply-edge);
-  font-size: 12px;
-}
-.blotter li { padding: .1em 0; }
-.blotter-date { color: var(--subject); margin-right: .5em; }
-
-/* ── posts ───────────────────────────────────────────────── */
-
-.thread { display: flow-root; max-width: 1100px; }
-
-.post { margin: 0 0 .3rem; }
-.post::after { content: ""; display: block; clear: both; }
-
-.post-info { font-size: 14px; }
-.post-info > * { margin-right: .35em; }
-.subject {
-  display: inline;
-  margin: 0 .35em 0 0;
-  font-size: inherit;
-  font-weight: bold;
-  color: var(--subject);
-}
-.name { font-weight: bold; color: var(--name); }
-.date { white-space: nowrap; }
-.post-no { color: inherit; text-decoration: none; white-space: nowrap; }
-.post-no:hover { color: var(--link-hover); }
-
-.post-body { margin: .8em 2.5em 1em 2.5em; overflow-wrap: anywhere; }
-
-/* the opening post: no box, picture on the left */
-.op { margin-bottom: .8rem; }
-.file { float: left; margin: .2rem 1.4rem .5rem 1.2rem; }
-.file-info { font-size: 13px; margin-bottom: .2rem; }
-.file-thumb { display: block; width: 200px; border: 1px solid #000; }
-
-/* replies: tan boxes with ">>" arrows on the left */
-.reply {
-  position: relative;
-  display: table;
-  margin-left: 1.8rem;
-  padding: .2rem .5rem;
-  background: var(--reply);
-  border: 1px solid var(--reply-edge);
-  border-left: none;
-  border-top: none;
-}
-.reply::before {
-  content: ">>";
-  position: absolute;
-  left: -1.6rem; top: .2rem;
-  color: var(--reply-edge);
-}
-.reply .post-body { margin: .5em 1.5em .6em 1.5em; }
-
-.quote { color: var(--greentext); }
-.quotelink { color: var(--subject); }
-.quotelink:hover { color: var(--link-hover); }
-
-/* ── bits inside posts ───────────────────────────────────── */
-
-.plain-list, .todo { list-style: none; margin: 0; padding: 0; }
-.plain-list li, .todo li { padding: .1em 0; }
-.numbered { margin: 0; padding-left: 1.6em; }
-
-.spec { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: .15em 1em; }
-.spec dt { font-weight: bold; }
-.spec dd { margin: 0; color: #000; }
-
-.todo .box { font-family: "Courier New", monospace; font-weight: bold; }
-.todo li.done .todo-text { text-decoration: line-through; color: var(--muted); }
-
-/* semester progress: an old windows progress bar */
-.progress-label { margin: 1em 0 .3em; }
-.progress {
-  width: min(420px, 100%);
-  height: 22px;
-  padding: 2px;
-  background: #fff;
-  border: 2px solid;
-  border-color: #808080 #fff #fff #808080;
-  box-shadow: inset 1px 1px 0 #000;
-}
-.progress-fill {
-  width: 0;
-  height: 100%;
-  background: repeating-linear-gradient(90deg, #000080 0 10px, transparent 10px 12px);
+blockquote {
+	margin: 1em 0;
+	padding: 0 1em;
+	color: #333;
+	border-left: 3px solid var(--line);
 }
 
-/* ── bottom ──────────────────────────────────────────────── */
+/* "monospace, monospace" stops browsers from shrinking monospace text */
+code, pre, kbd { font-family: monospace, monospace; font-size: .95em; }
+pre code { font-size: 1em; }
+pre { padding: .6em .8em; background: var(--bar); border: 1px solid var(--line); overflow-x: auto; tab-size: 4; }
+kbd { padding: 0 .3em; border: 1px solid var(--line); border-bottom-width: 2px; background: var(--bar); }
 
-.bottom-links { margin: 0; font-size: 13px; }
-.bottom-links a { text-decoration: none; }
+/* syntax highlighting, kept to black, grey and bold */
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs { color: var(--muted); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kt, .highlight .cp { font-weight: bold; }
 
-/* ── phones ──────────────────────────────────────────────── */
+table { border-collapse: collapse; margin: 1em 0; }
+th, td { padding: .25em .6em; border: 1px solid var(--line); }
+th { background: var(--bar); }
 
-@media (max-width: 600px) {
-  body { padding: 0 .6rem .8rem; }
-  .file { float: none; margin: .2rem 0 .5rem; }
-  .post-body { margin: .6em .4em .8em; }
-  .reply { display: block; margin-left: 1.2rem; }
-  .reply::before { left: -1.2rem; }
-  .reply .post-body { margin: .4em .4em .6em; }
-  .postform td { min-width: 0; }
+/* key/value tables (status, profile) without borders */
+table.status th, table.status td { border: 0; background: none; padding: .15em 1.5em .15em 0; text-align: left; vertical-align: top; }
+
+dt { font-weight: bold; }
+dd { margin: 0 0 .4em 1.5em; }
+
+ul.task-list, ul.todo, ul.posts, ul.log { list-style: none; padding-left: 0; }
+.task-list-item-checkbox { margin: 0 .5em 0 0; }
+ul.posts li { margin: .5em 0; }
+ul.posts time, ul.log time { font-family: monospace; margin-right: .6em; }
+del { color: var(--muted); }
+
+.footnotes { margin-top: 2em; font-size: .9em; border-top: 1px solid var(--line); }
+
+@media (max-width: 40em) {
+	#headerSubtitle { display: block; margin: .2em 0 0; }
 }
