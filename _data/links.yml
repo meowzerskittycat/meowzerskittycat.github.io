@@ -1,0 +1,20 @@
+# ✧ links page
+# "friends" = your friends' sites. "cool" = sites/tools you love.
+# button: optional path to an 88x31 image in assets/img/buttons/
+friends: []
+# example:
+# friends:
+#   - name: "their name"
+#     url: "https://their-site.com"
+#     note: "a few words about them"
+
+cool:
+  - name: "neocities"
+    url: "https://neocities.org"
+    note: "free hosting for handmade sites"
+  - name: "petrapixel's coding help"
+    url: "https://petrapixel.neocities.org"
+    note: "tutorials for building personal sites"
+  - name: "freesound"
+    url: "https://freesound.org"
+    note: "free sound samples"

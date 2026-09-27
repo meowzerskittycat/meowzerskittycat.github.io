@@ -1,0 +1,10 @@
+# ♡ favorite things (shown on the "about" page)
+# Add, remove or rename any category.
+- category: "music"
+  items: ["(genre)", "(genre)", "(artist)"]
+- category: "things i like"
+  items: ["(something)", "(something)"]
+- category: "food"
+  items: ["(food)", "(food)"]
+- category: "outside of uni"
+  items: ["making music", "(hobby)", "(hobby)"]

@@ -1,0 +1,31 @@
+{% include nav-items.html %}
+{% assign sheet = "—" %}
+{% for item in nav %}
+  {% assign parts = item | split: "|" %}
+  {% if page.url == parts[0] %}{% capture sheet %}{{ forloop.index | prepend: "0" | slice: -2, 2 }}{% endcapture %}{% endif %}
+{% endfor %}
+{% capture total %}{{ nav.size | prepend: "0" | slice: -2, 2 }}{% endcapture %}
+
+<header class="title-block">
+  <div class="tb-name">
+    <p class="tb-kicker">personal site of</p>
+    <p class="site-title"><a href="{{ '/' | relative_url }}">{{ site.author }}</a></p>
+    <p class="tagline">{{ site.tagline }}</p>
+  </div>
+
+  <dl class="tb-meta">
+    <div><dt>drawn by</dt><dd>{{ site.author }}</dd></div>
+    <div><dt>sheet</dt><dd>{{ sheet }} / {{ total }}</dd></div>
+    <div><dt>rev.</dt><dd>{{ site.time | date: "%Y-%m-%d" }}</dd></div>
+    <div><dt>scale</dt><dd>1 : 1</dd></div>
+  </dl>
+
+  <nav class="tabs" aria-label="main menu">
+    <ul>
+      {% for item in nav %}
+        {% assign parts = item | split: "|" %}
+        <li><a href="{{ parts[0] | relative_url }}"{% if page.url == parts[0] %} aria-current="page"{% endif %}><span class="tab-no" aria-hidden="true">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>{{ parts[1] }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+</header>

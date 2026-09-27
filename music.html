@@ -1,0 +1,40 @@
+---
+layout: default
+title: music
+description: the music i make for myself
+---
+{% assign music = site.data.music %}
+<section class="card">
+  <h1 class="label">music</h1>
+  <p>i make music in my free time. i don't really post it; it's more of a way to unwind after classes.
+    here's what i'm working on and what i use.</p>
+  <hr class="staff">
+</section>
+
+<div class="grid-2">
+  <section class="card">
+    <h2 class="label">working on</h2>
+    <ul class="plain-list">{% for m in music.making %}<li>{{ m }}</li>{% endfor %}</ul>
+  </section>
+
+  <section class="card">
+    <h2 class="label">on repeat</h2>
+    <ul class="plain-list">{% for l in music.listening %}<li>{{ l }}</li>{% endfor %}</ul>
+  </section>
+</div>
+
+<section class="card">
+  <h2 class="label">setup</h2>
+  <dl class="spec spec-grid">
+    {% for s in music.setup %}
+      <dt>{{ s.what }}</dt><dd>{{ s.note | default: "✓" }}</dd>
+    {% endfor %}
+  </dl>
+</section>
+
+{% if music.links and music.links.size > 0 %}
+<section class="card">
+  <h2 class="label">listen</h2>
+  <p>{% for l in music.links %}<a class="pill" href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }} ↗</a>{% endfor %}</p>
+</section>
+{% endif %}

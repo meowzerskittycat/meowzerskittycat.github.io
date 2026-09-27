@@ -1,0 +1,43 @@
+# ✐ uni
+# Everything on the "uni" page comes from here.
+
+degree: "engineering"
+year: "1st year"
+
+# Semester progress bar ─ dates as YYYY-MM-DD
+semester:
+  name: "fall semester"
+  start: 2026-09-01
+  end: 2026-12-18
+
+classes:
+  - name: "calculus i"
+    note: "limits, derivatives, a lot of practice problems"
+    emoji: "∫"
+  - name: "physics i (mechanics)"
+    note: "free-body diagrams everywhere"
+    emoji: "⚙"
+  - name: "chemistry"
+    note: "labs on thursdays"
+    emoji: "⚗"
+  - name: "intro to programming"
+    note: "the one i look forward to"
+    emoji: "⌨"
+  - name: "engineering design"
+    note: "first group project"
+    emoji: "✎"
+
+# To-do list. done: true shows a tick.
+todo:
+  - text: "calc problem set"
+    done: true
+  - text: "physics lab report"
+    done: false
+  - text: "study for the first midterm"
+    done: false
+
+# Things that have actually helped
+study_tips:
+  - "do the practice problems before looking at the solutions"
+  - "go to office hours early in the term, not the week before exams"
+  - "study with people from your classes"
