@@ -1,6 +1,6 @@
 # Vivien
 
-Vivien's personal site: software project write-ups, plus some music. Plain HTML in the spirit of suckless.org,
+Vivien's personal site and blog. Plain HTML in the spirit of suckless.org,
 hosted on GitHub Pages.
 
 ## Setup (one time)
@@ -14,18 +14,18 @@ Then go to **Settings → Pages**, choose **Deploy from a branch**, branch **`ma
 
 ## Writing a post
 
-Add a Markdown file to `_posts/` named like `2026-10-04-my-project.md`:
+Add a Markdown file to `_posts/` named like `2026-10-04-my-post.md`:
 
 ```markdown
 ---
-title: "My project"
-description: "One sentence shown on the Projects page."
+title: "My post"
+description: "One sentence shown on the Blog page."
 ---
 
 Text goes here.
 ```
 
-Push it and it shows up on the Projects page. `_posts/2026-09-27-lorem-ipsum.md` shows every Markdown feature the
+Push it and it shows up on the Blog page. `_posts/2026-09-27-lorem-ipsum.md` shows every Markdown feature the
 site supports. Music goes in posts too (see `_posts/2026-09-27-making-music.md`). Unfinished posts can go in
 `_drafts/`, which is never published.
 

@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Projects
-description: Project write-ups.
+title: Blog
+description: Blog posts, newest first.
 ---
-# Projects
+# Blog
 
-Write-ups of things I've built or am working on, newest first.
+Posts about software, music, and whatever else I feel like writing up, newest first.
 You can follow new posts with the [Atom feed]({{ '/feed.xml' | relative_url }}).
 
 {% if site.posts.size > 0 %}

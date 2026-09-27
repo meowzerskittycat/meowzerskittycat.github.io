@@ -5,11 +5,11 @@ Guide for AI coding agents (Claude Code, Codex, Copilot, Cursor…) and humans w
 ## What this is
 
 The personal website of **Vivien**, a first-year software engineering student who also makes music as a hobby.
-The main part is a small Markdown blog on the **Projects** page, where he writes up software he builds. Music lives
-there too, as posts (there's no separate music page). He doesn't publish his music, so music posts are about what
-he's making and how, not track listings.
+The main part is a Markdown **blog** (`/blog/`), mostly about software, plus some music. Music lives there too, as
+posts (there's no separate music page). He doesn't publish his music, so music posts are about what he's making and
+how, not track listings.
 
-Pages: home, about, status, projects (the blog) and links.
+Pages: home, about, status, blog and links.
 
 **Style: minimal and text-first, in the spirit of [suckless.org](https://suckless.org).**
 - a plain header (name + tagline) and a grey menu bar with the pages
@@ -33,8 +33,8 @@ When in doubt, remove things. The page should read fine with CSS turned off.
    `webrick`.
 3. **No build step.** Don't add npm, React, Tailwind, Sass pipelines, etc. Plain CSS lives in `assets/css/site.css`;
    keep it short.
-4. **Use `relative_url` for internal links and assets**, e.g. `{{ '/projects/' | relative_url }}`. `baseurl` is
-   empty right now, so bare `/projects/` links would work too, but `relative_url` keeps things working if the site
+4. **Use `relative_url` for internal links and assets**, e.g. `{{ '/blog/' | relative_url }}`. `baseurl` is
+   empty right now, so bare `/blog/` links would work too, but `relative_url` keeps things working if the site
    ever moves back into a sub-folder.
 5. **Keep `theme: null`** in `_config.yml`. Otherwise GitHub's default theme adds its own `assets/css/style.css`.
    That's also why our stylesheet is called `site.css`, not `style.css`.
@@ -53,7 +53,7 @@ When in doubt, remove things. The page should read fine with CSS turned off.
 | site updates list on the status page     | `_data/updates.yml`                             |
 | **blog posts**                           | `_posts/` (one Markdown file per post)          |
 | unfinished posts (not published)         | `_drafts/`                                      |
-| the list of posts                        | `projects.md`                                   |
+| the list of posts (the Blog page)        | `blog.md`                                       |
 | how a single post looks                  | `_layouts/post.html`                            |
 | images for posts                         | `assets/img/posts/<post-name>/`                 |
 | links page                               | `links.md` + `_data/links.yml`                  |
@@ -67,13 +67,13 @@ The Atom feed is generated at `/feed.xml`.
 
 ## Writing a blog post
 
-1. Create a file in `_posts/` named `YYYY-MM-DD-short-name.md`, for example `_posts/2026-10-04-led-matrix.md`.
-   The date in the name is the post date; the short name becomes the URL (`/projects/led-matrix/`).
+1. Create a file in `_posts/` named `YYYY-MM-DD-short-name.md`, for example `_posts/2026-10-04-json-parser.md`.
+   The date in the name is the post date; the short name becomes the URL (`/blog/json-parser/`).
 2. Start it with front matter:
    ```yaml
    ---
-   title: "LED matrix clock"
-   description: "One sentence shown under the title on the Projects page."
+   title: "Writing a JSON parser"
+   description: "One sentence shown under the title on the Blog page."
    ---
    ```
    `description` is optional. The layout and URL are filled in automatically.
@@ -81,8 +81,8 @@ The Atom feed is generated at `/feed.xml`.
    supported feature: headings, bold/italic/strikethrough, links, lists, task lists, quotes, code blocks with syntax
    highlighting, tables, images, definition lists, footnotes and horizontal rules.
 4. Put images in `assets/img/posts/<short-name>/` and link them with a description as alt text:
-   `![What the picture shows]({{ '/assets/img/posts/led-matrix/front.jpg' | relative_url }})`
-5. Commit and push. The post appears on the Projects page, on the home page as "Latest post", and in the feed.
+   `![What the picture shows]({{ '/assets/img/posts/json-parser/diagram.png' | relative_url }})`
+5. Commit and push. The post appears on the Blog page, on the home page as "Latest post", and in the feed.
 
 Notes:
 - Posts dated in the future aren't published until that date (the next build after it).
@@ -110,7 +110,7 @@ Notes:
 **Update the status page.** Change the values under `status:` in `_config.yml`. Add a line to `_data/updates.yml`
 when something on the site changes.
 
-**Music.** Music goes in regular posts on the Projects page. `_posts/2026-09-27-making-music.md` is the overview
+**Music.** Music goes in regular blog posts. `_posts/2026-09-27-making-music.md` is the overview
 (what he's working on, setup, what's on repeat); edit it there. Don't add fake releases or placeholder tracks.
 
 **Add links to the menu bar** (social profiles, a guestbook). Use `socials:` / `guestbook_url` in `_config.yml`.

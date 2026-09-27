@@ -8,8 +8,8 @@ description: A bit about me.
 I'm a first-year software engineering student. I like figuring out how things work, and most of
 the time that means writing code. Outside of that I make music.
 
-I made this site so I'd have a place online that's mine, and somewhere to write up projects properly
-instead of leaving them in a folder.
+I made this site so I'd have a place online that's mine, and somewhere to write things up properly
+instead of leaving notes scattered in folders.
 
 ## Profile
 

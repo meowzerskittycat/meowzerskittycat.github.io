@@ -7,7 +7,7 @@
 title: "Vivien"
 author: "Vivien"
 tagline: "software engineering student"
-description: "Personal site of a software engineering student: project write-ups and notes."
+description: "Personal site and blog of a software engineering student."
 
 # The site is served from the root of the domain (no sub-folder).
 # For that to work on GitHub Pages, the repository has to be named
@@ -41,14 +41,14 @@ theme: null           # no GitHub theme; this site has its own stylesheet
 markdown: kramdown
 permalink: pretty
 
-# Blog posts in _posts/ appear on the Projects page at /projects/<name>/
+# Blog posts in _posts/ appear on the Blog page, each at /blog/<name>/
 defaults:
   - scope:
       path: ""
       type: posts
     values:
       layout: post
-      permalink: /projects/:title/
+      permalink: /blog/:title/
 
 # Atom feed of the posts, at /feed.xml (the plugin is built into GitHub Pages)
 plugins:
