@@ -7,8 +7,6 @@
 {% capture total %}{{ nav.size | prepend: "0" | slice: -2, 2 }}{% endcapture %}
 
 <header class="title-block">
-  <img class="bow" src="{{ '/assets/img/ribbon.svg' | relative_url }}" alt="" width="120" height="80">
-
   <div class="tb-name">
     <p class="tb-kicker">personal site of</p>
     <p class="site-title"><a href="{{ '/' | relative_url }}">{{ site.author }}</a></p>

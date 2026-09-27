@@ -7,7 +7,7 @@ description: a bit about me
 <h1 class="label">about</h1>
 
 i'm **{{ site.author }}**. i'm a first-year engineering student, and in my spare time i make music.
-i like pink, cute things and figuring out how stuff works.
+i like figuring out how stuff works.
 
 i made this site as a small place online that's mine. i'll add to it when i have time.
 
@@ -20,7 +20,6 @@ i made this site as a small place online that's mine. i'll add to it when i have
     <dt>pronouns</dt><dd>he/him</dd>
     <dt>studying</dt><dd>{{ site.data.uni.degree }}, {{ site.data.uni.year }}</dd>
     <dt>hobbies</dt><dd>making music</dd>
-    <dt>fave color</dt><dd><span class="swatch" aria-hidden="true"></span>pink</dd>
   </dl>
 </section>
 

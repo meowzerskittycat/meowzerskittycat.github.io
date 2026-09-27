@@ -20,7 +20,7 @@ Most things are just text files, so you can edit them right on github.com (click
 - `_data/uni.yml`: classes, to-do list, semester dates
 - `_data/updates.yml`: little news log on the home page
 - `about.md`: your about-me text
-- `assets/css/cute.css`: colors (change the variables at the top!)
+- `assets/css/site.css`: colors (change the variables at the top!)
 
 See **[AGENTS.md](AGENTS.md)** for the full map of the site, how to add pages, and rules for keeping it
 GitHub Pages–compatible. It's written so AI coding assistants can help you edit safely too.

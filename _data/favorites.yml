@@ -3,7 +3,7 @@
 - category: "music"
   items: ["(genre)", "(genre)", "(artist)"]
 - category: "things i like"
-  items: ["pink", "(something)", "(something)"]
+  items: ["(something)", "(something)"]
 - category: "food"
   items: ["(food)", "(food)"]
 - category: "outside of uni"

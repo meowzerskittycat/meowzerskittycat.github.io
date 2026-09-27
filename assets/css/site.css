@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────────────────────
-   cute.css
-   Theme: a pink engineering notebook. Graph paper, tape labels,
+   site.css
+   Theme: an engineering notebook on green calculation paper. Graph paper, tape labels,
    and a header styled like the title block on a technical drawing.
 
    Want different colors? Change the variables in :root below,
@@ -8,18 +8,20 @@
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* palette */
-  --paper:      #fffaf7;   /* card background */
-  --bg:         #fde8ef;   /* page background */
-  --grid:       rgba(224, 79, 138, .10);  /* small graph-paper lines */
-  --grid-major: rgba(224, 79, 138, .18);  /* big graph-paper lines */
-  --pink:       #f7b0cc;   /* tape, shadows, fills */
-  --pink-soft:  #fcd9e6;
-  --accent:     #e04f8a;   /* hot pink: title, links */
-  --accent-ink: #b04a78;   /* darker pink for small text */
-  --ink:        #4a2440;   /* main text + lines (plum) */
-  --ink-soft:   #7d5a72;
-  --blue:       #8fb8e8;   /* a little blueprint blue, used sparingly */
+  /* palette: pale green engineering paper, dark ink, masking tape */
+  --paper:      #fbfaf5;   /* card background */
+  --bg:         #e6eee1;   /* page background */
+  --grid:       rgba(58, 116, 86, .12);  /* small graph-paper lines */
+  --grid-major: rgba(58, 116, 86, .24);  /* big graph-paper lines */
+  --sage:       #b9d0b1;   /* shadows, dividers, fills */
+  --sage-soft:  #dce8d5;   /* hover + light fills */
+  --tape:       rgba(232, 216, 166, .92);  /* masking-tape labels */
+  --accent:     #2e6b52;   /* deep green: title, links */
+  --accent-ink: #4a7263;   /* muted green for small text */
+  --amber:      #e8a93a;   /* highlighter: progress, ticks */
+  --ink:        #1f2a33;   /* main text + lines */
+  --ink-soft:   #5a6770;
+  --blue:       #a9c3dc;   /* sidebar tape + shadows */
 
   /* fonts */
   --font-body:  "Figtree", system-ui, sans-serif;
@@ -51,7 +53,7 @@ a { color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offse
 a:hover { color: var(--ink); text-decoration-color: var(--accent); }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-::selection { background: var(--pink); color: var(--ink); }
+::selection { background: var(--sage); color: var(--ink); }
 
 h1, h2, h3 { line-height: 1.2; }
 h1 {
@@ -92,7 +94,7 @@ img { max-width: 100%; height: auto; }
 /* ruler along the top of the page */
 .ruler {
   height: 20px;
-  background-color: var(--pink);
+  background-color: var(--sage);
   background-image:
     linear-gradient(90deg, var(--ink) 1px, transparent 1px),
     linear-gradient(90deg, var(--ink) 1px, transparent 1px),
@@ -128,15 +130,9 @@ img { max-width: 100%; height: auto; }
   grid-template-columns: 1fr auto;
   background: var(--paper);
   border: 2px solid var(--ink);
-  box-shadow: 6px 6px 0 var(--pink);
+  box-shadow: 6px 6px 0 var(--sage);
 }
-.bow {
-  position: absolute;
-  top: -30px; left: -34px;
-  width: 92px;
-  transform: rotate(-18deg);
-}
-.tb-name { padding: 1.4rem 1.6rem 1.2rem 2.4rem; }
+.tb-name { padding: 1.4rem 1.6rem 1.2rem; }
 .tb-kicker {
   margin: 0;
   font-family: var(--font-mono);
@@ -157,7 +153,7 @@ img { max-width: 100%; height: auto; }
 .site-title a {
   color: var(--accent);
   text-decoration: none;
-  text-shadow: 3px 3px 0 var(--pink-soft);
+  text-shadow: 3px 3px 0 var(--sage-soft);
 }
 .tagline { margin: .4em 0 0; color: var(--ink-soft); }
 
@@ -192,8 +188,8 @@ img { max-width: 100%; height: auto; }
   transition: background .15s;
 }
 .tab-no { font-family: var(--font-mono); font-size: .72rem; font-weight: 400; color: var(--accent-ink); }
-.tabs a:hover { background: var(--pink-soft); }
-.tabs a[aria-current="page"] { background: var(--pink); }
+.tabs a:hover { background: var(--sage-soft); }
+.tabs a[aria-current="page"] { background: var(--sage); }
 .tabs a[aria-current="page"] .tab-no { color: var(--ink); }
 
 /* ── cards + tape labels ─────────────────────────────────── */
@@ -206,7 +202,7 @@ img { max-width: 100%; height: auto; }
   margin-bottom: 2rem;
   background: var(--paper);
   border: 1.5px solid var(--ink);
-  box-shadow: 5px 5px 0 var(--pink);
+  box-shadow: 5px 5px 0 var(--sage);
 }
 .card > :last-child { margin-bottom: 0; }
 
@@ -223,7 +219,7 @@ img { max-width: 100%; height: auto; }
   line-height: 1.4;
   text-transform: uppercase;
   color: var(--ink);
-  background: rgba(247, 176, 204, .85);
+  background: var(--tape);
   transform: rotate(-1.5deg);
   /* torn tape ends */
   clip-path: polygon(0 8%, 3% 0, 97% 4%, 100% 0, 99% 50%, 100% 94%, 96% 100%, 4% 96%, 0 100%, 1% 50%);
@@ -237,14 +233,14 @@ img { max-width: 100%; height: auto; }
 
 /* sidebar cards look like sticky notes with blue tape */
 .note { background: #fff; box-shadow: 5px 5px 0 var(--blue); }
-.note .label { background: rgba(143, 184, 232, .7); }
+.note .label { background: rgba(169, 195, 220, .8); }
 
 .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 1.75rem; }
 
 /* ── lists, specs, buttons ───────────────────────────────── */
 
 .plain-list { list-style: none; padding: 0; margin: 0 0 .8em; }
-.plain-list li { padding: .35em 0 .35em 1.4em; position: relative; border-bottom: 1px dashed var(--pink); }
+.plain-list li { padding: .35em 0 .35em 1.4em; position: relative; border-bottom: 1px dashed var(--sage); }
 .plain-list li:last-child { border-bottom: 0; }
 .plain-list li::before {
   content: "";
@@ -265,17 +261,13 @@ img { max-width: 100%; height: auto; }
 }
 .spec dd { margin: 0 0 .7em; }
 .spec-grid { display: grid; grid-template-columns: max-content 1fr; }
-.spec-grid dt, .spec-grid dd { margin: 0; padding: .45em .8em; border-bottom: 1px solid var(--pink-soft); }
+.spec-grid dt, .spec-grid dd { margin: 0; padding: .45em .8em; border-bottom: 1px solid var(--sage-soft); }
 .spec-grid dt { padding-left: 0; align-self: center; }
 .spec-grid dt:last-of-type, .spec-grid dd:last-of-type { border-bottom: 0; }
 
-.swatch {
-  display: inline-block; width: .85em; height: .85em; margin-right: .4em; vertical-align: -1px;
-  background: var(--pink); border: 1.5px solid var(--ink);
-}
 
 .log { list-style: none; padding: 0; margin: 0; }
-.log li { display: flex; gap: .9em; padding: .35em 0; border-bottom: 1px dashed var(--pink); }
+.log li { display: flex; gap: .9em; padding: .35em 0; border-bottom: 1px dashed var(--sage); }
 .log li:last-child { border-bottom: 0; }
 .log time { flex: 0 0 auto; font-family: var(--font-mono); font-size: .8rem; color: var(--accent-ink); padding-top: .15em; }
 
@@ -293,7 +285,7 @@ img { max-width: 100%; height: auto; }
   font-weight: 600;
   color: var(--ink);
   text-decoration: none;
-  background: var(--pink);
+  background: var(--amber);
   border: 1.5px solid var(--ink);
   box-shadow: 3px 3px 0 var(--ink);
   transition: transform .1s, box-shadow .1s;
@@ -310,7 +302,7 @@ img { max-width: 100%; height: auto; }
   border: 1.5px solid var(--ink);
   border-radius: 999px;
 }
-.pill:hover { background: var(--pink-soft); }
+.pill:hover { background: var(--sage-soft); }
 
 /* ── home ────────────────────────────────────────────────── */
 
@@ -331,13 +323,13 @@ img { max-width: 100%; height: auto; }
   height: 25px;
   margin: 1.2rem 0 .2rem;
   border: 0;
-  background: repeating-linear-gradient(to bottom, var(--pink) 0 1px, transparent 1px 6px);
+  background: repeating-linear-gradient(to bottom, var(--sage) 0 1px, transparent 1px 6px);
 }
 
 /* ── about ───────────────────────────────────────────────── */
 
 .favorites { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
-.fav { padding: .7em .9em; border: 1px solid var(--pink); background: #fff; }
+.fav { padding: .7em .9em; border: 1px solid var(--sage); background: #fff; }
 .fav ul { list-style: none; padding: 0; margin: 0; }
 .fav li { padding: .1em 0; }
 
@@ -371,7 +363,7 @@ img { max-width: 100%; height: auto; }
   opacity: .55;
   pointer-events: none;
 }
-.progress-fill { width: 0; height: 100%; background: var(--pink); transition: width 1s ease-out; }
+.progress-fill { width: 0; height: 100%; background: var(--amber); transition: width 1s ease-out; }
 .progress-ends {
   display: flex; justify-content: space-between;
   margin: .3em 0 0;
@@ -381,14 +373,14 @@ img { max-width: 100%; height: auto; }
 }
 
 .classes { list-style: none; padding: 0; margin: 0; }
-.classes li { display: flex; gap: .8rem; align-items: flex-start; padding: .45em 0; border-bottom: 1px dashed var(--pink); }
+.classes li { display: flex; gap: .8rem; align-items: flex-start; padding: .45em 0; border-bottom: 1px dashed var(--sage); }
 .classes li:last-child { border-bottom: 0; }
 .class-no {
   flex: 0 0 2rem;
   height: 2rem;
   display: grid; place-items: center;
   border: 1.5px solid var(--ink);
-  background: var(--pink-soft);
+  background: var(--sage-soft);
 }
 
 .todo { list-style: none; padding: 0; margin: 0; }
@@ -409,7 +401,7 @@ img { max-width: 100%; height: auto; }
 /* ── links + 404 ─────────────────────────────────────────── */
 
 .link-list { list-style: none; padding: 0; margin: 0; }
-.link-list li { padding: .45em 0; border-bottom: 1px dashed var(--pink); }
+.link-list li { padding: .45em 0; border-bottom: 1px dashed var(--sage); }
 .link-list li:last-child { border-bottom: 0; }
 .link-list img { vertical-align: middle; margin-right: .4rem; }
 
@@ -427,9 +419,7 @@ img { max-width: 100%; height: auto; }
   .layout { grid-template-columns: 1fr; }
   .title-block { grid-template-columns: 1fr; }
   .tb-meta { border-left: 0; border-top: 2px solid var(--ink); }
-  .bow { width: 70px; top: -24px; left: -18px; }
-  .tb-name { padding-left: 1.6rem; }
-}
+  }
 @media (max-width: 560px) {
   .hero { flex-direction: column; text-align: center; }
   .portrait { flex-basis: auto; }
