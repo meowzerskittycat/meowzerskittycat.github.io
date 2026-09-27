@@ -6,7 +6,7 @@ Guide for AI coding agents (Claude Code, Codex, Copilot, Cursor…) and humans w
 
 A personal website for **meowzers**: a first-year engineering student who makes music as a hobby.
 He doesn't publish his music, so the music page is about what he's making and his setup, not a track list. It has a soft, cute,
-pastel "handmade web / Neocities" look with ribbons, gingham, little window boxes, blinkies, stamps and pixel fonts.
+pastel "handmade web / Neocities" look with ribbons, gingham, little window boxes and pixel fonts.
 
 - Hosted on **GitHub Pages only**. No servers, databases, Node build steps, or paid services.
 - Built with **Jekyll**, which GitHub Pages runs automatically on every push to `main`.
@@ -20,7 +20,7 @@ pastel "handmade web / Neocities" look with ribbons, gingham, little window boxe
    add gems to `Gemfile` other than `github-pages` and `webrick`.
 3. **No npm/bundler build step.** Don't add React, Tailwind, Vite, Sass pipelines, etc. Write plain CSS in `assets/css/cute.css`.
 4. **Always use `relative_url` for internal links and assets**, because the site lives under `/website/`:
-   `{{ '/music/' | relative_url }}` and `{{ '/assets/img/heart.svg' | relative_url }}`.
+   `{{ '/music/' | relative_url }}` and `{{ '/assets/img/sparkle.svg' | relative_url }}`.
    A bare `href="/music/"` will break on GitHub Pages.
 5. **Keep `theme: null`** in `_config.yml`. Otherwise GitHub's default theme adds its own `assets/css/style.css`.
    That's also why our stylesheet is called `cute.css`, not `style.css`.
@@ -40,15 +40,13 @@ pastel "handmade web / Neocities" look with ribbons, gingham, little window boxe
 | about-me text (Markdown)                 | `about.md`                                      |
 | home page text                           | `index.html`                                    |
 | menu items                               | `_includes/nav-items.html`                      |
-| sidebar (status, socials, blinkies)      | `_includes/sidebar.html`                        |
-| footer stamps                            | `_includes/footer.html`                         |
+| sidebar (status, socials)                | `_includes/sidebar.html`                        |
 | colors, fonts, everything visual         | `assets/css/cute.css` (colors are variables at the top, in `:root`) |
 | sparkle cursor trail, semester progress bar | `assets/js/main.js`                          |
 | page skeleton (`<head>`, fonts)          | `_layouts/default.html`                         |
 
 Other files:
-- `assets/img/` holds the original SVG decorations (ribbon, heart, sparkle, favicon).
-  `assets/img/buttons/my-button.svg` is the site's 88×31 link-back button.
+- `assets/img/` holds the original SVG decorations (ribbon, sparkle, favicon).
 - `404.html` is the "page not found" page. GitHub Pages picks it up automatically.
 
 ## Common tasks
@@ -80,15 +78,17 @@ Keep text readable: dark text on pastel backgrounds, not white text on pale pink
 `<img class="avatar" src="{{ '/assets/img/me.png' | relative_url }}" alt="…">`, and add the image file.
 
 **Useful CSS classes:** `window`, `grid-2` (two columns that stack on phones), `btn`, `btn lav`, `pill`, `tag`,
-`blinkie` (+ `lav`/`mint`), `stamp` (+ `lav`/`mint`/`butter`), `facts`, `tiny`, `center`.
+`facts`, `plain-list`, `tiny`, `center`.
 
 ## Style & tone
 
 - **The visuals are cute; the writing is not corny.** Copy is lowercase, casual and plain, like a normal
   person talking. Avoid gushing, "hiii", strings of kaomoji, "soft boy", or overdone jokes. Put the cuteness in the
-  design (symbols in window titles, blinkies, stamps), not in the sentences.
+  design (colors, window boxes, symbols in window titles), not in the sentences.
 - The owner uses he/him, is a feminine guy, and likes pink. Keep the site respectful of that without making a big deal of it.
 - Don't invent facts about him. Use obvious `(placeholder)` text where real info is needed.
+- No filler: don't add decorative buttons, badges, blinkies, stamps, fake widgets or links to
+  placeholder URLs. Every button or link should go somewhere real. There's intentionally no footer.
 - Accessibility matters. Keep `alt` text on meaningful images, `alt=""` plus `aria-hidden` on decorations,
   enough color contrast, the `prefers-reduced-motion` block in the CSS, and a working layout at phone widths (under 760px).
 - Keep it simple enough that a non-programmer can edit it. Prefer data files and comments over clever code.

@@ -24,12 +24,12 @@ status:
   working_on: "a beat that might never be finished"
   studying: "calculus"
 
-# Your social links. Delete any line you don't use,
-# or add more. "icon" is just an emoji or short text.
+# Your social links. Add more like this (real links only):
+#   - name: "instagram"
+#     url: "https://instagram.com/yourname"
+#     icon: "✿"
+# "icon" is just an emoji or short text.
 socials:
-  - name: "instagram"
-    url: "https://instagram.com/"
-    icon: "✿"
   - name: "github"
     url: "https://github.com/meowzerskittycat"
     icon: "⌨"

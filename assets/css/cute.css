@@ -245,44 +245,6 @@ img { max-width: 100%; }
   border-radius: 6px;
 }
 
-/* blinkies + stamps (made with CSS, no images needed) */
-.blinkies { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
-.blinkie {
-  display: inline-block;
-  width: 150px;
-  padding: 2px 0;
-  font-family: var(--font-pixel);
-  font-size: .75rem;
-  text-align: center;
-  color: #fff;
-  background: var(--pink-deep);
-  border: 2px solid #fff;
-  outline: 1px solid var(--pink-deep);
-  animation: blink 1.2s steps(1) infinite;
-}
-.blinkie.lav  { background: var(--lav-deep); outline-color: var(--lav-deep); animation-delay: .4s; }
-.blinkie.mint { background: var(--mint-deep); outline-color: var(--mint-deep); animation-delay: .8s; }
-@keyframes blink { 50% { filter: brightness(1.25) saturate(.8); } }
-
-.stamps { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-bottom: .8rem; }
-.stamp {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 99px; height: 56px;
-  padding: 0 .6rem;
-  font-family: var(--font-pixel);
-  font-size: .75rem;
-  text-align: center;
-  line-height: 1.2;
-  color: var(--pink-deep);
-  background: var(--pink-light);
-  /* perforated postage-stamp edge */
-  border: 5px dotted #fff;
-  outline: 2px solid var(--pink);
-}
-.stamp.lav    { color: #7a5192; background: #efe6fa; outline-color: var(--lavender); }
-.stamp.mint   { color: #3d7d61; background: #e4f8ee; outline-color: var(--mint); }
-.stamp.butter { color: #8a6a14; background: #fff8dc; outline-color: var(--butter); }
-
 /* ── sidebar bits ────────────────────────────────────────── */
 
 .status { margin: 0; }
@@ -334,23 +296,6 @@ img { max-width: 100%; }
 .plain-list li::before { content: "♡"; position: absolute; left: 0; color: var(--pink-deep); }
 
 /* ── music ───────────────────────────────────────────────── */
-
-.now-playing {
-  display: flex; align-items: center; gap: .6rem;
-  padding: .5em .8em;
-  font-family: var(--font-pixel);
-  font-size: .9rem;
-  background: var(--pink-pale);
-  border: 1.5px dashed var(--border);
-  border-radius: 10px;
-}
-.eq { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
-.eq i { width: 4px; background: var(--pink-deep); border-radius: 2px; animation: eq 1s ease-in-out infinite; }
-.eq i:nth-child(2) { animation-delay: .2s; background: var(--lav-deep); }
-.eq i:nth-child(3) { animation-delay: .4s; }
-.eq i:nth-child(4) { animation-delay: .1s; background: var(--mint-deep); }
-.eq i:nth-child(5) { animation-delay: .3s; }
-@keyframes eq { 0%, 100% { height: 4px; } 50% { height: 18px; } }
 
 /* ── about ───────────────────────────────────────────────── */
 
@@ -425,33 +370,7 @@ img { max-width: 100%; }
 .link-list li { padding: .4em 0; border-bottom: 1.5px dashed var(--pink-light); }
 .link-list li:last-child { border-bottom: 0; }
 .link-list img { vertical-align: middle; margin-right: .4rem; }
-.code-box {
-  width: 100%;
-  padding: .6em;
-  font-family: var(--font-pixel);
-  font-size: .85rem;
-  color: var(--text);
-  background: var(--pink-pale);
-  border: 2px dashed var(--border);
-  border-radius: 10px;
-  resize: vertical;
-}
-
 .big-kaomoji { font-size: 2.5rem; margin: .2em 0; color: var(--pink-deep); }
-
-/* ── footer ──────────────────────────────────────────────── */
-
-.site-footer {
-  margin-top: .5rem;
-  padding: 1rem;
-  text-align: center;
-  font-size: .85rem;
-  color: var(--text-soft);
-  background: var(--card);
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-}
-.site-footer p { margin: 0; }
 
 /* sparkle trail (created by main.js) */
 .sparkle {
