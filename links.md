@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Links
-description: Friends, sites I like, and resources.
+description: Sites Vivien likes.
 ---
 # Links
 

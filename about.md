@@ -1,15 +1,15 @@
 ---
 layout: default
 title: About
-description: A bit about me.
-sections: [About, Profile, Things I like]
+description: A bit about Vivien.
 ---
 # About
 
-I'm {{ site.author }}. First-year engineering student, and I make music in my spare time.
-I like figuring out how stuff works.
+I'm {{ site.author }}. I'm in my first year of engineering, and outside of classes I make music.
+I like figuring out how things work, which is more or less why I picked engineering.
 
-I made this site so I'd have a small place online that's mine. I'll add to it when I have time.
+I made this site so I'd have a place online that's mine, and somewhere to write up projects properly
+instead of leaving them in a folder.
 
 ## Profile
 

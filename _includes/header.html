@@ -5,10 +5,10 @@
 </div>
 <div id="menu">
 <span class="left">
-{% for item in nav %}{% assign parts = item | split: "|" %}<a href="{{ parts[0] | relative_url }}"{% if page.url == parts[0] %} class="thisSite" aria-current="page"{% endif %}>{{ parts[1] }}</a>
+{% for item in nav %}{% assign parts = item | split: "|" %}{% assign active = false %}{% if page.url == parts[0] %}{% assign active = true %}{% elsif parts[0] == "/projects/" and page.layout == "post" %}{% assign active = true %}{% endif %}<a href="{{ parts[0] | relative_url }}"{% if active %} class="thisSite"{% endif %}{% if page.url == parts[0] %} aria-current="page"{% endif %}>{{ parts[1] }}</a>
 {% endfor %}</span>
-<span class="right">
+{% if site.socials.size > 0 or site.guestbook_url != "" %}<span class="right">
 {% for s in site.socials %}<a href="{{ s.url }}">{{ s.name }}</a>
 {% endfor %}{% if site.guestbook_url != "" %}<a href="{{ site.guestbook_url }}">guestbook</a>{% endif %}
-</span>
+</span>{% endif %}
 </div>

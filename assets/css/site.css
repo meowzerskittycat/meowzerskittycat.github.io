@@ -1,7 +1,7 @@
 /*
  * site.css
  * Plain, text-first style in the spirit of suckless.org.
- * No web fonts, no images, no animation, no JavaScript.
+ * No web fonts, no animation, no JavaScript.
  * Colors are the variables below.
  */
 
@@ -20,7 +20,7 @@ body {
 	color: var(--text);
 	background: var(--bg);
 	font-family: sans-serif;
-	line-height: 1.4;
+	line-height: 1.45;
 }
 
 a { color: var(--link); }
@@ -52,35 +52,56 @@ a:visited { color: var(--visited); }
 #menu a:hover { text-decoration: underline; }
 #menu a.thisSite { font-weight: bold; }
 
-/* left nav + main text */
+/* main text */
 
-#content { display: flex; gap: 1.5em; padding: 0 1em 2em; }
-#nav { flex: 0 0 10em; padding-top: 1em; }
-#nav ul { list-style: none; margin: 0; padding: 0; }
-#nav li { margin: .2em 0; }
-#main { flex: 1; min-width: 0; max-width: 46em; }
+#main { max-width: 46em; padding: 0 1em 2em; }
 
-h1 { font-size: 1.5em; margin: .8em 0 .5em; }
-h2 { font-size: 1.2em; margin: 1.4em 0 .4em; }
-h3 { font-size: 1em; margin: 1em 0 .2em; }
-h3 + p { margin-top: 0; }
+h1 { font-size: 1.5em; margin: .8em 0 .4em; }
+h2 { font-size: 1.2em; margin: 1.5em 0 .4em; }
+h3 { font-size: 1.05em; margin: 1.2em 0 .3em; }
+h4 { font-size: 1em; margin: 1em 0 .3em; }
 
-code, pre { font-family: monospace; }
-pre { padding: .5em; background: var(--bar); overflow-x: auto; }
+.meta, .muted { color: var(--muted); }
+.meta { margin-top: 0; }
 
-table.status { border-collapse: collapse; }
-table.status th { padding: .15em 1.5em .15em 0; text-align: left; vertical-align: top; }
-table.status td { padding: .15em 0; }
+img { max-width: 100%; height: auto; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 1.5em 0; }
+
+blockquote {
+	margin: 1em 0;
+	padding: 0 1em;
+	color: #333;
+	border-left: 3px solid var(--line);
+}
+
+/* "monospace, monospace" stops browsers from shrinking monospace text */
+code, pre, kbd { font-family: monospace, monospace; font-size: .95em; }
+pre code { font-size: 1em; }
+pre { padding: .6em .8em; background: var(--bar); border: 1px solid var(--line); overflow-x: auto; tab-size: 4; }
+kbd { padding: 0 .3em; border: 1px solid var(--line); border-bottom-width: 2px; background: var(--bar); }
+
+/* syntax highlighting, kept to black, grey and bold */
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs { color: var(--muted); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kt, .highlight .cp { font-weight: bold; }
+
+table { border-collapse: collapse; margin: 1em 0; }
+th, td { padding: .25em .6em; border: 1px solid var(--line); }
+th { background: var(--bar); }
+
+/* key/value tables (status, profile) without borders */
+table.status th, table.status td { border: 0; background: none; padding: .15em 1.5em .15em 0; text-align: left; vertical-align: top; }
 
 dt { font-weight: bold; }
 dd { margin: 0 0 .4em 1.5em; }
 
-ul.todo { list-style: none; padding-left: 0; }
+ul.task-list, ul.todo, ul.posts, ul.log { list-style: none; padding-left: 0; }
+.task-list-item-checkbox { margin: 0 .5em 0 0; }
+ul.posts li { margin: .5em 0; }
+ul.posts time, ul.log time { font-family: monospace; margin-right: .6em; }
 del { color: var(--muted); }
+
+.footnotes { margin-top: 2em; font-size: .9em; border-top: 1px solid var(--line); }
 
 @media (max-width: 40em) {
 	#headerSubtitle { display: block; margin: .2em 0 0; }
-	#content { display: block; }
-	#nav { padding-top: .6em; }
-	#nav li { display: inline; margin-right: .8em; }
 }

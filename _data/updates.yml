@@ -1,4 +1,6 @@
-# Site updates, newest first. The home page shows the latest few.
+# Site updates, newest first. Shown on the status page.
+- date: 2026-09-27
+  text: "Added the projects page, with posts written in Markdown."
 - date: 2026-09-27
   text: "Site is up."
 - date: 2026-09-20

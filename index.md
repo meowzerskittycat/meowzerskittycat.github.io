@@ -1,23 +1,14 @@
 ---
 layout: default
-sections: [About, Status, News]
 ---
-# {{ site.title }}
+# {{ site.author }}
 
-## About
+This is my personal site. I'm a first-year engineering student, and I make music in my spare time, mostly for myself.
 
-First-year engineering student. I make music in my spare time, mostly for myself.
-This site has some notes on uni, what I'm working on, and things I like.
+Most of what ends up here is about [projects]({{ '/projects/' | relative_url }}): things I've built for uni or on my own, how I went about them, and what I'd do differently next time. The rest is smaller: a short page [about]({{ '/about/' | relative_url }}) me, a [status]({{ '/status/' | relative_url }}) page with what I'm up to right now, and some notes on [music]({{ '/music/' | relative_url }}) and [uni]({{ '/uni/' | relative_url }}).
 
-## Status
+The site is plain HTML, with no tracking, cookies or scripts. I update it when I have something worth writing down.
 
-<table class="status">
-{% for s in site.status %}<tr><th scope="row">{{ s[0] | replace: "_", " " | capitalize }}</th><td>{{ s[1] }}</td></tr>
-{% endfor %}</table>
-
-## News
-
-{% for u in site.data.updates limit: 5 %}
-<h3>{{ u.date | date: "%Y-%m-%d" }}</h3>
-<p>{{ u.text }}</p>
-{% endfor %}
+{% assign latest = site.posts | first %}{% if latest %}
+Latest post: [{{ latest.title }}]({{ latest.url | relative_url }}), {{ latest.date | date: "%Y-%m-%d" }}.
+{% endif %}

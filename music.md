@@ -1,8 +1,7 @@
 ---
 layout: default
 title: Music
-description: The music I make for myself.
-sections: [Working on, On repeat, Setup]
+description: The music Vivien makes for himself.
 ---
 {% assign music = site.data.music %}
 # Music

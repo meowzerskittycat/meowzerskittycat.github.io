@@ -4,68 +4,93 @@ Guide for AI coding agents (Claude Code, Codex, Copilot, Cursor…) and humans w
 
 ## What this is
 
-A personal website for **meowzers**: a first-year engineering student who makes music as a hobby.
+The personal website of **Vivien**, a first-year engineering student who makes music as a hobby.
+The main part is a small Markdown blog on the **Projects** page, where he writes up things he builds.
 He doesn't publish his music, so the music page is about what he's making and his setup, not a track list.
 
 **Style: minimal and text-first, in the spirit of [suckless.org](https://suckless.org).**
-- a plain header (site name + tagline), a grey menu bar with the pages on the left and external links on the right
-- a small left-hand list of links to the sections on the current page
-- black text on white, the browser's default `sans-serif`, underlined blue links with a different visited color
-- no JavaScript, no web fonts, no images (apart from the favicon), no animation, no icons or emoji, no cards or shadows
+- a plain header (name + tagline) and a grey menu bar with the pages
+- one column of text: black on white, the browser's default `sans-serif`, underlined blue links
+- no JavaScript, no web fonts, no animation, no icons or emoji, no cards or shadows
+- images only where they carry information (for example diagrams in a post)
 
 When in doubt, remove things. The page should read fine with CSS turned off.
 
 - Hosted on **GitHub Pages only**. No servers, databases, Node build steps, or paid services.
 - Built with **Jekyll**, which GitHub Pages runs automatically on every push to `main`.
-- Live URL: `https://meowzerskittycat.github.io/website/`
+- Served from the root of the domain (`baseurl: ""`). See **Deploying** below.
 
 ## Hard rules
 
 1. **Static only.** Plain HTML and CSS. No JavaScript (don't add `<script>` tags), no backend code, no API keys,
-   no form handlers, no trackers or analytics.
+   no form handlers, no trackers or analytics, no comment systems.
 2. **No custom Jekyll plugins.** Only plugins on the
-   [GitHub Pages allow-list](https://pages.github.com/versions/) work. Don't add `_plugins/` and don't
-   add gems to `Gemfile` other than `github-pages` and `webrick`.
+   [GitHub Pages allow-list](https://pages.github.com/versions/) work. The site uses `jekyll-feed` (for the Atom
+   feed), which is on that list. Don't add `_plugins/` and don't add gems to `Gemfile` other than `github-pages` and
+   `webrick`.
 3. **No build step.** Don't add npm, React, Tailwind, Sass pipelines, etc. Plain CSS lives in `assets/css/site.css`;
    keep it short.
-4. **Always use `relative_url` for internal links and assets**, because the site lives under `/website/`:
-   `{{ '/music/' | relative_url }}`. A bare `href="/music/"` will break on GitHub Pages.
+4. **Use `relative_url` for internal links and assets**, e.g. `{{ '/projects/' | relative_url }}`. `baseurl` is
+   empty right now, so bare `/projects/` links would work too, but `relative_url` keeps things working if the site
+   ever moves back into a sub-folder.
 5. **Keep `theme: null`** in `_config.yml`. Otherwise GitHub's default theme adds its own `assets/css/style.css`.
    That's also why our stylesheet is called `site.css`, not `style.css`.
-6. **No external requests.** No Google Fonts, CDNs or embeds. Everything the page loads comes from this repo.
-7. Keep files small. GitHub rejects files over 100 MB and warns above 50 MB.
+6. **No external requests** from the site's own pages. No Google Fonts, CDNs, embeds or hotlinked images.
+7. Keep files small. GitHub rejects files over 100 MB and warns above 50 MB. Compress photos before adding them
+   (a few hundred KB is plenty).
 
 ## Where things live
 
 | I want to change…                        | Edit this file                                  |
 |------------------------------------------|-------------------------------------------------|
-| name, tagline, status table, social links, guestbook link | `_config.yml`                  |
+| name, tagline, status table, menu-bar links, guestbook link | `_config.yml`               |
 | home page text                           | `index.md`                                      |
-| about page text                          | `about.md`                                      |
-| music page: working on, on repeat, setup, optional links | `_data/music.yml`                |
-| the "News" list on the home page         | `_data/updates.yml`                             |
-| classes, to-do list, semester dates, study tips | `_data/uni.yml`                          |
-| "Things I like" on the about page        | `_data/favorites.yml`                           |
-| friends / other sites                    | `_data/links.yml`                               |
+| about page                               | `about.md` (+ `_data/favorites.yml` for "Things I like") |
+| status page                              | `status.md` (table values are in `_config.yml`) |
+| site updates list on the status page     | `_data/updates.yml`                             |
+| **blog posts**                           | `_posts/` (one Markdown file per post)          |
+| unfinished posts (not published)         | `_drafts/`                                      |
+| the list of posts                        | `projects.md`                                   |
+| how a single post looks                  | `_layouts/post.html`                            |
+| images for posts                         | `assets/img/posts/<post-name>/`                 |
+| music page                               | `music.md` + `_data/music.yml`                  |
+| uni page                                 | `uni.md` + `_data/uni.yml`                      |
+| links page                               | `links.md` + `_data/links.yml`                  |
 | pages in the menu bar                    | `_includes/nav-items.html`                      |
 | header + menu bar                        | `_includes/header.html`                         |
-| page skeleton (`<head>`, left nav)       | `_layouts/default.html`                         |
+| page skeleton (`<head>`)                 | `_layouts/default.html`                         |
 | colors and layout                        | `assets/css/site.css` (colors are variables at the top, in `:root`) |
 
 `404.html` is the "page not found" page. GitHub Pages picks it up automatically.
+The Atom feed is generated at `/feed.xml`.
 
-## Common tasks
+## Writing a blog post
 
-**Edit a page.** Pages are Markdown (`index.md`, `about.md`, `music.md`, `uni.md`, `links.md`). Headings with `##`
-become sections. Lists that come from data files are written as small Liquid loops; edit the data file, not the loop.
+1. Create a file in `_posts/` named `YYYY-MM-DD-short-name.md`, for example `_posts/2026-10-04-led-matrix.md`.
+   The date in the name is the post date; the short name becomes the URL (`/projects/led-matrix/`).
+2. Start it with front matter:
+   ```yaml
+   ---
+   title: "LED matrix clock"
+   description: "One sentence shown under the title on the Projects page."
+   ---
+   ```
+   `description` is optional. The layout, URL and author are filled in automatically.
+3. Write the post in Markdown below that. `_posts/2026-09-27-lorem-ipsum.md` is a reference that uses every
+   supported feature: headings, bold/italic/strikethrough, links, lists, task lists, quotes, code blocks with syntax
+   highlighting, tables, images, definition lists, footnotes and horizontal rules.
+4. Put images in `assets/img/posts/<short-name>/` and link them with a description as alt text:
+   `![What the picture shows]({{ '/assets/img/posts/led-matrix/front.jpg' | relative_url }})`
+5. Commit and push. The post appears on the Projects page, on the home page as "Latest post", and in the feed.
 
-**The left nav.** Each page's front matter can list its sections:
-```yaml
-sections: [Classes, To-do, Things that help]
-```
-Each entry links to the `##` heading with the same text, so keep the names identical. Leave `sections` out and the
-page has no left nav (like `links.md`). If you add a section that only shows up sometimes (for example "Listen" on
-the music page, or "Friends" on the links page), don't list it in `sections`.
+Notes:
+- Posts dated in the future aren't published until that date (the next build after it).
+- To keep a post private while writing, put it in `_drafts/` without a date in the file name. Drafts are never
+  published. Move it to `_posts/` with a date when it's ready. (Locally, `jekyll serve --drafts` shows them.)
+- Math (LaTeX) isn't supported, because it would need JavaScript. Use code blocks or images for equations.
+- The test post can be deleted once there are real posts.
+
+## Other common tasks
 
 **Add a page.**
 1. Create `newpage.md` at the repo root:
@@ -73,30 +98,37 @@ the music page, or "Friends" on the links page), don't list it in `sections`.
    ---
    layout: default
    title: New page
-   sections: [First section, Second section]
+   description: One sentence for search engines.
    ---
    # New page
 
-   ## First section
-   …
+   Text…
    ```
 2. Add it to the menu in `_includes/nav-items.html`: `;/newpage/|newpage` (URL with trailing slash).
 
+**Update the status page.** Change the values under `status:` in `_config.yml`. Add a line to `_data/updates.yml`
+when something on the site changes.
+
 **Update the music page.** Edit `_data/music.yml`. If he ever wants to share tracks, add `name` + `url` entries under
 `links:` and a "Listen" section appears. Don't add fake releases or placeholder tracks.
+
+**Add links to the menu bar** (social profiles, a guestbook). Use `socials:` / `guestbook_url` in `_config.yml`.
+They're empty on purpose; only add real links he asks for.
 
 **Change colors.** Edit only the variables in `:root` at the top of `assets/css/site.css`. Keep it black-on-white
 or close to it, with enough contrast (at least 4.5:1).
 
 ## Style & tone
 
-- Write plainly: short sentences, normal capitalization, no hype, no jokes for the sake of jokes, no emoji.
-- The owner uses he/him.
+- Refer to him as Vivien. He uses he/him.
+- Write plainly: half professional, half informal. Short sentences, normal capitalization, first person on his pages.
+- Avoid stock phrases ("welcome to my corner of the internet", "passionate about", "journey", "dive into",
+  "delve") and hype. No emoji. No jokes for the sake of jokes.
 - Don't invent facts about him. Use obvious `(placeholder)` text where real info is needed.
 - No filler: no decorative buttons, badges, widgets, "back to top" buttons, footers, or links to placeholder URLs.
   Every link should go somewhere real.
-- Use semantic HTML: headings in order, real lists and tables, `<th scope="row">` for row labels.
-- Keep a working layout at phone widths (under 40em). The left nav turns into a row of links there.
+- Use semantic HTML: headings in order, real lists and tables, `<th scope="row">` for row labels, alt text on images.
+- Keep a working layout at phone widths (under 40em).
 - Keep it simple enough that a non-programmer can edit it.
 
 ## Previewing locally (optional)
@@ -105,8 +137,8 @@ You don't need this, because pushing to GitHub is enough. To preview locally wit
 
 ```sh
 bundle install
-bundle exec jekyll serve
-# open http://localhost:4000/website/
+bundle exec jekyll serve          # add --drafts to include drafts
+# open http://localhost:4000/
 ```
 
 If the build complains about "Invalid US-ASCII character", run `export LANG=C.UTF-8` first.
@@ -116,6 +148,16 @@ Then check that new internal links use `relative_url` and that no `<script>` tag
 
 ## Deploying
 
-GitHub repo → **Settings → Pages → Build and deployment → Source: "Deploy from a branch"**,
-branch **`main`**, folder **`/ (root)`**. After that, every push to `main` redeploys in about a minute.
-If the repo is renamed to `meowzerskittycat.github.io` or a custom domain is added, set `baseurl: ""` in `_config.yml`.
+The site is set up to live at the root of a domain (`baseurl: ""` in `_config.yml`). On GitHub Pages that means one
+of these:
+
+- **Rename the repository to `meowzerskittycat.github.io`** (Settings → General → Repository name). The site is then
+  served at `https://meowzerskittycat.github.io/`. This matches `url:` in `_config.yml`.
+- Or keep the name and **add a custom domain** (Settings → Pages → Custom domain), then set `url:` in `_config.yml`
+  to that domain.
+
+While the repository is still called `website`, GitHub serves the site at `/website/`, and with an empty `baseurl`
+the CSS and links won't load there. If the site ever has to go back into a sub-folder, set `baseurl: "/website"`.
+
+Publishing: Settings → **Pages** → Build and deployment → Source: **Deploy from a branch**, branch **`main`**, folder
+**`/ (root)`**. After that, every push to `main` redeploys in about a minute.

@@ -1,8 +1,7 @@
 ---
 layout: default
 title: Uni
-description: First year of engineering.
-sections: [Classes, To-do, Things that help]
+description: Vivien's first year of engineering.
 ---
 {% assign uni = site.data.uni %}
 # Uni
