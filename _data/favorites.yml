@@ -1,0 +1,10 @@
+# ♡ favorite things (shown on the "about" page)
+# Add, remove or rename any category.
+- category: "music"
+  items: ["bedroom pop", "city pop", "vocaloid", "dreamy synths"]
+- category: "aesthetic"
+  items: ["ribbons", "pastel pink", "plushies", "sparkly nails"]
+- category: "snacks"
+  items: ["strawberry milk", "mochi", "melon bread"]
+- category: "hobbies"
+  items: ["making beats", "thrifting", "journaling", "late-night walks"]

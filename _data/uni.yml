@@ -1,0 +1,39 @@
+# ✐ uni life
+# Everything on the "uni" page comes from here.
+
+degree: "your degree here (e.g. BA in Music Production)"
+year: "2nd year"
+
+# Semester progress bar ─ dates as YYYY-MM-DD
+semester:
+  name: "fall semester"
+  start: 2026-09-01
+  end: 2026-12-18
+
+classes:
+  - name: "music theory ii"
+    note: "harmony homework is eating me alive"
+    emoji: "♬"
+  - name: "audio engineering"
+    note: "learning to love compressors"
+    emoji: "🎚"
+  - name: "intro to composition"
+    note: "my favorite class!!"
+    emoji: "✎"
+  - name: "an elective i picked for fun"
+    note: "no regrets"
+    emoji: "✿"
+
+# A little to-do / study checklist. done: true shows a tick.
+todo:
+  - text: "finish theory worksheet"
+    done: true
+  - text: "mix the final assignment"
+    done: false
+  - text: "actually sleep before the exam"
+    done: false
+
+study_tips:
+  - "pomodoro: 25 minutes focus, 5 minutes snack"
+  - "make a playlist that is only for studying"
+  - "drink water. yes, right now."

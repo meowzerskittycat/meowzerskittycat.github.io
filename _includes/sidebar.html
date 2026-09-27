@@ -1,0 +1,41 @@
+<aside class="sidebar">
+  <section class="window">
+    <div class="window-bar"><span>♡ status.txt</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-body">
+      <dl class="status">
+        <dt>mood</dt><dd>{{ site.status.mood }}</dd>
+        <dt>listening to</dt><dd>{{ site.status.listening }}</dd>
+        <dt>working on</dt><dd>{{ site.status.working_on }}</dd>
+        <dt>studying</dt><dd>{{ site.status.studying }}</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="window">
+    <div class="window-bar"><span>✿ find me</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-body">
+      <ul class="socials">
+        {% for s in site.socials %}
+          <li><a href="{{ s.url }}" target="_blank" rel="noopener"><span aria-hidden="true">{{ s.icon }}</span> {{ s.name }}</a></li>
+        {% endfor %}
+      </ul>
+      {% if site.guestbook_url != "" %}
+        <a class="btn" href="{{ site.guestbook_url }}" target="_blank" rel="noopener">✎ sign my guestbook</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="window">
+    <div class="window-bar"><span>✧ link back!</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-body center">
+      <img class="pixel" src="{{ '/assets/img/buttons/my-button.svg' | relative_url }}" alt="{{ site.author }} button" width="88" height="31">
+      <p class="tiny">feel free to use my button on your site ♡</p>
+    </div>
+  </section>
+
+  <div class="blinkies" aria-hidden="true">
+    <span class="blinkie">♡ soft boys rule ♡</span>
+    <span class="blinkie lav">♫ music is my life ♫</span>
+    <span class="blinkie mint">✎ uni survivor ✎</span>
+  </div>
+</aside>

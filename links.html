@@ -1,0 +1,40 @@
+---
+layout: default
+title: links
+description: friends, cool sites and resources
+---
+<section class="window">
+  <div class="window-bar"><span>✧ friends</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <ul class="link-list">
+      {% for l in site.data.links.friends %}
+        <li>
+          {% if l.button %}<img class="pixel" src="{{ l.button | relative_url }}" alt="" width="88" height="31">{% endif %}
+          <a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a> <span class="tiny">─ {{ l.note }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="window">
+  <div class="window-bar"><span>♡ cool places</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <ul class="link-list">
+      {% for l in site.data.links.cool %}
+        <li>
+          {% if l.button %}<img class="pixel" src="{{ l.button | relative_url }}" alt="" width="88" height="31">{% endif %}
+          <a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a> <span class="tiny">─ {{ l.note }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="window">
+  <div class="window-bar"><span>✿ link to me</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <p>want to link my site? copy this code ♡</p>
+    <textarea class="code-box" readonly rows="3" aria-label="html code for my button">&lt;a href="{{ site.url }}{{ site.baseurl }}/"&gt;&lt;img src="{{ site.url }}{{ site.baseurl }}/assets/img/buttons/my-button.svg" alt="{{ site.author }}" width="88" height="31"&gt;&lt;/a&gt;</textarea>
+  </div>
+</section>

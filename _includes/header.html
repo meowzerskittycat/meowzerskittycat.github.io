@@ -1,0 +1,20 @@
+<header class="site-header">
+  <img class="header-ribbon" src="{{ '/assets/img/ribbon.svg' | relative_url }}" alt="" width="120" height="80">
+  <p class="header-hello">~ hello &amp; welcome to ~</p>
+  <h1 class="site-title"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+  <p class="tagline">{{ site.tagline }}</p>
+
+  {% include nav-items.html %}
+  <nav class="main-nav" aria-label="main menu">
+    <ul>
+      {% for item in nav %}
+        {% assign parts = item | split: "|" %}
+        <li>
+          <a href="{{ parts[0] | relative_url }}"{% if page.url == parts[0] %} aria-current="page"{% endif %}>
+            <span aria-hidden="true">{{ parts[2] }}</span> {{ parts[1] }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</header>

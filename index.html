@@ -1,0 +1,61 @@
+---
+layout: default
+---
+<section class="window hero">
+  <div class="window-bar"><span>♡ welcome.exe</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <div class="hero-inner">
+      <div class="avatar" aria-hidden="true">
+        <!-- Want a real photo/drawing? Replace this div with:
+             <img class="avatar" src="{{ '/assets/img/me.png' | relative_url }}" alt="me"> -->
+        <span>ʕ•ᴥ•ʔ</span>
+      </div>
+      <div>
+        <h2>hiii, i'm {{ site.author }}! <img class="inline-icon" src="{{ '/assets/img/sparkle.svg' | relative_url }}" alt="" width="22" height="22"></h2>
+        <p>welcome to my little corner of the internet ♡ i make music (mostly soft, dreamy, sparkly things)
+          and i'm currently surviving university one coffee at a time.</p>
+        <p>this site is my scrapbook: my songs, my uni life, my favorite things and whatever else
+          makes me happy. take off your shoes, grab a snack &amp; stay a while ~</p>
+        <p><a class="btn" href="{{ '/music/' | relative_url }}">♫ listen to my music</a>
+           <a class="btn lav" href="{{ '/about/' | relative_url }}">♡ about me</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grid-2">
+  <section class="window">
+    <div class="window-bar"><span>♫ latest track</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-body">
+      {% assign latest = site.data.music | first %}
+      {% if latest %}
+        {% include track.html track=latest compact=true %}
+      {% else %}
+        <p>no songs yet… stay tuned!</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="window">
+    <div class="window-bar"><span>✎ updates</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-body">
+      <ul class="updates">
+        {% for u in site.data.updates limit: 5 %}
+          <li><time datetime="{{ u.date | date: '%Y-%m-%d' }}">{{ u.date | date: "%b %-d" | downcase }}</time> {{ u.text }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+</div>
+
+<section class="window">
+  <div class="window-bar"><span>✧ little facts</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <ul class="facts">
+      <li><span>♫</span> i make music in my bedroom</li>
+      <li><span>✎</span> uni student ({{ site.data.uni.year }})</li>
+      <li><span>🎀</span> ribbons are always a good idea</li>
+      <li><span>☕</span> powered by iced lattes</li>
+    </ul>
+  </div>
+</section>

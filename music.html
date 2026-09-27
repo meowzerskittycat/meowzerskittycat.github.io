@@ -1,0 +1,39 @@
+---
+layout: default
+title: music
+description: songs, demos and little sound experiments
+---
+<section class="window">
+  <div class="window-bar"><span>♫ my music</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <p class="intro">here's everything i've made so far, newest first ♡
+      if you like something, sharing it with a friend means the world to me!</p>
+    <div class="now-playing" aria-hidden="true">
+      <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
+      <span>now playing: my heart ♡</span>
+    </div>
+  </div>
+</section>
+
+{% for t in site.data.music %}
+  <section class="window">
+    <div class="window-bar"><span>♪ {{ t.title }}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="window-body">
+      {% include track.html track=t %}
+    </div>
+  </section>
+{% else %}
+  <p>no songs yet… stay tuned!</p>
+{% endfor %}
+
+<section class="window">
+  <div class="window-bar"><span>🎛 my setup</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <div class="window-body">
+    <ul class="facts">
+      <li><span>💻</span> daw: (your DAW here)</li>
+      <li><span>🎹</span> a tiny midi keyboard</li>
+      <li><span>🎧</span> headphones that have seen things</li>
+      <li><span>✨</span> lots of free plugins &amp; samples</li>
+    </ul>
+  </div>
+</section>
