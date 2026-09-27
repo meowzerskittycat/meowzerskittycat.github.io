@@ -5,7 +5,8 @@ Guide for AI coding agents (Claude Code, Codex, Copilot, Cursor…) and humans w
 ## What this is
 
 A personal website for **meowzers**: a first-year engineering student who makes music as a hobby.
-He doesn't publish his music, so the music page is about what he's making and his setup, not a track list. It has a soft, cute,
+He doesn't publish his music, so the music page is about what he's making and his setup, not a track list.
+
 **Theme: an engineering notebook.** Pale green graph-paper background (like engineering calculation pads), cream "paper" cards with torn-tape labels
 numbered like figures (01, 02…), a header styled like the title block on an engineering drawing (drawn by / sheet /
 rev. / scale), a ruler along the top, and a line-drawn cat as the portrait. Colors are sage green, dark ink,

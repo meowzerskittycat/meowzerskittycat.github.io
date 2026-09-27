@@ -1,15 +1,15 @@
-# ♡ meowzers ♡
+# meowzers
 
 A handmade personal site (uni, music, things I like), hosted free on **GitHub Pages**.
 
-🌸 **Live at:** https://meowzerskittycat.github.io/website/
+**Live at:** https://meowzerskittycat.github.io/website/
 
 ## Turning it on (one time)
 
 1. Go to the repo's **Settings → Pages**.
 2. Under **Build and deployment**, choose **Source: Deploy from a branch**.
 3. Pick branch **`main`** and folder **`/ (root)`**, then click **Save**.
-4. Wait a minute or two, then visit the link above ✨
+4. Wait a minute or two, then visit the link above
 
 ## Editing
 
