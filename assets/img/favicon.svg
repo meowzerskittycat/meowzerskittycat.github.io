@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
-  <ellipse cx="16" cy="17" rx="13" ry="14" fill="#ffe3c4" stroke="#000" stroke-width="2"/>
-  <circle cx="11" cy="13" r="4.5" fill="#e8f4ff" stroke="#000" stroke-width="1.5"/>
-  <circle cx="21" cy="13" r="4.5" fill="#e8f4ff" stroke="#000" stroke-width="1.5"/>
-  <ellipse cx="16" cy="24" rx="5.5" ry="4.5" fill="#4a1c1c" stroke="#000" stroke-width="1.5"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#000"/><path d="M3 12V5h2l3 4 3-4h2v7h-2V8l-3 4-3-4v4z" fill="#fff"/></svg>

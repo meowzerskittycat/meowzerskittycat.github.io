@@ -1,7 +1,0 @@
-{% comment %}
-  Greentext. Pass a list of lines; each one gets a ">" in front.
-    {% include greentext.html lines=site.data.home.greentext %}
-{% endcomment %}
-{%- for line in include.lines -%}
-<span class="quote">&gt;{{ line }}</span><br>
-{% endfor -%}

@@ -1,19 +1,20 @@
-# ♫ music page
+# Music page.
 # He makes music for himself and doesn't release it, so this page is
 # about the process, not a track list. Edit freely.
 
 # What you're making / learning right now (one line each)
 making:
-  - "short loops and beats, mostly late at night"
-  - "learning how chords actually work"
-  - "trying to get better at mixing"
+  - "Short loops and beats, mostly late at night."
+  - "Learning how chords actually work."
+  - "Trying to get better at mixing."
 
 # Your setup. "what" is the thing, "note" is optional.
 setup:
   - what: "DAW"
     note: "(the program you use)"
-  - what: "a small midi keyboard"
-  - what: "headphones"
+  - what: "MIDI keyboard"
+    note: "(model)"
+  - what: "Headphones"
     note: "(model)"
 
 # Artists / albums you've had on repeat
@@ -23,5 +24,5 @@ listening:
   - "(artist or album)"
 
 # If you ever do want to share a track, you can add links here
-# (name + url), e.g. a SoundCloud page. Leave empty to hide the box.
+# (name + url), e.g. a SoundCloud page. Leave empty to hide the section.
 links: []

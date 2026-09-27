@@ -1,38 +1,37 @@
-# ✐ uni
-# Everything on the "uni" page comes from here.
+# Uni page.
 
-degree: "engineering"
+degree: "Engineering"
 year: "1st year"
 
-# Semester progress bar ─ dates as YYYY-MM-DD
+# Current semester, dates as YYYY-MM-DD
 semester:
-  name: "fall semester"
+  name: "Fall semester"
   start: 2026-09-01
   end: 2026-12-18
 
 classes:
-  - name: "calculus i"
-    note: "limits, derivatives, a lot of practice problems"
-  - name: "physics i (mechanics)"
-    note: "free-body diagrams everywhere"
-  - name: "chemistry"
-    note: "labs on thursdays"
-  - name: "intro to programming"
-    note: "the one i look forward to"
-  - name: "engineering design"
-    note: "first group project"
+  - name: "Calculus I"
+    note: "Limits, derivatives, a lot of practice problems."
+  - name: "Physics I (mechanics)"
+    note: "Free-body diagrams everywhere."
+  - name: "Chemistry"
+    note: "Labs on Thursdays."
+  - name: "Intro to programming"
+    note: "The one I look forward to."
+  - name: "Engineering design"
+    note: "First group project."
 
-# To-do list. done: true shows a tick.
+# To-do list. done: true marks it as done.
 todo:
-  - text: "calc problem set"
+  - text: "Calc problem set"
     done: true
-  - text: "physics lab report"
+  - text: "Physics lab report"
     done: false
-  - text: "study for the first midterm"
+  - text: "Study for the first midterm"
     done: false
 
 # Things that have actually helped
 study_tips:
-  - "do the practice problems before looking at the solutions"
-  - "go to office hours early in the term, not the week before exams"
-  - "study with people from your classes"
+  - "Do the practice problems before looking at the solutions."
+  - "Go to office hours early in the term, not the week before exams."
+  - "Study with people from your classes."
