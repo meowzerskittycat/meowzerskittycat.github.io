@@ -11,8 +11,8 @@
     <text x="65" y="60">Lorem</text>
     <text x="240" y="60">Ipsum</text>
     <text x="415" y="60">Dolor</text>
-    <text x="149" y="47" font-size="11">x(t)</text>
-    <text x="324" y="47" font-size="11">y(t)</text>
+    <text x="149" y="47" font-size="11">input</text>
+    <text x="324" y="47" font-size="11">output</text>
   </g>
   <text x="240" y="100" text-anchor="middle" font-size="11" fill="#555">Fig. 1: example diagram (SVG)</text>
 </svg>

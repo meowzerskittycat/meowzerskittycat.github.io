@@ -1,6 +1,6 @@
 # Vivien
 
-Vivien's personal site: project write-ups, uni notes and music. Plain HTML in the spirit of suckless.org,
+Vivien's personal site: software project write-ups, plus some music. Plain HTML in the spirit of suckless.org,
 hosted on GitHub Pages.
 
 ## Setup (one time)
@@ -26,7 +26,8 @@ Text goes here.
 ```
 
 Push it and it shows up on the Projects page. `_posts/2026-09-27-lorem-ipsum.md` shows every Markdown feature the
-site supports. Unfinished posts can go in `_drafts/`, which is never published.
+site supports. Music goes in posts too (see `_posts/2026-09-27-making-music.md`). Unfinished posts can go in
+`_drafts/`, which is never published.
 
 ## Editing everything else
 
@@ -34,7 +35,8 @@ Everything is plain text; you can edit it on github.com (open a file, click the 
 
 - `_config.yml`: name, tagline, status table
 - `index.md`, `about.md`, `status.md`: page text
-- `_data/music.yml`, `_data/uni.yml`, `_data/updates.yml`: lists on the music, uni and status pages
+- `_data/updates.yml`: the site updates list on the status page
+- `_data/favorites.yml`, `_data/links.yml`: lists on the about and links pages
 - `assets/css/site.css`: colors (variables at the top)
 
 See [AGENTS.md](AGENTS.md) for the full map of the site and the rules for keeping it simple and

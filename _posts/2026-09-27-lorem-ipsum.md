@@ -14,7 +14,7 @@ aliquip ex ea commodo consequat.
 
 Duis aute irure dolor in **reprehenderit** in voluptate velit esse *cillum dolore* eu fugiat nulla
 pariatur. Excepteur sint ***occaecat cupidatat*** non proident, ~~sunt in culpa~~ qui officia deserunt
-mollit anim id est laborum. Inline code looks like `analogRead(A0)`, and keys like
+mollit anim id est laborum. Inline code looks like `git status`, and keys like
 <kbd>Ctrl</kbd> + <kbd>S</kbd>.
 
 A line can end with a backslash\
@@ -89,11 +89,11 @@ cc -o lorem lorem.c
 
 ## Tables
 
-| Component | Value  | Notes                    |
-|:----------|-------:|:------------------------:|
-| R1        | 10 kΩ  | Lorem ipsum              |
-| C1        | 100 nF | Dolor sit amet           |
-| U1        | NE555  | Consectetur adipiscing   |
+| Version | Time (ms) | Notes                  |
+|:--------|----------:|:----------------------:|
+| v0.1    | 412       | Lorem ipsum            |
+| v0.2    | 97        | Dolor sit amet         |
+| v0.3    | 31        | Consectetur adipiscing |
 
 ## Images
 

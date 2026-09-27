@@ -6,8 +6,8 @@
 
 title: "Vivien"
 author: "Vivien"
-tagline: "engineering student, makes music on the side"
-description: "Vivien's personal site: project write-ups, uni notes and music."
+tagline: "software engineering student"
+description: "Personal site of a software engineering student: project write-ups and notes."
 
 # The site is served from the root of the domain (no sub-folder).
 # For that to work on GitHub Pages, the repository has to be named

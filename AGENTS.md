@@ -4,9 +4,12 @@ Guide for AI coding agents (Claude Code, Codex, Copilot, Cursor…) and humans w
 
 ## What this is
 
-The personal website of **Vivien**, a first-year engineering student who makes music as a hobby.
-The main part is a small Markdown blog on the **Projects** page, where he writes up things he builds.
-He doesn't publish his music, so the music page is about what he's making and his setup, not a track list.
+The personal website of **Vivien**, a first-year software engineering student who also makes music as a hobby.
+The main part is a small Markdown blog on the **Projects** page, where he writes up software he builds. Music lives
+there too, as posts (there's no separate music page). He doesn't publish his music, so music posts are about what
+he's making and how, not track listings.
+
+Pages: home, about, status, projects (the blog) and links.
 
 **Style: minimal and text-first, in the spirit of [suckless.org](https://suckless.org).**
 - a plain header (name + tagline) and a grey menu bar with the pages
@@ -53,8 +56,6 @@ When in doubt, remove things. The page should read fine with CSS turned off.
 | the list of posts                        | `projects.md`                                   |
 | how a single post looks                  | `_layouts/post.html`                            |
 | images for posts                         | `assets/img/posts/<post-name>/`                 |
-| music page                               | `music.md` + `_data/music.yml`                  |
-| uni page                                 | `uni.md` + `_data/uni.yml`                      |
 | links page                               | `links.md` + `_data/links.yml`                  |
 | pages in the menu bar                    | `_includes/nav-items.html`                      |
 | header + menu bar                        | `_includes/header.html`                         |
@@ -75,7 +76,7 @@ The Atom feed is generated at `/feed.xml`.
    description: "One sentence shown under the title on the Projects page."
    ---
    ```
-   `description` is optional. The layout, URL and author are filled in automatically.
+   `description` is optional. The layout and URL are filled in automatically.
 3. Write the post in Markdown below that. `_posts/2026-09-27-lorem-ipsum.md` is a reference that uses every
    supported feature: headings, bold/italic/strikethrough, links, lists, task lists, quotes, code blocks with syntax
    highlighting, tables, images, definition lists, footnotes and horizontal rules.
@@ -109,8 +110,8 @@ Notes:
 **Update the status page.** Change the values under `status:` in `_config.yml`. Add a line to `_data/updates.yml`
 when something on the site changes.
 
-**Update the music page.** Edit `_data/music.yml`. If he ever wants to share tracks, add `name` + `url` entries under
-`links:` and a "Listen" section appears. Don't add fake releases or placeholder tracks.
+**Music.** Music goes in regular posts on the Projects page. `_posts/2026-09-27-making-music.md` is the overview
+(what he's working on, setup, what's on repeat); edit it there. Don't add fake releases or placeholder tracks.
 
 **Add links to the menu bar** (social profiles, a guestbook). Use `socials:` / `guestbook_url` in `_config.yml`.
 They're empty on purpose; only add real links he asks for.
@@ -120,7 +121,10 @@ or close to it, with enough contrast (at least 4.5:1).
 
 ## Style & tone
 
-- Refer to him as Vivien. He uses he/him.
+- **His name appears once per page: in the header** (it comes from `title` in `_config.yml`, and it's the `<h1>` on
+  the home page). Don't repeat it in page text, post bylines or headings; pages are written in first person.
+  He uses he/him.
+- He's a software engineering student. Keep examples and wording software-oriented rather than hardware.
 - Write plainly: half professional, half informal. Short sentences, normal capitalization, first person on his pages.
 - Avoid stock phrases ("welcome to my corner of the internet", "passionate about", "journey", "dive into",
   "delve") and hype. No emoji. No jokes for the sake of jokes.

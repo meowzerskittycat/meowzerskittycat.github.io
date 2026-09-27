@@ -1,12 +1,12 @@
 ---
 layout: default
 title: About
-description: A bit about Vivien.
+description: A bit about me.
 ---
 # About
 
-I'm {{ site.author }}. I'm in my first year of engineering, and outside of classes I make music.
-I like figuring out how things work, which is more or less why I picked engineering.
+I'm a first-year software engineering student. I like figuring out how things work, and most of
+the time that means writing code. Outside of that I make music.
 
 I made this site so I'd have a place online that's mine, and somewhere to write up projects properly
 instead of leaving them in a folder.
@@ -14,9 +14,8 @@ instead of leaving them in a folder.
 ## Profile
 
 <table class="status">
-<tr><th scope="row">Name</th><td>{{ site.author }}</td></tr>
 <tr><th scope="row">Pronouns</th><td>he/him</td></tr>
-<tr><th scope="row">Studying</th><td>{{ site.data.uni.degree }}, {{ site.data.uni.year }}</td></tr>
+<tr><th scope="row">Studying</th><td>Software engineering, 1st year</td></tr>
 </table>
 
 ## Things I like

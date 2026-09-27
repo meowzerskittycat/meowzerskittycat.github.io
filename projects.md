@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Projects
-description: Vivien's project write-ups.
+description: Project write-ups.
 ---
 # Projects
 

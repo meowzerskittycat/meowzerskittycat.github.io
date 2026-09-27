@@ -1,6 +1,6 @@
 {% include nav-items.html %}
 <div id="header">
-<a href="{{ '/' | relative_url }}" id="headerLink">{{ site.title }}</a>
+{% if page.url == "/" %}<h1 id="headerTitle"><a href="{{ '/' | relative_url }}" id="headerLink">{{ site.title }}</a></h1>{% else %}<a href="{{ '/' | relative_url }}" id="headerLink">{{ site.title }}</a>{% endif %}
 <span id="headerSubtitle">{{ site.tagline }}</span>
 </div>
 <div id="menu">

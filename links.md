@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Links
-description: Sites Vivien likes.
+description: Sites I like.
 ---
 # Links
 

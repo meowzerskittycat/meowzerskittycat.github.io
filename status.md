@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Status
-description: What Vivien is up to right now.
+description: What I'm up to right now.
 ---
 # Status
 
