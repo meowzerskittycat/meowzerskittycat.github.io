@@ -1,0 +1,23 @@
+{% comment %}
+  The top line of a post: subject, name, date and post number.
+
+    {% include post-head.html op=true subject="welcome" %}   ← first post on a page
+    {% include post-head.html subject="wip" %}               ← replies
+
+  Dates and numbers are generated from the build time, so they change
+  a little every time the site is rebuilt. That's on purpose.
+{% endcomment %}
+{%- if include.op -%}{%- assign post_n = 0 -%}{%- endif -%}
+{%- assign post_n = post_n | plus: 1 -%}
+{%- assign post_base = site.time | date: "%s" | minus: 3600 -%}
+{%- assign post_time = post_n | times: 437 | plus: post_base -%}
+{%- assign post_no = post_time | modulo: 9000000 | plus: 1000000 -%}
+{%- if include.op -%}{%- assign op_no = post_no -%}{%- endif -%}
+<div class="post-info" id="p{{ post_no }}">
+  {%- if include.subject -%}
+    {%- if include.op %}<h1 class="subject">{{ include.subject }}</h1>{% else %}<h2 class="subject">{{ include.subject }}</h2>{% endif %}
+  {% endif -%}
+  <span class="name">{{ site.author }}</span>
+  <span class="date">{{ post_time | date: "%m/%d/%y(%a)%H:%M:%S" }}</span>
+  <a class="post-no" href="#p{{ post_no }}">No.{{ post_no }}</a>
+</div>

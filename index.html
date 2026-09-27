@@ -1,45 +1,52 @@
 ---
 layout: default
 ---
-<section class="card hero">
-  <figure class="portrait">
-    <!-- Want a real photo/drawing? Replace the img src with your own picture,
-         e.g. {{ '/assets/img/me.png' | relative_url }}, and update the alt text. -->
-    <img src="{{ '/assets/img/cat.svg' | relative_url }}" alt="line drawing of a cat" width="220" height="200">
-    <figcaption>fig. 0 · me, roughly</figcaption>
-  </figure>
-  <div>
-    <h1>hi, i'm {{ site.author }}.</h1>
-    <p>i'm in my first year of engineering. outside of classes i make music, mostly for myself.</p>
-    <p>this is my personal site: some notes on uni, what i'm working on, and things i like.</p>
+<table class="postform" aria-label="status">
+  {% for s in site.status %}
+    <tr><th scope="row">{{ s[0] | replace: "_", " " }}</th><td>{{ s[1] }}</td></tr>
+  {% endfor %}
+</table>
+
+{% if site.data.updates.size > 0 %}
+<ul class="blotter" aria-label="site updates">
+  {% for u in site.data.updates limit: 5 %}
+    <li><time class="blotter-date" datetime="{{ u.date | date: '%Y-%m-%d' }}">{{ u.date | date: "%m/%d/%y" }}</time> {{ u.text }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+<hr>
+
+<article class="post op">
+  <div class="file">
+    <div class="file-info">File: <a href="{{ '/assets/img/soy.svg' | relative_url }}">soy.svg</a> (220x200)</div>
+    <!-- Want a real photo/drawing? Put it in assets/img/ and change the src, alt and the File: line above. -->
+    <img class="file-thumb" src="{{ '/assets/img/soy.svg' | relative_url }}" alt="ms paint drawing of a guy with glasses and headphones, mouth open" width="220" height="200">
   </div>
-</section>
+  {% include post-head.html op=true subject="welcome" %}
+  <blockquote class="post-body">
+    {% include greentext.html lines=site.data.home.greentext %}
+    <br>
+    {{ site.data.home.intro }}
+  </blockquote>
+</article>
 
-<div class="grid-2">
-  <section class="card">
-    <h2 class="label">making lately</h2>
-    <ul class="plain-list">
-      {% for m in site.data.music.making limit: 3 %}<li>{{ m }}</li>{% endfor %}
-    </ul>
-    <p><a href="{{ '/music/' | relative_url }}">more on the music page →</a></p>
-  </section>
+<article class="post reply">
+  {% include post-head.html subject="wip" %}
+  <blockquote class="post-body">
+    {% include quote-op.html %}
+    {% include greentext.html lines=site.data.music.making %}
+    <a href="{{ '/music/' | relative_url }}">more on the music page</a>
+  </blockquote>
+</article>
 
-  <section class="card">
-    <h2 class="label">updates</h2>
-    <ul class="log">
-      {% for u in site.data.updates limit: 5 %}
-        <li><time datetime="{{ u.date | date: '%Y-%m-%d' }}">{{ u.date | date: "%Y.%m.%d" }}</time> {{ u.text }}</li>
-      {% endfor %}
-    </ul>
-  </section>
-</div>
-
-<section class="card">
-  <h2 class="label">specs</h2>
-  <dl class="spec spec-grid">
-    <dt>year</dt><dd>{{ site.data.uni.year }}</dd>
-    <dt>program</dt><dd>{{ site.data.uni.degree }}</dd>
-    <dt>hobby</dt><dd>making music</dd>
-    <dt>fuel</dt><dd>coffee</dd>
-  </dl>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="specs" %}
+  <blockquote class="post-body">
+    <dl class="spec">
+      <dt>year</dt><dd>{{ site.data.uni.year }}</dd>
+      <dt>program</dt><dd>{{ site.data.uni.degree }}</dd>
+      <dt>hobby</dt><dd>making music</dd>
+      <dt>fuel</dt><dd>coffee</dd>
+    </dl>
+  </blockquote>
+</article>

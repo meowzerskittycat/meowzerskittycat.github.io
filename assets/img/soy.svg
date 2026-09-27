@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 200" width="220" height="200" shape-rendering="crispEdges">
+  <!-- drawn in "ms paint" style on purpose. original drawing, free to reuse on this site -->
+  <rect width="220" height="200" fill="#ffffff"/>
+
+  <!-- head -->
+  <path d="M60 62 C58 30 90 18 115 20 C145 22 168 40 166 72 C170 100 168 130 160 152 C150 178 130 191 110 190 C88 190 68 178 60 154 C52 128 54 96 60 62 Z"
+        fill="#ffe3c4" stroke="#000" stroke-width="2.5"/>
+  <path d="M95 24 q5 -10 10 -2 M110 21 q4 -12 12 -3 M126 23 q6 -9 9 1" fill="none" stroke="#000" stroke-width="2"/>
+
+  <!-- headphones -->
+  <path d="M50 92 C44 14 176 14 170 92" fill="none" stroke="#333" stroke-width="7"/>
+  <rect x="40" y="78" width="20" height="36" rx="4" fill="#444" stroke="#000" stroke-width="2"/>
+  <rect x="160" y="78" width="20" height="36" rx="4" fill="#444" stroke="#000" stroke-width="2"/>
+
+  <!-- eyebrows, glasses, eyes -->
+  <path d="M74 60 Q88 48 104 58 M124 58 Q140 48 154 60" fill="none" stroke="#000" stroke-width="3"/>
+  <circle cx="92" cy="86" r="17" fill="#e8f4ff" stroke="#000" stroke-width="3"/>
+  <circle cx="136" cy="86" r="17" fill="#e8f4ff" stroke="#000" stroke-width="3"/>
+  <path d="M109 84 Q114 79 119 84" fill="none" stroke="#000" stroke-width="3"/>
+  <circle cx="93" cy="83" r="4" fill="#000"/>
+  <circle cx="135" cy="83" r="4" fill="#000"/>
+
+  <!-- nose -->
+  <path d="M114 98 L109 113 L119 114" fill="none" stroke="#000" stroke-width="2"/>
+
+  <!-- open mouth -->
+  <path d="M84 124 Q114 117 144 124 Q148 152 114 168 Q82 152 84 124 Z" fill="#4a1c1c" stroke="#000" stroke-width="2.5"/>
+  <path d="M89 127 Q114 121 139 127 L138 134 Q114 129 90 134 Z" fill="#fff"/>
+  <ellipse cx="114" cy="156" rx="15" ry="7" fill="#d9616b"/>
+
+  <!-- stubble -->
+  <path d="M70 150l3.3 0.4 M71 119l1.0 4.0 M76 129l-1.7 4.0 M148 133l2.5 1.2 M94 172l3.1 2.0 M70 127l-1.8 2.8 M142 164l2.6 2.5 M115 177l-2.0 2.3 M105 168l3.1 1.6 M68 161l-2.7 2.5 M150 135l-2.1 3.0 M70 164l-2.0 4.0 M145 133l1.3 3.6 M66 146l2.4 1.4 M77 130l1.4 4.0 M72 145l-0.7 4.2 M144 176l2.1 2.6 M99 177l-2.8 0.4 M81 129l2.6 2.3 M64 143l1.5 3.3 M150 171l1.1 3.1 M74 159l2.6 0.5 M84 124l1.3 2.3 M74 139l4.2 0.3 M72 120l1.4 2.7 M145 124l4.4 0.3 M116 184l-3.5 1.6 M80 169l-0.4 4.0 M148 172l-3.3 2.2 M67 133l2.7 2.8 M158 145l-4.4 0.9 M158 139l2.3 1.9 M83 127l-1.6 4.0 M146 147l-1.9 3.6 M72 161l-3.9 1.1 M81 170l2.1 3.5 M159 141l1.3 4.2 M76 123l-3.9 1.2 M78 173l-3.8 0.2 M116 181l0.9 4.2 M145 128l2.2 2.2 M121 179l1.1 4.2 M81 147l-2.3 2.7 M118 170l3.4 1.2 M153 145l-1.2 3.3 M111 182l-2.5 3.4 M156 131l-0.8 4.3 M146 122l3.1 1.3 M71 130l3.7 0.9 M141 178l3.5 1.8 M80 144l-0.2 3.2 M83 136l-1.6 1.9 M66 137l-1.3 3.3 M74 132l4.0 0.5 M91 122l1.0 4.2 M144 131l3.9 2.0 M126 171l4.1 1.1 M118 181l1.8 2.1 M75 124l2.9 0.5 M156 120l-2.8 1.8 M113 174l1.2 3.3 M98 174l-2.3 3.0 M69 122l3.9 0.9 M89 124l4.0 1.1 M149 162l1.9 2.3 M79 145l3.0 3.3 M159 152l3.2 3.1 M64 140l0.3 3.5 M64 132l3.2 0.9 M138 161l-2.7 3.3" stroke="#6b5a4a" stroke-width="1.5" fill="none"/>
+</svg>

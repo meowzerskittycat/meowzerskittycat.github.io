@@ -4,37 +4,44 @@ title: music
 description: the music i make for myself
 ---
 {% assign music = site.data.music %}
-<section class="card">
-  <h1 class="label">music</h1>
-  <p>i make music in my free time. i don't really post it; it's more of a way to unwind after classes.
-    here's what i'm working on and what i use.</p>
-  <hr class="staff">
-</section>
+<article class="post op">
+  {% include post-head.html op=true subject="music" %}
+  <blockquote class="post-body">
+    i make music in my free time. i don't really post it, it's more of a way to unwind after classes.<br>
+    here's what i'm working on and what i use.
+  </blockquote>
+</article>
 
-<div class="grid-2">
-  <section class="card">
-    <h2 class="label">working on</h2>
-    <ul class="plain-list">{% for m in music.making %}<li>{{ m }}</li>{% endfor %}</ul>
-  </section>
+<article class="post reply">
+  {% include post-head.html subject="working on" %}
+  <blockquote class="post-body">
+    {% include greentext.html lines=music.making %}
+  </blockquote>
+</article>
 
-  <section class="card">
-    <h2 class="label">on repeat</h2>
+<article class="post reply">
+  {% include post-head.html subject="on repeat" %}
+  <blockquote class="post-body">
     <ul class="plain-list">{% for l in music.listening %}<li>{{ l }}</li>{% endfor %}</ul>
-  </section>
-</div>
+  </blockquote>
+</article>
 
-<section class="card">
-  <h2 class="label">setup</h2>
-  <dl class="spec spec-grid">
-    {% for s in music.setup %}
-      <dt>{{ s.what }}</dt><dd>{{ s.note | default: "✓" }}</dd>
-    {% endfor %}
-  </dl>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="setup" %}
+  <blockquote class="post-body">
+    <dl class="spec">
+      {% for s in music.setup %}
+        <dt>{{ s.what }}</dt><dd>{{ s.note | default: "yes" }}</dd>
+      {% endfor %}
+    </dl>
+  </blockquote>
+</article>
 
 {% if music.links and music.links.size > 0 %}
-<section class="card">
-  <h2 class="label">listen</h2>
-  <p>{% for l in music.links %}<a class="pill" href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }} ↗</a>{% endfor %}</p>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="listen" %}
+  <blockquote class="post-body">
+    {% for l in music.links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a><br>{% endfor %}
+  </blockquote>
+</article>
 {% endif %}

@@ -3,28 +3,33 @@ layout: default
 title: links
 description: friends, cool sites and resources
 ---
+<article class="post op">
+  {% include post-head.html op=true subject="links" %}
+  <blockquote class="post-body">
+    sites i like. if we're friends and you have a site, tell me and i'll add it.
+  </blockquote>
+</article>
+
 {% if site.data.links.friends and site.data.links.friends.size > 0 %}
-<section class="card">
-  <h2 class="label">friends</h2>
-  <ul class="link-list">
-    {% for l in site.data.links.friends %}
-      <li>
-        {% if l.button %}<img class="pixel" src="{{ l.button | relative_url }}" alt="" width="88" height="31">{% endif %}
-        <a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a> <span class="tiny">{{ l.note }}</span>
-      </li>
-    {% endfor %}
-  </ul>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="friends" %}
+  <blockquote class="post-body">
+    <ul class="plain-list">
+      {% for l in site.data.links.friends %}
+        <li>{% if l.button %}<img class="pixel" src="{{ l.button | relative_url }}" alt="" width="88" height="31"> {% endif %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a> <span class="muted">- {{ l.note }}</span></li>
+      {% endfor %}
+    </ul>
+  </blockquote>
+</article>
 {% endif %}
 
-<section class="card">
-  <h2 class="label">elsewhere on the web</h2>
-  <ul class="link-list">
-    {% for l in site.data.links.cool %}
-      <li>
-        {% if l.button %}<img class="pixel" src="{{ l.button | relative_url }}" alt="" width="88" height="31">{% endif %}
-        <a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a> <span class="tiny">{{ l.note }}</span>
-      </li>
-    {% endfor %}
-  </ul>
-</section>
+<article class="post reply">
+  {% include post-head.html subject="elsewhere" %}
+  <blockquote class="post-body">
+    <ul class="plain-list">
+      {% for l in site.data.links.cool %}
+        <li>{% if l.button %}<img class="pixel" src="{{ l.button | relative_url }}" alt="" width="88" height="31"> {% endif %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a> <span class="muted">- {{ l.note }}</span></li>
+      {% endfor %}
+    </ul>
+  </blockquote>
+</article>
