@@ -1,7 +1,6 @@
 # Vivien
 
-Vivien's personal site and blog. Plain HTML in the spirit of suckless.org,
-hosted on GitHub Pages.
+Vivien's personal site and blog. Static HTML and CSS in the Nord colour palette, hosted on GitHub Pages.
 
 Live at https://meowzerskittycat.github.io/
 
@@ -37,5 +36,5 @@ Everything is plain text; you can edit it on github.com (open a file, click the 
 - `_data/favorites.yml`, `_data/links.yml`: lists on the about and links pages
 - `assets/css/site.css`: colors (variables at the top)
 
-See [AGENTS.md](AGENTS.md) for the full map of the site and the rules for keeping it simple and
-GitHub Pages–compatible. It's written so AI coding assistants can help you edit safely too.
+See [AGENTS.md](AGENTS.md) for the full map of the site, the writing guidelines, and the rules for keeping it
+compatible with GitHub Pages. It is written so that AI coding assistants can help with edits safely.

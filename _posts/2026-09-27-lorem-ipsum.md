@@ -1,10 +1,11 @@
 ---
-title: "Lorem ipsum: a Markdown test post"
-description: "Placeholder text that shows everything a post can do. Open the source file to see how each part is written."
+title: "Markdown reference"
+description: "A reference post covering every Markdown feature the site supports."
 ---
 
-This is a test post. It's filled with placeholder text, but every section shows one Markdown
-feature, so it doubles as a reference. The source is `_posts/2026-09-27-lorem-ipsum.md`.
+This post demonstrates the Markdown features supported by the site, using placeholder text. Each
+section covers one feature. The source file, `_posts/2026-09-27-lorem-ipsum.md`, can be used as a
+reference when writing new posts.
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
 et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
@@ -14,11 +15,11 @@ aliquip ex ea commodo consequat.
 
 Duis aute irure dolor in **reprehenderit** in voluptate velit esse *cillum dolore* eu fugiat nulla
 pariatur. Excepteur sint ***occaecat cupidatat*** non proident, ~~sunt in culpa~~ qui officia deserunt
-mollit anim id est laborum. Inline code looks like `git status`, and keys like
+mollit anim id est laborum. Inline code is written as `git status`, and keyboard keys as
 <kbd>Ctrl</kbd> + <kbd>S</kbd>.
 
-A line can end with a backslash\
-to force a line break without starting a new paragraph.
+A backslash at the end of a line\
+forces a line break within the same paragraph.
 
 ## Links
 
@@ -38,7 +39,7 @@ Est eros bibendum elit, nec luctus magna felis sollicitudin mauris.
 
 ## Lists
 
-Unordered, with nesting:
+Unordered list with nesting:
 
 - Integer in mauris eu nibh euismod gravida.
 - Duis ac tellus et risus vulputate vehicula.
@@ -46,7 +47,7 @@ Unordered, with nesting:
   - Etiam tempor.
 - Ut ullamcorper, ligula eu tempor congue.
 
-Ordered:
+Ordered list:
 
 1. Morbi in sem quis dui placerat ornare.
 2. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam.
@@ -66,7 +67,7 @@ Task list:
 
 ## Code
 
-A fenced code block with a language name:
+Fenced code block with a language specified:
 
 ```c
 #include <stdio.h>
@@ -80,7 +81,7 @@ int main(void)
 }
 ```
 
-And one without:
+Fenced code block without a language:
 
 ```
 $ make
@@ -97,7 +98,7 @@ cc -o lorem lorem.c
 
 ## Images
 
-Images go in `assets/img/posts/<post-name>/`:
+Images are stored in `assets/img/posts/<post-name>/`:
 
 ![A simple block diagram with three boxes labelled Lorem, Ipsum and Dolor]({{ '/assets/img/posts/lorem-ipsum/diagram.svg' | relative_url }})
 
@@ -107,19 +108,19 @@ Lorem
 : Placeholder text used since the 1500s.
 
 Ipsum
-: The second word of it.
+: The second word of the placeholder text.
 
 ## Footnotes
 
 Fusce convallis metus id felis luctus adipiscing.[^1] Pellentesque egestas, neque sit amet convallis
 pulvinar, justo nulla eleifend augue.[^2]
 
-[^1]: This is a footnote. It shows up at the bottom of the post.
+[^1]: Footnotes are listed at the end of the post.
 [^2]: Footnotes are numbered automatically.
 
 ## Horizontal rule
 
-Three dashes on their own line:
+A horizontal rule is written as three dashes on a separate line:
 
 ---
 

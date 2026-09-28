@@ -1,43 +1,66 @@
 /*
  * site.css
  *
- * Dusk over mountains. The header is a banded evening sky with a jagged
- * ridge along its bottom edge; the page below is the snow. Type is an
- * editorial serif: a large italic name, small-caps labels and dates, and
- * a drop cap to open the text. Everything is aligned to the left edge.
+ * Colours: the Nord palette (https://www.nordtheme.com), an arctic,
+ * north-bluish set of 16 colours: Polar Night (nord0-3), Snow Storm
+ * (nord4-6), Frost (nord7-10) and Aurora (nord11-15).
+ *
+ * Layout: the header is a banded polar sky with a faint aurora and three
+ * jagged mountain ridges along its bottom edge; the page below is the snow.
+ * Type is an editorial serif: a large italic name, small-caps labels and
+ * dates, and a drop cap to open the text. Everything is aligned left.
  *
  * Rules: square corners only (no border-radius anywhere), no web fonts,
  * no JavaScript, no images for decoration (the sky and ridges are CSS).
- * Colors live in the two :root blocks below; every text colour is at
- * least 4.5:1 against its background.
+ * Colours live in the two :root blocks below; every text colour is at
+ * least 4.5:1 against its background. Nord's frost blue (nord10) is too
+ * light for body text on snow, so light-mode links use a deeper shade of it.
  */
 
 /* ---- palette ---------------------------------------------------------- */
 
 :root {
-	--bg:        #f4f4f6;   /* fog / snow */
-	--surface:   #e8e7ef;   /* code, highlights */
-	--rule:      #cfcdda;
-	--ink:       #1d1d2b;
-	--muted:     #55536d;
-	--link:      #3d3b6e;
-	--visited:   #5b4a7c;
-	--underline: #a9a6bd;
-	--accent:    #6c6a8e;
+	/* Nord */
+	--nord0:  #2E3440;  --nord1:  #3B4252;  --nord2:  #434C5E;  --nord3:  #4C566A;
+	--nord4:  #D8DEE9;  --nord5:  #E5E9F0;  --nord6:  #ECEFF4;
+	--nord7:  #8FBCBB;  --nord8:  #88C0D0;  --nord9:  #81A1C1;  --nord10: #5E81AC;
+	--nord11: #BF616A;  --nord12: #D08770;  --nord13: #EBCB8B;  --nord14: #A3BE8C;  --nord15: #B48EAD;
 
-	/* sky, from the top of the page down to the horizon */
-	--sky-1: #14141d;
-	--sky-2: #1d1d2b;
-	--sky-3: #282842;
-	--sky-4: #34345a;
-	--sky-5: #413f66;
-	--sky-6: #6c6a8e;
-	--sky-text: #e6e6ea;
-	--sky-dim:  #b3b0c8;
+	/* light (snow) */
+	--bg:        var(--nord6);
+	--surface:   var(--nord5);
+	--rule:      var(--nord4);
+	--ink:       var(--nord0);
+	--muted:     var(--nord3);
+	--link:      #46668d;          /* nord10, deepened for contrast */
+	--visited:   #6d5a82;          /* nord15, deepened for contrast */
+	--underline: var(--nord9);
+	--accent:    var(--nord10);
+
+	/* sky, from the top of the page down to the horizon (same in both modes) */
+	--sky-1: #242933;              /* one step darker than nord0 */
+	--sky-2: var(--nord0);
+	--sky-3: var(--nord1);
+	--sky-4: var(--nord2);
+	--sky-5: var(--nord3);
+	--sky-6: var(--nord10);
+	--sky-text: var(--nord6);
+	--sky-dim:  var(--nord4);
+	--aurora-1: rgba(163, 190, 140, .16);   /* nord14 */
+	--aurora-2: rgba(143, 188, 187, .12);   /* nord7 */
 
 	/* mountain layers, far to near (near = page colour) */
-	--ridge-far: #55536d;
-	--ridge-mid: #a9a6bd;
+	--ridge-far: var(--nord1);
+	--ridge-mid: var(--nord9);
+
+	/* code blocks: Nord's own syntax colours on a dark block */
+	--code-bg:      var(--nord0);
+	--code-text:    var(--nord6);
+	--code-comment: var(--nord4);
+	--code-keyword: var(--nord9);
+	--code-string:  var(--nord14);
+	--code-number:  var(--nord13);
+	--code-func:    var(--nord8);
 
 	--serif: "Iowan Old Style", Charter, "Bitstream Charter", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
 	--sans:  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -49,25 +72,22 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg:        #15151e;
-		--surface:   #22212f;
-		--rule:      #34344a;
-		--ink:       #e6e6ea;
-		--muted:     #a9a6bd;
-		--link:      #c3c0e0;
-		--visited:   #d2c0e4;
-		--underline: #55536d;
-		--accent:    #8e8bb0;
+		--bg:        var(--nord0);
+		--surface:   var(--nord1);
+		--rule:      var(--nord2);
+		--ink:       var(--nord6);
+		--muted:     var(--nord4);
+		--link:      var(--nord8);
+		--visited:   #cbaec5;          /* nord15, lightened for contrast */
+		--underline: var(--nord3);
+		--accent:    var(--nord8);
 
-		--sky-1: #09090e;
-		--sky-2: #0f0f17;
-		--sky-3: #171727;
-		--sky-4: #212138;
-		--sky-5: #2c2b48;
-		--sky-6: #3d3b62;
+		--ridge-far: var(--nord1);
+		--ridge-mid: var(--nord3);
 
-		--ridge-far: #2a2a45;
-		--ridge-mid: #3d3b62;
+		--code-bg:      var(--nord1);
+		--code-keyword: var(--nord8);  /* nord9 is too dim on nord1 */
+		--code-func:    var(--nord7);
 	}
 }
 
@@ -102,7 +122,7 @@ a:visited { color: var(--visited); }
 a:hover { background: var(--surface); text-decoration-color: var(--link); }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-::selection { background: var(--ridge-mid); color: var(--sky-2); }
+::selection { background: var(--nord8); color: var(--nord0); }
 
 .skip-link {
 	position: absolute;
@@ -124,8 +144,13 @@ a:hover { background: var(--surface); text-decoration-color: var(--link); }
 	padding: 1.4rem 0 7.5rem;
 	margin-bottom: 3rem;
 	color: var(--sky-text);
-	/* uneven, slightly tilted bands, like layered cloud */
+	/* a faint aurora (upper right) over uneven, slightly tilted bands of polar sky */
 	background:
+		linear-gradient(118deg,
+			transparent 0 44%,
+			var(--aurora-1) 60%,
+			var(--aurora-2) 70%,
+			transparent 86%),
 		linear-gradient(176deg,
 			var(--sky-1) 0 22%,
 			var(--sky-2) 22% 41%,
@@ -281,22 +306,30 @@ blockquote p:last-child { margin-bottom: 0; }
 dt { font-style: italic; font-size: 1.1rem; }
 dd { margin: 0 0 .7rem 1.4rem; }
 
-/* ---- code (kept quiet: light, not a terminal) ------------------------- */
+/* ---- code: Nord syntax colours ---------------------------------------- */
 
 code, kbd, pre { font-family: var(--mono); font-size: .8em; }
 :not(pre) > code { padding: .1em .35em; background: var(--surface); }
 pre {
 	padding: 1rem 1.2rem;
 	overflow-x: auto;
-	background: var(--surface);
-	border-left: 4px solid var(--accent);
+	background: var(--code-bg);
+	color: var(--code-text);
+	border-left: 4px solid var(--nord8);
 	line-height: 1.55;
 	tab-size: 4;
 }
 pre code { font-size: 1em; }
 kbd { padding: .05em .4em; border: 1px solid var(--rule); border-bottom-width: 3px; background: var(--bg); }
-.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs, .highlight .cpf { color: var(--muted); font-style: italic; }
-.highlight .k, .highlight .kd, .highlight .kt, .highlight .kr, .highlight .cp { font-weight: 700; }
+
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs { color: var(--code-comment); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kt, .highlight .kr, .highlight .kc,
+.highlight .cp, .highlight .o, .highlight .ow { color: var(--code-keyword); }
+.highlight .k, .highlight .kd, .highlight .kr, .highlight .cp { font-weight: 700; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .se, .highlight .sc,
+.highlight .cpf { color: var(--code-string); }
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh { color: var(--code-number); }
+.highlight .nf, .highlight .nb { color: var(--code-func); }
 
 /* ---- tables: book-style, horizontal rules only ------------------------ */
 
@@ -332,9 +365,9 @@ table.status td { font-style: italic; font-size: 1.2rem; }
 
 /* ---- dated lists (blog, site updates) --------------------------------- */
 
-ul.posts, ul.log, ul.task-list { list-style: none; padding-left: 0; }
-ul.posts li, ul.log li { position: relative; margin: 0; padding: .9rem 0; border-top: 1px solid var(--rule); }
-ul.posts li:last-child, ul.log li:last-child { border-bottom: 1px solid var(--rule); }
+ul.posts, ul.log, ul.links, ul.task-list { list-style: none; padding-left: 0; }
+ul.posts li, ul.log li, ul.links li { position: relative; margin: 0; padding: .9rem 0; border-top: 1px solid var(--rule); }
+ul.posts li:last-child, ul.log li:last-child, ul.links li:last-child { border-bottom: 1px solid var(--rule); }
 ul.posts time, ul.log time {
 	display: block;
 	font-family: var(--sans);
@@ -346,8 +379,9 @@ ul.posts time, ul.log time {
 	margin-bottom: .2rem;
 }
 ul.posts li > a { font-size: 1.45rem; font-style: italic; line-height: 1.25; }
-ul.posts br { display: none; }
-ul.posts .muted { display: block; margin-top: .3rem; font-size: 1rem; }
+ul.links li > a { font-size: 1.2rem; font-style: italic; }
+ul.posts br, ul.links br { display: none; }
+ul.posts .muted, ul.links .muted { display: block; margin-top: .3rem; font-size: 1rem; }
 
 /* square task-list boxes */
 .task-list-item-checkbox {
@@ -385,7 +419,7 @@ main h2 { padding-top: 1.1rem; border-top: 1px solid var(--rule); }
 main > h2:first-child { border-top: 0; padding-top: 0; }
 
 /* key/value labels line up in a fixed-width first column */
-table.status th { width: 11rem; }
+table.status th { width: 15rem; }  /* includes the 2rem right padding */
 
 /* ---- phones ----------------------------------------------------------- */
 

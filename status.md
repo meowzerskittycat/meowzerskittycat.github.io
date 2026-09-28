@@ -1,11 +1,11 @@
 ---
 layout: default
 title: Status
-description: What I'm up to right now.
+description: What I am working on at the moment.
 ---
 # Status
 
-What I'm up to at the moment. Updated whenever I remember to.
+A short summary of what I am working on and listening to. I update it from time to time.
 
 <table class="status">
 {% for s in site.status %}<tr><th scope="row">{{ s[0] | replace: "_", " " | capitalize }}</th><td>{{ s[1] }}</td></tr>

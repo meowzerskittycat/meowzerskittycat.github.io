@@ -1,19 +1,19 @@
 # Links page.
-# "friends" = your friends' sites. "cool" = sites/tools you like.
+# "friends" = friends' websites. "cool" = sites and resources you use or recommend.
 friends: []
 # example:
 # friends:
-#   - name: "their name"
+#   - name: "Their name"
 #     url: "https://their-site.com"
-#     note: "A few words about them."
+#     note: "One sentence about them."
 
 cool:
   - name: "suckless.org"
     url: "https://suckless.org"
-    note: "Software that sucks less. Also the look of this site."
-  - name: "neocities"
+    note: "Software projects built around simplicity and small, readable code."
+  - name: "Neocities"
     url: "https://neocities.org"
-    note: "Free hosting for handmade sites."
-  - name: "freesound"
+    note: "Free hosting for independent, hand-built websites."
+  - name: "Freesound"
     url: "https://freesound.org"
-    note: "Free sound samples."
+    note: "A collaborative database of Creative Commons licensed audio samples."
