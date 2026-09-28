@@ -9,10 +9,9 @@ author: "Vivien"
 tagline: "software engineering student"
 description: "Personal site and blog of a software engineering student."
 
-# The site is served from the root of the domain (no sub-folder).
-# For that to work on GitHub Pages, the repository has to be named
-# "meowzerskittycat.github.io", or a custom domain has to be set up.
-# See "Deploying" in AGENTS.md.
+# The repository is named "meowzerskittycat.github.io", so GitHub serves
+# the site at the root of https://meowzerskittycat.github.io/ and baseurl
+# stays empty. If you add a custom domain, put it in url.
 url: "https://meowzerskittycat.github.io"
 baseurl: ""
 
