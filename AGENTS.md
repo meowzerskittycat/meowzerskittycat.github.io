@@ -11,10 +11,13 @@ how, not track listings.
 
 Pages: home, about, status, blog and links.
 
-**Style: minimal and text-first, in the spirit of [suckless.org](https://suckless.org).**
-- a plain header (name + tagline) and a grey menu bar with the pages
-- one column of text: black on white, the browser's default `sans-serif`, underlined blue links
-- no JavaScript, no web fonts, no animation, no icons or emoji, no cards or shadows
+**Style: minimal and text-first, with a dusk palette.** The colors come from a photo of a stormy evening over
+mountains: a near-black navy, a deep indigo, a slate violet, a lavender grey and a pale fog.
+- a dark header band (name, tagline and menu) with three thin "horizon" lines under it, getting lighter
+- one centered column of text in the system font; light by default, dark when the visitor's system prefers it
+- links are always underlined; headings are separated by thin rules; code blocks are dark navy
+- **square corners everywhere** (`border-radius` is reset to 0; don't add rounded corners, pills, cards or shadows)
+- no JavaScript, no web fonts, no animation, no icons or emoji
 - images only where they carry information (for example diagrams in a post)
 
 When in doubt, remove things. The page should read fine with CSS turned off.
@@ -116,14 +119,15 @@ Don't add fake releases or placeholder tracks.
 **Add links to the menu bar** (social profiles, a guestbook). Use `socials:` / `guestbook_url` in `_config.yml`.
 They're empty on purpose; only add real links he asks for.
 
-**Change colors.** Edit only the variables in `:root` at the top of `assets/css/site.css`. Keep it black-on-white
-or close to it, with enough contrast (at least 4.5:1).
+**Change colors.** Edit only the variables at the top of `assets/css/site.css`: the first `:root` block is the
+light version, the one inside `@media (prefers-color-scheme: dark)` is the dark version. Change both together, and
+keep every text color at least 4.5:1 against its background (check with any online contrast checker).
 
 ## Style & tone
 
 - **His name appears once per page: in the header** (it comes from `title` in `_config.yml`, and it's the `<h1>` on
   the home page). Don't repeat it in page text, post bylines or headings; pages are written in first person.
-  He uses he/him.
+  He uses he/they (see the about page).
 - He's a software engineering student. Keep examples and wording software-oriented rather than hardware.
 - Write plainly: half professional, half informal. Short sentences, normal capitalization, first person on his pages.
 - Avoid stock phrases ("welcome to my corner of the internet", "passionate about", "journey", "dive into",
