@@ -3,8 +3,8 @@
  *
  * Dusk over mountains. The header is a banded evening sky with a jagged
  * ridge along its bottom edge; the page below is the snow. Type is an
- * editorial serif: a large italic name, section headings and dates that
- * hang in the left margin, and a drop cap to open the text.
+ * editorial serif: a large italic name, small-caps labels and dates, and
+ * a drop cap to open the text. Everything is aligned to the left edge.
  *
  * Rules: square corners only (no border-radius anywhere), no web fonts,
  * no JavaScript, no images for decoration (the sky and ridges are CSS).
@@ -44,7 +44,6 @@
 	--mono:  ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 
 	--edge: clamp(1.5rem, 5vw, 5rem);  /* distance from the left edge of the window */
-	--gutter: 14rem;        /* left margin where headings and dates hang */
 	--measure: 40rem;
 }
 
@@ -380,41 +379,13 @@ ul.posts .muted { display: block; margin-top: .3rem; font-size: 1rem; }
 .footnotes { margin-top: 3rem; font-size: .92rem; color: var(--muted); }
 .footnotes ol { padding-left: 1.2rem; }
 
-/* ---- wide screens: headings, dates and labels hang in the margin ------ */
+/* ---- section headings: a rule across the column ---------------------- */
 
-@media (min-width: 62rem) {
-	main.wrap { padding-left: calc(var(--edge) + var(--gutter)); }
-	.post > *, main > * { max-width: var(--measure); }
+main h2 { padding-top: 1.1rem; border-top: 1px solid var(--rule); }
+main > h2:first-child { border-top: 0; padding-top: 0; }
 
-	/* section headings stay in the text column; their rule runs across the margin */
-	main h2 {
-		max-width: calc(var(--measure) + var(--gutter));
-		margin-left: calc(-1 * var(--gutter));
-		padding: 1.1rem 0 0 var(--gutter);
-		border-top: 1px solid var(--rule);
-	}
-
-	main h1, .post-header { margin-left: -.05em; }
-
-	ul.posts li, ul.log li { padding-left: 0; }
-	ul.posts time, ul.log time {
-		position: absolute;
-		left: calc(-1 * var(--gutter));
-		top: 1.25rem;
-		width: calc(var(--gutter) - 2.5rem);
-		text-align: right;
-		margin: 0;
-	}
-
-	table.status { margin-left: calc(-1 * var(--gutter)); }
-	table.status th {
-		width: var(--gutter);
-		padding-right: 2.5rem;
-		text-align: right;
-	}
-
-	.post-header .meta { position: absolute; left: var(--edge); width: calc(var(--gutter) - 2.5rem); text-align: right; margin-top: -2.6rem; }
-}
+/* key/value labels line up in a fixed-width first column */
+table.status th { width: 11rem; }
 
 /* ---- phones ----------------------------------------------------------- */
 
