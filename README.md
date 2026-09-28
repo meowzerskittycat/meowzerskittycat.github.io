@@ -3,14 +3,13 @@
 Vivien's personal site and blog. Plain HTML in the spirit of suckless.org,
 hosted on GitHub Pages.
 
-## Setup (one time)
+Live at https://meowzerskittycat.github.io/
 
-The site is served from the root of the domain, so either:
+## Publishing
 
-- rename this repository to `meowzerskittycat.github.io` (Settings → General), or
-- add a custom domain (Settings → Pages → Custom domain) and put it in `url:` in `_config.yml`.
-
-Then go to **Settings → Pages**, choose **Deploy from a branch**, branch **`main`**, folder **`/ (root)`**, and save.
+GitHub Pages builds the site from **`main`** (Settings → Pages → Deploy from a branch, folder **`/ (root)`**).
+Every push to `main` goes live in about a minute. Keep the repository name as `meowzerskittycat.github.io`;
+that's what puts the site at the root of the address.
 
 ## Writing a post
 
@@ -26,8 +25,7 @@ Text goes here.
 ```
 
 Push it and it shows up on the Blog page. `_posts/2026-09-27-lorem-ipsum.md` shows every Markdown feature the
-site supports. Music goes in posts too (see `_posts/2026-09-27-making-music.md`). Unfinished posts can go in
-`_drafts/`, which is never published.
+site supports. Music goes in posts too. Unfinished posts can go in `_drafts/`, which is never published.
 
 ## Editing everything else
 

@@ -21,7 +21,7 @@ When in doubt, remove things. The page should read fine with CSS turned off.
 
 - Hosted on **GitHub Pages only**. No servers, databases, Node build steps, or paid services.
 - Built with **Jekyll**, which GitHub Pages runs automatically on every push to `main`.
-- Served from the root of the domain (`baseurl: ""`). See **Deploying** below.
+- Live at `https://meowzerskittycat.github.io/`, served from the root of the domain (`baseurl: ""`). See **Deploying**.
 
 ## Hard rules
 
@@ -110,8 +110,8 @@ Notes:
 **Update the status page.** Change the values under `status:` in `_config.yml`. Add a line to `_data/updates.yml`
 when something on the site changes.
 
-**Music.** Music goes in regular blog posts. `_posts/2026-09-27-making-music.md` is the overview
-(what he's working on, setup, what's on repeat); edit it there. Don't add fake releases or placeholder tracks.
+**Music.** Music goes in regular blog posts, like any other topic. There's no separate music page.
+Don't add fake releases or placeholder tracks.
 
 **Add links to the menu bar** (social profiles, a guestbook). Use `socials:` / `guestbook_url` in `_config.yml`.
 They're empty on purpose; only add real links he asks for.
@@ -152,16 +152,13 @@ Then check that new internal links use `relative_url` and that no `<script>` tag
 
 ## Deploying
 
-The site is set up to live at the root of a domain (`baseurl: ""` in `_config.yml`). On GitHub Pages that means one
-of these:
-
-- **Rename the repository to `meowzerskittycat.github.io`** (Settings → General → Repository name). The site is then
-  served at `https://meowzerskittycat.github.io/`. This matches `url:` in `_config.yml`.
-- Or keep the name and **add a custom domain** (Settings → Pages → Custom domain), then set `url:` in `_config.yml`
-  to that domain.
-
-While the repository is still called `website`, GitHub serves the site at `/website/`, and with an empty `baseurl`
-the CSS and links won't load there. If the site ever has to go back into a sub-folder, set `baseurl: "/website"`.
+The repository is named `meowzerskittycat.github.io`, so GitHub Pages serves the site at the root of
+`https://meowzerskittycat.github.io/`. That's why `baseurl` in `_config.yml` is empty and `url` is that address.
 
 Publishing: Settings → **Pages** → Build and deployment → Source: **Deploy from a branch**, branch **`main`**, folder
-**`/ (root)`**. After that, every push to `main` redeploys in about a minute.
+**`/ (root)`**. Every push to `main` redeploys in about a minute.
+
+- **Custom domain:** add it under Settings → Pages → Custom domain, then set `url:` in `_config.yml` to it.
+  `baseurl` stays empty.
+- **Don't rename the repository.** Any other name moves the site into a sub-folder (`/<repo-name>/`), and
+  `baseurl` would then have to be set to `"/<repo-name>"`.
