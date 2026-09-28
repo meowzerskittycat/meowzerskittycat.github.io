@@ -1,10 +1,6 @@
 {% include nav-items.html %}
-<header class="site-header">
-<div class="wrap site-header-inner">
-<div class="site-id">
-{% if page.url == "/" %}<h1 class="site-name"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>{% else %}<p class="site-name"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></p>{% endif %}
-<p class="site-tagline">{{ site.tagline }}</p>
-</div>
+<header class="site-header{% if page.url == '/' %} is-home{% endif %}">
+<div class="wrap">
 <nav class="site-nav" aria-label="Main">
 <ul>
 {% for item in nav %}{% assign parts = item | split: "|" %}{% assign active = false %}{% if page.url == parts[0] %}{% assign active = true %}{% elsif parts[0] == "/blog/" and page.layout == "post" %}{% assign active = true %}{% endif %}<li><a href="{{ parts[0] | relative_url }}"{% if active %} class="active"{% endif %}{% if page.url == parts[0] %} aria-current="page"{% endif %}>{{ parts[1] }}</a></li>
@@ -12,5 +8,10 @@
 {% endfor %}{% if site.guestbook_url != "" %}<li class="ext"><a href="{{ site.guestbook_url }}">guestbook</a></li>
 {% endif %}</ul>
 </nav>
+<div class="site-id">
+{% if page.url == "/" %}<h1 class="site-name"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>{% else %}<p class="site-name"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></p>{% endif %}
+<p class="site-tagline">{{ site.tagline }}</p>
 </div>
+</div>
+<div class="ridges" aria-hidden="true"></div>
 </header>

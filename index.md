@@ -8,5 +8,5 @@ Most of what ends up here is on the [blog]({{ '/blog/' | relative_url }}): notes
 The site is plain HTML, with no tracking, cookies or scripts. I update it when I have something worth writing down.
 
 {% assign latest = site.posts | first %}{% if latest %}
-Latest post: [{{ latest.title }}]({{ latest.url | relative_url }}), {{ latest.date | date: "%Y-%m-%d" }}.
+Latest post: [{{ latest.title }}]({{ latest.url | relative_url }}), {{ latest.date | date: "%-d %B %Y" }}.
 {% endif %}

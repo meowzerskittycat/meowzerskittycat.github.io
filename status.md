@@ -14,5 +14,5 @@ What I'm up to at the moment. Updated whenever I remember to.
 ## Site updates
 
 <ul class="log">
-{% for u in site.data.updates %}<li><time datetime="{{ u.date | date: '%Y-%m-%d' }}">{{ u.date | date: "%Y-%m-%d" }}</time> {{ u.text }}</li>
+{% for u in site.data.updates %}<li><time datetime="{{ u.date | date: '%Y-%m-%d' }}">{{ u.date | date: "%-d %B %Y" }}</time> {{ u.text }}</li>
 {% endfor %}</ul>
