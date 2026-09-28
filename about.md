@@ -14,7 +14,7 @@ instead of leaving notes scattered in folders.
 ## Profile
 
 <table class="status">
-<tr><th scope="row">Pronouns</th><td>He/They</td></tr>
+<tr><th scope="row">Pronouns</th><td>He/they</td></tr>
 <tr><th scope="row">Studying</th><td>Software engineering, 1st year</td></tr>
 </table>
 
