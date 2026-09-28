@@ -1,8 +1,8 @@
 # Favorite things, shown on the about page.
 # Add, remove or rename any category.
 - category: "Music"
-  items: ["(genre)", "(genre)", "(artist)"]
+  items: ["rock", "metal", "kreator"]
 - category: "Food"
-  items: ["(food)", "(food)"]
+  items: ["cepelinai", "šaltibarščiai"]
 - category: "Outside of uni"
-  items: ["making music", "(hobby)", "(hobby)"]
+  items: ["making music", "hanging out with friends", "sleeping"]
