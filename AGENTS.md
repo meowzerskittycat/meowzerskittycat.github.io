@@ -11,13 +11,19 @@ how, not track listings.
 
 Pages: home, about, status, blog and links.
 
-**Style: minimal and text-first, in the spirit of [suckless.org](https://suckless.org).**
-- a plain header (name + tagline) and a grey menu bar with the pages
-- one column of text: black on white, the browser's default `sans-serif`, underlined blue links
-- no JavaScript, no web fonts, no animation, no icons or emoji, no cards or shadows
-- images only where they carry information (for example diagrams in a post)
+**Style: an experimental, editorial layout in the [Nord](https://www.nordtheme.com) colour palette.**
+- The header is a banded polar sky (Nord's Polar Night shades, fading to Frost blue at the horizon) with a faint
+  aurora glow in the upper right, and three jagged mountain ridges along its bottom edge, all drawn in CSS.
+  The nearest ridge is the page colour, so the page reads as snow (or as night, in dark mode).
+- Everything is aligned to the left edge: menu, name, headings, text, labels and dates. Nothing is centred.
+- Type is an editorial serif (system fonts only): a large italic name, italic headings, small uppercase labels
+  and dates, and a drop cap at the start of the home page and each post.
+- Light mode uses Snow Storm for the page; dark mode (automatic) uses Polar Night. Code blocks use Nord's own
+  syntax colours.
+- **Square corners everywhere** (`border-radius` is reset to 0; don't add rounded corners, pills, cards or shadows).
+- No JavaScript, no web fonts, no icons or emoji. Images only where they carry information.
 
-When in doubt, remove things. The page should read fine with CSS turned off.
+The page should still read fine with CSS turned off.
 
 - Hosted on **GitHub Pages only**. No servers, databases, Node build steps, or paid services.
 - Built with **Jekyll**, which GitHub Pages runs automatically on every push to `main`.
@@ -59,7 +65,7 @@ When in doubt, remove things. The page should read fine with CSS turned off.
 | links page                               | `links.md` + `_data/links.yml`                  |
 | pages in the menu bar                    | `_includes/nav-items.html`                      |
 | header + menu bar                        | `_includes/header.html`                         |
-| page skeleton (`<head>`)                 | `_layouts/default.html`                         |
+| page skeleton (`<head>`), plus small fixes to the Markdown output (labelled task-list boxes, footnote ids) | `_layouts/default.html` |
 | colors and layout                        | `assets/css/site.css` (colors are variables at the top, in `:root`) |
 
 `404.html` is the "page not found" page. GitHub Pages picks it up automatically.
@@ -116,18 +122,27 @@ Don't add fake releases or placeholder tracks.
 **Add links to the menu bar** (social profiles, a guestbook). Use `socials:` / `guestbook_url` in `_config.yml`.
 They're empty on purpose; only add real links he asks for.
 
-**Change colors.** Edit only the variables in `:root` at the top of `assets/css/site.css`. Keep it black-on-white
-or close to it, with enough contrast (at least 4.5:1).
+**Change colours.** Edit only the variables at the top of `assets/css/site.css`. The 16 Nord colours are defined
+once (`--nord0` to `--nord15`); the first `:root` block maps them to roles for light mode, and the block inside
+`@media (prefers-color-scheme: dark)` does the same for dark mode. Keep every text colour at least 4.5:1 against its
+background. Some Nord colours fail that on their own (for example `nord10` on `nord6`), which is why light-mode links
+use a deeper shade of `nord10`.
 
 ## Style & tone
 
 - **His name appears once per page: in the header** (it comes from `title` in `_config.yml`, and it's the `<h1>` on
   the home page). Don't repeat it in page text, post bylines or headings; pages are written in first person.
-  He uses he/him.
+  He uses he/they (see the about page).
 - He's a software engineering student. Keep examples and wording software-oriented rather than hardware.
-- Write plainly: half professional, half informal. Short sentences, normal capitalization, first person on his pages.
-- Avoid stock phrases ("welcome to my corner of the internet", "passionate about", "journey", "dive into",
-  "delve") and hype. No emoji. No jokes for the sake of jokes.
+- **Write professionally and plainly.** First person, complete sentences, normal capitalisation, no contractions in
+  page text. Say what something is or does; don't sell it.
+- **No em dashes or en dashes** used as punctuation. Use a comma, a colon, parentheses or a new sentence instead.
+  (A hyphen inside a compound word, such as "first-year", is fine.)
+- **Avoid buzzwords and typical AI phrasing.** For example: "passionate about", "journey", "dive into", "delve",
+  "explore", "leverage", "seamless", "robust", "cutting-edge", "showcase", "unlock", "elevate", "in today's world",
+  "whether you're X or Y", "it's not just X, it's Y", lists of three used for rhythm, and closing sentences that
+  summarise what was just said. No hype, no emoji, no exclamation marks.
+- Entries Vivien writes himself (status values, site updates, interests) are his; keep their meaning when editing.
 - Don't invent facts about him. Use obvious `(placeholder)` text where real info is needed.
 - No filler: no decorative buttons, badges, widgets, "back to top" buttons, footers, or links to placeholder URLs.
   Every link should go somewhere real.

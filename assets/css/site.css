@@ -1,108 +1,446 @@
 /*
  * site.css
- * Plain, text-first style in the spirit of suckless.org.
- * No web fonts, no animation, no JavaScript.
- * Colors are the variables below.
+ *
+ * Colours: the Nord palette (https://www.nordtheme.com), an arctic,
+ * north-bluish set of 16 colours: Polar Night (nord0-3), Snow Storm
+ * (nord4-6), Frost (nord7-10) and Aurora (nord11-15).
+ *
+ * Layout: the header is a banded polar sky with a faint aurora and three
+ * jagged mountain ridges along its bottom edge; the page below is the snow.
+ * Type is an editorial serif: a large italic name, small-caps labels and
+ * dates, and a drop cap to open the text. Everything is aligned left.
+ *
+ * Rules: square corners only (no border-radius anywhere), no web fonts,
+ * no JavaScript, no images for decoration (the sky and ridges are CSS).
+ * Colours live in the two :root blocks below; every text colour is at
+ * least 4.5:1 against its background. Nord's frost blue (nord10) is too
+ * light for body text on snow, so light-mode links use a deeper shade of it.
  */
 
+/* ---- palette ---------------------------------------------------------- */
+
 :root {
-	--text: #000;
-	--muted: #555;
-	--bg: #fff;
-	--bar: #eee;
-	--line: #ccc;
-	--link: #1a4ba6;
-	--visited: #5b2a86;
+	/* Nord */
+	--nord0:  #2E3440;  --nord1:  #3B4252;  --nord2:  #434C5E;  --nord3:  #4C566A;
+	--nord4:  #D8DEE9;  --nord5:  #E5E9F0;  --nord6:  #ECEFF4;
+	--nord7:  #8FBCBB;  --nord8:  #88C0D0;  --nord9:  #81A1C1;  --nord10: #5E81AC;
+	--nord11: #BF616A;  --nord12: #D08770;  --nord13: #EBCB8B;  --nord14: #A3BE8C;  --nord15: #B48EAD;
+
+	/* light (snow) */
+	--bg:        var(--nord6);
+	--surface:   var(--nord5);
+	--rule:      var(--nord4);
+	--ink:       var(--nord0);
+	--muted:     var(--nord3);
+	--link:      #46668d;          /* nord10, deepened for contrast */
+	--visited:   #6d5a82;          /* nord15, deepened for contrast */
+	--underline: var(--nord9);
+	--accent:    var(--nord10);
+
+	/* sky, from the top of the page down to the ridges (same in both modes).
+	   The bands tilt upwards to the right, so the lowest band must stay close in
+	   tone to the ridges or it shows between the peaks on the right. */
+	--sky-1: #242933;              /* one step darker than nord0 */
+	--sky-2: var(--nord0);
+	--sky-3: var(--nord1);
+	--sky-4: var(--nord2);
+	--sky-5: var(--nord3);
+	--sky-text: var(--nord6);
+	--sky-dim:  var(--nord4);
+	--aurora-1: rgba(163, 190, 140, .16);   /* nord14 */
+	--aurora-2: rgba(143, 188, 187, .12);   /* nord7 */
+
+	/* mountain layers, far to near (near = page colour) */
+	--ridge-far: var(--nord1);
+	--ridge-mid: var(--nord9);
+
+	/* code blocks: Nord's own syntax colours on a dark block */
+	--code-bg:      var(--nord0);
+	--code-text:    var(--nord6);
+	--code-comment: var(--nord4);
+	--code-keyword: var(--nord9);
+	--code-string:  var(--nord14);
+	--code-number:  var(--nord13);
+	--code-func:    var(--nord8);
+
+	--serif: "Iowan Old Style", Charter, "Bitstream Charter", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+	--sans:  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--mono:  ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+
+	--edge: clamp(1.5rem, 5vw, 5rem);  /* distance from the left edge of the window */
+	--measure: 40rem;
 }
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg:        var(--nord0);
+		--surface:   var(--nord1);
+		--rule:      var(--nord2);
+		--ink:       var(--nord6);
+		--muted:     var(--nord4);
+		--link:      var(--nord8);
+		--visited:   #cbaec5;          /* nord15, lightened for contrast */
+		--underline: var(--nord3);
+		--accent:    var(--nord8);
+
+		--ridge-far: var(--nord1);
+		--ridge-mid: var(--nord3);
+
+		--code-bg:      var(--nord1);
+		--code-keyword: var(--nord8);  /* nord9 is too dim on nord1 */
+		--code-func:    var(--nord7);
+	}
+}
+
+/* ---- base ------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; border-radius: 0; }
+
+html { font-size: 100%; -webkit-text-size-adjust: 100%; }
 
 body {
 	margin: 0;
-	color: var(--text);
+	color: var(--ink);
 	background: var(--bg);
-	font-family: sans-serif;
-	line-height: 1.45;
+	font-family: var(--serif);
+	font-size: 1.125rem;
+	line-height: 1.6;
+	font-kerning: normal;
+	font-variant-numeric: oldstyle-nums proportional-nums;
 }
 
-a { color: var(--link); }
+/* everything hangs off the left edge; nothing is centred */
+.wrap { max-width: calc(var(--edge) + 60rem); margin: 0; padding: 0 1.5rem 0 var(--edge); }
+
+a {
+	color: var(--link);
+	text-decoration: underline;
+	text-decoration-color: var(--underline);
+	text-decoration-thickness: 2px;
+	text-underline-offset: .2em;
+}
 a:visited { color: var(--visited); }
+a:hover { background: var(--surface); text-decoration-color: var(--link); }
 
-/* header + menu bar */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.site-header :focus-visible { outline-color: var(--nord8); }
+::selection { background: var(--nord8); color: var(--nord0); }
 
-#header { padding: .6em 1em; }
-#headerLink {
-	font-size: 1.6em;
-	font-weight: bold;
-	color: var(--text);
-	text-decoration: none;
+.skip-link {
+	position: absolute;
+	left: 1rem;
+	top: -4rem;
+	padding: .5rem .9rem;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: var(--sans);
+	border: 2px solid var(--accent);
+	z-index: 10;
 }
-#headerTitle { display: inline; margin: 0; font-size: 1em; }
-#headerSubtitle { margin-left: .6em; color: var(--muted); }
+.skip-link:focus { top: 1rem; }
 
-#menu {
+/* ---- the sky ---------------------------------------------------------- */
+
+.site-header {
+	position: relative;
+	padding: 1.4rem 0 7.5rem;
+	margin-bottom: 3rem;
+	color: var(--sky-text);
+	/* a faint aurora (upper right) over uneven, slightly tilted bands of polar sky */
+	background:
+		linear-gradient(118deg,
+			transparent 0 44%,
+			var(--aurora-1) 60%,
+			var(--aurora-2) 70%,
+			transparent 86%),
+		linear-gradient(176deg,
+			var(--sky-1) 0 22%,
+			var(--sky-2) 22% 41%,
+			var(--sky-3) 41% 56%,
+			var(--sky-4) 56% 69%,
+			var(--sky-5) 69% 100%);
+}
+.site-header.is-home { padding-bottom: 10rem; }
+
+/* three mountain ridges: far (header::before), mid and near (.ridges) */
+.site-header::before,
+.ridges::before,
+.ridges::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -1px;   /* overlap by a pixel so no sky shows under the ridge */
+	height: 7rem;
+}
+.site-header::before {
+	background: var(--ridge-far);
+	clip-path: polygon(0 100%, 0 44%, 5% 30%, 9% 38%, 15% 12%, 19% 22%, 24% 16%, 31% 40%, 38% 30%, 45% 48%,
+		52% 26%, 57% 34%, 63% 8%, 67% 18%, 72% 10%, 79% 36%, 86% 24%, 92% 42%, 97% 30%, 100% 36%, 100% 100%);
+}
+.ridges::before {
+	background: var(--ridge-mid);
+	clip-path: polygon(0 100%, 0 62%, 7% 50%, 12% 60%, 20% 40%, 26% 52%, 33% 46%, 40% 64%, 49% 50%, 55% 60%,
+		61% 38%, 66% 46%, 71% 28%, 76% 40%, 82% 34%, 88% 54%, 94% 48%, 100% 58%, 100% 100%);
+}
+.ridges::after {
+	bottom: -3px;   /* reach past the other layers so none of them peek out at the seam */
+	background: var(--bg);
+	clip-path: polygon(0 100%, 0 82%, 8% 74%, 14% 84%, 23% 70%, 30% 82%, 38% 76%, 46% 90%, 57% 80%, 65% 66%,
+		70% 74%, 76% 56%, 81% 68%, 87% 62%, 93% 78%, 100% 72%, 100% 100%);
+}
+.site-header.is-home::before, .is-home .ridges::before, .is-home .ridges::after { height: 9.5rem; }
+
+.site-header .wrap { position: relative; z-index: 1; }
+
+.site-nav ul {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
-	gap: .2em 1em;
-	padding: .3em 1em;
-	background: var(--bar);
-	border-top: 1px solid var(--line);
-	border-bottom: 1px solid var(--line);
+	justify-content: flex-start;
+	gap: .3rem 1.6rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
-#menu a { margin-right: .8em; color: var(--text); text-decoration: none; }
-#menu .right a { margin: 0 0 0 .8em; }
-#menu a:hover { text-decoration: underline; }
-#menu a.thisSite { font-weight: bold; }
+.site-nav li { margin: 0; }
+.site-nav a, .site-nav a:visited {
+	color: var(--sky-dim);
+	font-style: italic;
+	font-size: 1.05rem;
+	text-decoration: none;
+	background: none;
+	padding-bottom: .15rem;
+	border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--sky-text); border-bottom-color: var(--nord10); }
+.site-nav a.active { color: var(--sky-text); border-bottom-color: var(--ridge-mid); }
 
-/* main text */
+.site-id { margin-top: 3.5rem; }
+.is-home .site-id { margin-top: 5rem; }
 
-#main { max-width: 46em; padding: 0 1em 2em; }
+.site-name {
+	margin: 0;
+	font-weight: 400;
+	font-style: italic;
+	font-size: clamp(2.6rem, 6vw, 4.2rem);
+	line-height: .95;
+	letter-spacing: -.02em;
+}
+.is-home .site-name { font-size: clamp(3.4rem, 12vw, 8.5rem); }
+.site-name a, .site-name a:visited { color: var(--sky-text); text-decoration: none; background: none; }
 
-h1 { font-size: 1.5em; margin: .8em 0 .4em; }
-h2 { font-size: 1.2em; margin: 1.5em 0 .4em; }
-h3 { font-size: 1.05em; margin: 1.2em 0 .3em; }
-h4 { font-size: 1em; margin: 1em 0 .3em; }
+.site-tagline {
+	margin: .9rem 0 0;
+	font-family: var(--sans);
+	font-size: .78rem;
+	font-weight: 600;
+	letter-spacing: .22em;
+	text-transform: uppercase;
+	color: var(--sky-dim);
+}
 
+/* ---- text column ------------------------------------------------------ */
+
+main { position: relative; padding-bottom: 5rem; }
+main > * { max-width: var(--measure); }
+
+h1, h2, h3, h4 { font-weight: 400; line-height: 1.2; color: var(--ink); }
+h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); font-style: italic; letter-spacing: -.015em; margin: 0 0 1.5rem; }
+h2 { font-size: 1.45rem; font-style: italic; margin: 3rem 0 .8rem; }
+h3 { font-size: 1.2rem; font-weight: 600; margin: 2.2rem 0 .5rem; }
+h4 {
+	font-family: var(--sans);
+	font-size: .78rem;
+	font-weight: 600;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+	color: var(--muted);
+	margin: 1.8rem 0 .4rem;
+}
+
+p, ul, ol, dl, blockquote, pre, table, figure { margin: 0 0 1.2rem; }
+ul, ol { padding-left: 1.3rem; }
+li + li { margin-top: .25rem; }
+li > ul, li > ol { margin: .25rem 0 0; }
+ul { list-style-type: square; }
+li::marker { color: var(--accent); }
+
+strong { font-weight: 700; }
+del { color: var(--muted); }
 .meta, .muted { color: var(--muted); }
-.meta { margin-top: 0; }
 
-img { max-width: 100%; height: auto; }
-hr { border: 0; border-top: 1px solid var(--line); margin: 1.5em 0; }
+/* a drop cap to open the home page and each post */
+main > p:first-child::first-letter,
+.post-header + p::first-letter {
+	float: left;
+	font-size: 3.7em;
+	line-height: .82;
+	margin: .06em .1em 0 0;
+	font-style: italic;
+	color: var(--accent);
+}
+
+/* horizontal rules become a small mountain */
+hr {
+	width: 4.5rem;
+	height: .7rem;
+	margin: 3rem 0;
+	border: 0;
+	background: var(--accent);
+	clip-path: polygon(0 100%, 22% 35%, 36% 70%, 58% 0, 78% 55%, 100% 100%);
+}
+
+img { display: block; max-width: 100%; height: auto; border: 1px solid var(--rule); }
 
 blockquote {
-	margin: 1em 0;
-	padding: 0 1em;
-	color: #333;
-	border-left: 3px solid var(--line);
+	margin-left: 0;
+	padding: .2rem 0 .2rem 1.4rem;
+	border-left: 4px solid var(--ridge-mid);
+	font-style: italic;
+	font-size: 1.2rem;
+	color: var(--link);
+}
+blockquote blockquote { font-size: 1rem; margin: .8rem 0 0; }
+blockquote p:last-child { margin-bottom: 0; }
+
+dt { font-style: italic; font-size: 1.1rem; }
+dd { margin: 0 0 .7rem 1.4rem; }
+
+/* ---- code: Nord syntax colours ---------------------------------------- */
+
+code, kbd, pre { font-family: var(--mono); font-size: .8em; }
+:not(pre) > code { padding: .1em .35em; background: var(--surface); }
+pre {
+	padding: 1rem 1.2rem;
+	overflow-x: auto;
+	background: var(--code-bg);
+	color: var(--code-text);
+	border-left: 4px solid var(--nord8);
+	line-height: 1.55;
+	tab-size: 4;
+}
+pre code { font-size: 1em; }
+kbd { padding: .05em .4em; border: 1px solid var(--rule); border-bottom-width: 3px; background: var(--bg); }
+
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs { color: var(--code-comment); font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kt, .highlight .kr, .highlight .kc,
+.highlight .cp, .highlight .o, .highlight .ow { color: var(--code-keyword); }
+.highlight .k, .highlight .kd, .highlight .kr, .highlight .cp { font-weight: 700; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .se, .highlight .sc,
+.highlight .cpf { color: var(--code-string); }
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh { color: var(--code-number); }
+.highlight .nf, .highlight .nb { color: var(--code-func); }
+
+/* ---- tables: book-style, horizontal rules only ------------------------ */
+
+table { border-collapse: collapse; font-size: 1rem; font-variant-numeric: lining-nums tabular-nums; }
+th, td { padding: .45rem 1rem .45rem 0; text-align: left; }
+thead th {
+	font-family: var(--sans);
+	font-size: .75rem;
+	font-weight: 600;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--muted);
+	border-bottom: 1px solid var(--ink);
+}
+table:not(.status) { border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+tbody tr + tr td { border-top: 1px solid var(--rule); }
+
+/* key/value tables (status, profile, things I like) */
+table.status { border: 0; }
+table.status th, table.status td { padding: .55rem 0; vertical-align: baseline; border: 0; }
+table.status tr + tr th, table.status tr + tr td { border-top: 1px solid var(--rule); }
+table.status th {
+	padding-right: 2rem;
+	font-family: var(--sans);
+	font-size: .72rem;
+	font-weight: 600;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--muted);
+}
+table.status td { font-style: italic; font-size: 1.2rem; }
+
+/* ---- dated lists (blog, site updates) --------------------------------- */
+
+ul.posts, ul.log, ul.links, ul.task-list { list-style: none; padding-left: 0; }
+ul.posts li, ul.log li, ul.links li { position: relative; margin: 0; padding: .9rem 0; border-top: 1px solid var(--rule); }
+ul.posts li:last-child, ul.log li:last-child, ul.links li:last-child { border-bottom: 1px solid var(--rule); }
+ul.posts time, ul.log time {
+	display: block;
+	font-family: var(--sans);
+	font-size: .72rem;
+	font-weight: 600;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+	color: var(--muted);
+	margin-bottom: .2rem;
+}
+ul.posts li > a { font-size: 1.45rem; font-style: italic; line-height: 1.25; }
+ul.links li > a { font-size: 1.2rem; font-style: italic; }
+ul.posts br, ul.links br { display: none; }
+ul.posts .muted, ul.links .muted { display: block; margin-top: .3rem; font-size: 1rem; }
+
+/* square task-list boxes (see _layouts/default.html) */
+.task-box {
+	display: inline-block;
+	width: .85rem;
+	height: .85rem;
+	margin-right: .6rem;
+	vertical-align: -.05rem;
+	border: 1.5px solid var(--accent);
+}
+.task-box.is-done { background: var(--accent); box-shadow: inset 0 0 0 2px var(--bg); }
+
+/* ---- posts ------------------------------------------------------------ */
+
+.post-header { margin-bottom: 2rem; }
+.post-header h1 { margin-bottom: .6rem; }
+.post-header .meta {
+	margin: 0;
+	font-family: var(--sans);
+	font-size: .75rem;
+	font-weight: 600;
+	letter-spacing: .16em;
+	text-transform: uppercase;
+}
+.post-nav { margin-top: 4rem; font-style: italic; }
+.post-nav a::before { content: "\2190\00a0"; }
+.footnotes { margin-top: 3rem; font-size: .92rem; color: var(--muted); }
+.footnotes ol { padding-left: 1.2rem; }
+
+/* ---- section headings: a rule across the column ---------------------- */
+
+main h2 { padding-top: 1.1rem; border-top: 1px solid var(--rule); }
+main > h2:first-child { border-top: 0; padding-top: 0; }
+
+/* key/value labels line up in a fixed-width first column */
+table.status th { width: 15rem; }  /* includes the 2rem right padding */
+
+/* ---- phones ----------------------------------------------------------- */
+
+@media (max-width: 40rem) {
+	body { font-size: 1.0625rem; }
+	.site-header { padding-bottom: 5.5rem; margin-bottom: 2rem; }
+	.site-header.is-home { padding-bottom: 6.5rem; }
+	.site-header::before, .ridges::before, .ridges::after { height: 4.5rem; }
+	.site-header.is-home::before, .is-home .ridges::before, .is-home .ridges::after { height: 5.5rem; }
+	.site-nav ul { gap: .3rem 1.2rem; }
+	.site-id, .is-home .site-id { margin-top: 2rem; }
+	table.status th { width: auto; padding-right: 1.25rem; white-space: normal; }
+	pre { margin-left: calc(-1 * var(--edge)); margin-right: -1.5rem; }
 }
 
-/* "monospace, monospace" stops browsers from shrinking monospace text */
-code, pre, kbd { font-family: monospace, monospace; font-size: .95em; }
-pre code { font-size: 1em; }
-pre { padding: .6em .8em; background: var(--bar); border: 1px solid var(--line); overflow-x: auto; tab-size: 4; }
-kbd { padding: 0 .3em; border: 1px solid var(--line); border-bottom-width: 2px; background: var(--bar); }
-
-/* syntax highlighting, kept to black, grey and bold */
-.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs { color: var(--muted); font-style: italic; }
-.highlight .k, .highlight .kd, .highlight .kt, .highlight .cp { font-weight: bold; }
-
-table { border-collapse: collapse; margin: 1em 0; }
-th, td { padding: .25em .6em; border: 1px solid var(--line); }
-th { background: var(--bar); }
-
-/* key/value tables (status, profile) without borders */
-table.status th, table.status td { border: 0; background: none; padding: .15em 1.5em .15em 0; text-align: left; vertical-align: top; }
-
-dt { font-weight: bold; }
-dd { margin: 0 0 .4em 1.5em; }
-
-ul.task-list, ul.todo, ul.posts, ul.log { list-style: none; padding-left: 0; }
-.task-list-item-checkbox { margin: 0 .5em 0 0; }
-ul.posts li { margin: .5em 0; }
-ul.posts time, ul.log time { font-family: monospace; margin-right: .6em; }
-del { color: var(--muted); }
-
-.footnotes { margin-top: 2em; font-size: .9em; border-top: 1px solid var(--line); }
-
-@media (max-width: 40em) {
-	#headerSubtitle { display: block; margin: .2em 0 0; }
+@media print {
+	/* paper is white: force dark text everywhere, including dark mode and code */
+	:root { --bg: #fff; --surface: #fff; --ink: #000; --muted: #333; --link: #000; --visited: #000; --rule: #999; }
+	body { background: #fff; color: #000; }
+	.site-header { background: none; color: #000; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+	.site-header::before, .ridges, .site-nav, .skip-link, .post-nav { display: none; }
+	.site-name a, .site-tagline { color: #000; }
+	pre { background: none; color: #000; border: 1px solid #999; }
+	pre .highlight *, .highlight * { color: #000 !important; }
+	a { text-decoration-color: #999; }
 }

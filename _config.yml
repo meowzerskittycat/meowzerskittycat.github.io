@@ -19,7 +19,7 @@ baseurl: ""
 # You can rename, add or remove lines; the part before the colon is the label.
 status:
   mood: "Tired but fine."
-  listening: "Epitaph (2004)"
+  listening_to: "Epitaph (2004)"
   working_on: "A song that might never be finished."
   studying: "C++"
 
@@ -38,6 +38,8 @@ guestbook_url: ""
 # Jekyll settings (you normally don't need to touch these)
 theme: null           # no GitHub theme; this site has its own stylesheet
 markdown: kramdown
+kramdown:
+  footnote_backlink: "&#8617;&#xFE0E;"   # the return arrow, forced to render as text, not an emoji
 permalink: pretty
 
 # Blog posts in _posts/ appear on the Blog page, each at /blog/<name>/

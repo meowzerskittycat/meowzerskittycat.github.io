@@ -1,14 +1,17 @@
 {% include nav-items.html %}
-<div id="header">
-{% if page.url == "/" %}<h1 id="headerTitle"><a href="{{ '/' | relative_url }}" id="headerLink">{{ site.title }}</a></h1>{% else %}<a href="{{ '/' | relative_url }}" id="headerLink">{{ site.title }}</a>{% endif %}
-<span id="headerSubtitle">{{ site.tagline }}</span>
+<header class="site-header{% if page.url == '/' %} is-home{% endif %}">
+<div class="wrap">
+<nav class="site-nav" aria-label="Main">
+<ul>
+{% for item in nav %}{% assign parts = item | split: "|" %}{% assign active = false %}{% if page.url == parts[0] %}{% assign active = true %}{% elsif parts[0] == "/blog/" and page.layout == "post" %}{% assign active = true %}{% endif %}<li><a href="{{ parts[0] | relative_url }}"{% if active %} class="active"{% endif %}{% if page.url == parts[0] %} aria-current="page"{% endif %}>{{ parts[1] }}</a></li>
+{% endfor %}{% for s in site.socials %}<li class="ext"><a href="{{ s.url }}">{{ s.name }}</a></li>
+{% endfor %}{% if site.guestbook_url != "" %}<li class="ext"><a href="{{ site.guestbook_url }}">guestbook</a></li>
+{% endif %}</ul>
+</nav>
+<div class="site-id">
+{% if page.url == "/" %}<h1 class="site-name"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>{% else %}<p class="site-name"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></p>{% endif %}
+<p class="site-tagline">{{ site.tagline }}</p>
 </div>
-<div id="menu">
-<span class="left">
-{% for item in nav %}{% assign parts = item | split: "|" %}{% assign active = false %}{% if page.url == parts[0] %}{% assign active = true %}{% elsif parts[0] == "/blog/" and page.layout == "post" %}{% assign active = true %}{% endif %}<a href="{{ parts[0] | relative_url }}"{% if active %} class="thisSite"{% endif %}{% if page.url == parts[0] %} aria-current="page"{% endif %}>{{ parts[1] }}</a>
-{% endfor %}</span>
-{% if site.socials.size > 0 or site.guestbook_url != "" %}<span class="right">
-{% for s in site.socials %}<a href="{{ s.url }}">{{ s.name }}</a>
-{% endfor %}{% if site.guestbook_url != "" %}<a href="{{ site.guestbook_url }}">guestbook</a>{% endif %}
-</span>{% endif %}
 </div>
+<div class="ridges" aria-hidden="true"></div>
+</header>
