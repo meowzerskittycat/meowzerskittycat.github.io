@@ -12,12 +12,16 @@ I set up this site to have one place for my writing, and to document what I work
 ## Profile
 
 <table class="status">
+<tbody>
 <tr><th scope="row">Pronouns</th><td>He/they</td></tr>
 <tr><th scope="row">Studying</th><td>Software engineering, first year</td></tr>
+</tbody>
 </table>
 
 ## Interests
 
 <table class="status">
+<tbody>
 {% for f in site.data.favorites %}<tr><th scope="row">{{ f.category }}</th><td>{{ f.items | join: ", " }}</td></tr>
-{% endfor %}</table>
+{% endfor %}</tbody>
+</table>

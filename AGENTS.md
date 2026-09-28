@@ -65,7 +65,7 @@ The page should still read fine with CSS turned off.
 | links page                               | `links.md` + `_data/links.yml`                  |
 | pages in the menu bar                    | `_includes/nav-items.html`                      |
 | header + menu bar                        | `_includes/header.html`                         |
-| page skeleton (`<head>`)                 | `_layouts/default.html`                         |
+| page skeleton (`<head>`), plus small fixes to the Markdown output (labelled task-list boxes, footnote ids) | `_layouts/default.html` |
 | colors and layout                        | `assets/css/site.css` (colors are variables at the top, in `:root`) |
 
 `404.html` is the "page not found" page. GitHub Pages picks it up automatically.

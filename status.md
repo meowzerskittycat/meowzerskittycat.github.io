@@ -8,8 +8,10 @@ description: What I am working on at the moment.
 A short summary of what I am working on and listening to. I update it from time to time.
 
 <table class="status">
+<tbody>
 {% for s in site.status %}<tr><th scope="row">{{ s[0] | replace: "_", " " | capitalize }}</th><td>{{ s[1] }}</td></tr>
-{% endfor %}</table>
+{% endfor %}</tbody>
+</table>
 
 ## Site updates
 

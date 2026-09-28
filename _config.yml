@@ -38,6 +38,8 @@ guestbook_url: ""
 # Jekyll settings (you normally don't need to touch these)
 theme: null           # no GitHub theme; this site has its own stylesheet
 markdown: kramdown
+kramdown:
+  footnote_backlink: "&#8617;&#xFE0E;"   # the return arrow, forced to render as text, not an emoji
 permalink: pretty
 
 # Blog posts in _posts/ appear on the Blog page, each at /blog/<name>/

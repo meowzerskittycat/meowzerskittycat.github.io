@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#1d1d2b">
+<meta name="theme-color" content="#242933">
 <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
 <meta name="description" content="{{ page.description | default: site.description }}">
 <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
@@ -15,7 +15,22 @@
 <a class="skip-link" href="#main">Skip to content</a>
 {% include header.html %}
 <main id="main" class="wrap">
-{{ content }}
+{%- comment -%}
+  Small fixes to the HTML the Markdown converter produces:
+  task-list checkboxes become labelled squares (a disabled checkbox with no
+  label is announced badly by screen readers), and two footnote ARIA roles
+  that are misplaced or deprecated are removed, and footnote ids use a
+  hyphen instead of a colon (fn-1 rather than fn:1).
+{%- endcomment -%}
+{%- assign done_box = '<span class="task-box is-done" role="img" aria-label="Done"></span>' -%}
+{%- assign todo_box = '<span class="task-box" role="img" aria-label="Not done"></span>' -%}
+{{ content
+  | replace: '<input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />', done_box
+  | replace: '<input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />', todo_box
+  | replace: ' role="doc-noteref"', ''
+  | replace: ' role="doc-endnote"', ''
+  | replace: 'id="fnref:', 'id="fnref-' | replace: 'href="#fnref:', 'href="#fnref-'
+  | replace: 'id="fn:', 'id="fn-' | replace: 'href="#fn:', 'href="#fn-' }}
 </main>
 </body>
 </html>
