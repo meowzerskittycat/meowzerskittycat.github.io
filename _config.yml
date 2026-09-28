@@ -18,10 +18,10 @@ baseurl: ""
 # Status page. Change whenever you like.
 # You can rename, add or remove lines; the part before the colon is the label.
 status:
-  mood: "Tired but fine"
-  listening: "(an album you like)"
-  working_on: "A beat that might never be finished"
-  studying: "Calculus"
+  mood: "Tired but fine."
+  listening: "Epitaph."
+  working_on: "A song that might never be finished."
+  studying: "C++"
 
 # Links shown on the right of the menu bar. Empty for now.
 # Add real links only, like this:
