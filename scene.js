@@ -162,6 +162,22 @@
     return { top, owner };
   }
 
+  // a spruce's half-widths from tip to foot: tiers hung on a cone, each flaring one pixel a
+  // row to its own width, the next starting a pixel narrower, never back to the bare stem
+  // (which would read as a cross)
+  function spruce(h) {
+    const m = h * 0.2 + 0.6, n = Math.max(2, Math.round(h / 3.2)), out = [0];
+    let prev = 0;
+    for (let i = 0; i < n; i++) {
+      const L = Math.round((h * (i + 1)) / n) - Math.round((h * i) / n);
+      const e = Math.max(1, Math.round(((i + 1) / n) * m));
+      const s0 = Math.max(i === 0 ? 0 : Math.max(1, prev - 1), e - L + 1);
+      for (let r = 0; r < L; r++) out.push(Math.min(e, s0 + r));
+      prev = e;
+    }
+    return out;
+  }
+
   function buildStatic() {
     base = new Uint32Array(W * H);
     const hz = horizon;
@@ -214,6 +230,9 @@
             else if (y - far.top[x] < 1) c = y < sl ? C.frost : C.snowMid;
             else c = C.snowLit; // lit snow is one clean plane: no dotted texture
           } else c = lit ? C.farRock : C.farShade;
+          // valley mist: the range's foot thins into haze above the foothills, so the planes part
+          const md = hillTop[x] - y;
+          if (md < 3 || (md < 5 && dither(x, y) < (5 - md) * 0.25)) c = C.haze;
         } else if (y >= haze.top[x]) {
           c = y < hz * 0.6 && y - haze.top[x] < 3 && dither(x, y) > 0.3 ? C.hazeSnow : C.haze;
         }
@@ -245,13 +264,19 @@
       if (Math.abs(x - cabinX) < 9) continue;
       if (r() > 0.08 + 0.55 * smooth(0.35, 0.7, fbm(nNear, x * 0.06 + 50, 2))) continue;
       const h = 4 + Math.floor(r() * (H > 160 ? 11 : 7));
-      const top = nearTop[x] - h;
+      const top = nearTop[x] - h, rows = spruce(h);
       for (let k = 0; k <= h; k++) {
-        const hw = Math.floor((k / h) * 2.6 + ((k % 3) === 0 ? 0 : 0.6));
+        const hw = rows[k];
         for (let dx = -hw; dx <= hw; dx++) {
           set(x + dx, top + k, C.pine);
         }
       }
+    }
+
+    // a thin rim of snow along the waterline, broken where the shore runs dark
+    for (let x = 0; x < W; x++) {
+      const v = fbm(nSnow, x * 0.15 + 70, 2);
+      if (v > 0.5) set(x, horizon - 1, v > 0.62 ? C.hazeSnow : C.haze);
     }
 
     // the cabin: dark timber, snow on the roof, one lit window
@@ -371,8 +396,9 @@
         const i = y * W + x;
         if (base[i]) { buf[i] = base[i]; continue; }
         const a = inAur ? aurora(x, y) : 0;
-        // faint light breaks into short vertical dashes along the rays, never lone dots
-        buf[i] = a > 0.05 + dither(x + 1, y >> 2) * 0.22 ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y >> 1)) : sky[x & 3];
+        // faint light breaks into short vertical dashes along the rays, never lone dots;
+        // each column's dashes are offset so they never line up into rows
+        buf[i] = a > 0.05 + dither(x + 1, (y + ((x * 7) % 5)) >> 2) * 0.22 ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y >> 1)) : sky[x & 3];
       }
     }
     for (const s of stars) {
@@ -476,6 +502,8 @@
     for (let x = 0; x < sw; x++) {
       ground[x] = Math.round(sh * 0.7 - fbm(nNear, x * 0.045 + 200, 3) * sh * 0.16 - Math.sin(x * 0.11) * 1.2);
       crest[x] = ground[x] + 4 + Math.round(fbm(nSnow, x * 0.07 + 30, 2) * (sh - ground[x]) * 0.5);
+      // a crest climbs or falls one pixel a column at most, so its line never breaks into a stub
+      if (x > 0) crest[x] = Math.max(crest[x - 1] - 1, Math.min(crest[x - 1] + 1, crest[x]));
     }
     const SNOW = [C.snowLit, C.snowMid, C.snowShade];
     // page field above, a ridge-blue back hill, the snowbank
@@ -485,15 +513,15 @@
       if (y >= hill) c = C.ridge;
       const g = y - ground[x];
       if (g >= 0) {
-        // moonlit on top, shading in clean bands into the night toward the foot of the page;
-        // only the seams between bands are dithered
+        // moonlit on top, shading in clean bands toward the foot of the page; each band follows
+        // the drift's own contour, so the layers read as packed snow, with no dotted seams
         const v = Math.pow((g - 1) / Math.max(1, sh - ground[x] - 1), 0.8) * 3.2;
-        c = g === 0 ? C.frost : SNOW[Math.max(0, Math.min(2, Math.floor(v + (dither(x, y) - 0.5) * 0.3)))];
+        c = g === 0 ? C.frost : SNOW[Math.max(0, Math.min(2, Math.floor(v)))];
         // the drift crest: a lit lip, a shaded fall below it
         const cr = y - crest[x];
         if (crest[x] < sh - 2 && fbm(nSnow, x * 0.09 + 5, 2) > 0.48) {
           if (cr === 0) c = C.snowLit;
-          else if (cr === 1 || (cr === 2 && dither(x, y) > 0.5)) c = C.snowShade;
+          else if (cr === 1) c = C.snowShade;
         }
       }
       b[y * sw + x] = pack(c);
@@ -508,8 +536,9 @@
         const px = x + dx;
         if (px < sw && b[ground[px] * sw + px] === pack(C.frost)) b[ground[px] * sw + px] = pack(C.snowShade);
       }
+      const rows = spruce(h);
       for (let k = 0; k <= h; k++) {
-        const hw = Math.floor((k / h) * 3 + ((k % 3) === 0 ? 0 : 0.6));
+        const hw = rows[k];
         for (let dx = -hw; dx <= hw; dx++) {
           const px = x + dx;
           if (px < 0 || px >= sw) continue;
