@@ -172,11 +172,14 @@ dd {
   color: var(--snow);
 }
 
+/* baseline-aligned so the row's label sits on the text, not on the glyph's foot */
 .item {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.45em;
 }
+
+.item .px-icon { align-self: center; }
 
 .note {
   flex-basis: 100%;
