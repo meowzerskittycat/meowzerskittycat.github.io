@@ -189,7 +189,7 @@ Flat. Nothing on the page is lifted, layered, or shadowed. Depth is atmospheric 
 
 ## Shapes
 
-Square and hard-edged throughout (`rounded.none`). Both canvases render with `image-rendering: pixelated`, so every edge in the art is a stair-stepped pixel edge. Small marks are made of square pixels sized in whole scene pixels: the glyphs are 9x9 grids of unit squares at nine scene pixels square, rendered with crisp edges; the band markers are two scene pixels square; the meter's bars are two scene pixels wide. The ledger's rules are a row of square dots (one scene pixel on, one off, one scene pixel tall) painted as a hard-stop repeating background, never a border. There are no borders, outlines, boxes, or clipped shapes in the layout.
+Square and hard-edged throughout (`rounded.none`). Both canvases render with `image-rendering: pixelated`, so every edge in the art is a stair-stepped pixel edge. Small marks are made of square pixels, and never mix pixel sizes with what sits beside them: marks in the scene use the scene pixel; marks beside words use the words' own letter pixel (1/10.88 of the font size), so the glyphs are 9x9 grids at nine letter pixels square (27px beside 3px letters on desktop, 18px beside 2px letters on phones), rendered with crisp edges, and the band markers are two letter pixels square; the meter's bars are two scene pixels wide. The ledger's rules are a row of square dots (one scene pixel on, one off, one scene pixel tall) painted as a hard-stop repeating background, never a border. There are no borders, outlines, boxes, or clipped shapes in the layout.
 
 ## Components
 
@@ -219,7 +219,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - A definition list of rows. Each row is an ink-soft uppercase label and snow item-size content, with a ridge-blue pixel-dot rule on every row but the first. Labels and contents line up in two columns from 46rem and stack below it. Content is either items (a glyph and a word each, wrapping side by side) or a body-size ink-soft note followed by a list.
 
 ### Pixel Glyph
-- A 9x9 grid of unit squares in ice (gear, note, prompt), nine scene pixels square so each grid cell is one scene pixel, decorative and hidden from assistive tech. One glyph leads each ledger item; it names the word, it does not decorate the line.
+- A 9x9 grid of unit squares in ice (gear, note, prompt), nine letter pixels square so each grid cell is exactly one pixel of the word beside it, decorative and hidden from assistive tech. One glyph leads each ledger item; it names the word, it does not decorate the line.
 
 ### Band Grid
 - An unstyled list of names at item size in snow, set as an even grid (three columns from 72rem, where they still end inside the row rule; two below, one under 24rem), each name led by a two-scene-pixel ice square and never wrapping.

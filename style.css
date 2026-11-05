@@ -120,11 +120,12 @@ h1 {
   50% { transform: translateY(var(--scene-px, 4px)); }
 }
 
-/* pixel icons: 9x9 grids drawn as rects, scaled whole */
+/* pixel icons: 9x9 grids drawn as rects. Each grid cell is one pixel of the letters beside it
+   (Pixelify's glyph pixel is 1/10.88 of the font size), so icon and word share one pixel grid
+   and never mix pixel sizes: 27px beside 3px letters, 18px beside 2px ones */
 .px-icon {
-  /* 9 grid cells, each one whole scene pixel */
-  width: calc(var(--ui-px, 4px) * 9);
-  height: calc(var(--ui-px, 4px) * 9);
+  width: calc(9em / 10.88);
+  height: calc(9em / 10.88);
   flex: none;
   fill: var(--ice);
   shape-rendering: crispEdges;
@@ -267,12 +268,12 @@ dd {
   white-space: nowrap;
 }
 
-/* a single ice pixel marks each name, sized to the scene grid */
+/* a square of two by two letter pixels marks each name, on the names' own pixel grid */
 .bands li::before {
   content: "";
   flex: none;
-  width: calc(var(--ui-px, 4px) * 2);
-  height: calc(var(--ui-px, 4px) * 2);
+  width: calc(2em / 10.88);
+  height: calc(2em / 10.88);
   background: var(--ice);
 }
 
