@@ -118,7 +118,7 @@ main {
 
 h2 {
   margin: 0;
-  font-weight: 600;
+  font-weight: 400;
   font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem);
   line-height: 1.1;
   color: var(--snow);
@@ -134,8 +134,8 @@ h2 {
   margin: clamp(2rem, 5vh, 3rem) 0 0;
   padding: 0;
   /* set as a lineup: one name per line, never left to wrap */
-  font-size: clamp(2.25rem, 1.4rem + 3.4vw, 4.25rem);
-  font-weight: 500;
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+  font-weight: 400;
   line-height: 1.12;
   color: var(--snow);
 }
