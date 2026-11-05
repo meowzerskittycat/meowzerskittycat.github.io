@@ -409,7 +409,9 @@
       const wg = (C.deep[1] + (C.fjord[1] - C.deep[1]) * tint) * f1;
       const wb = (C.deep[2] + (C.fjord[2] - C.deep[2]) * tint) * f1;
       const row = y * W, src = sy * W;
-      const glowRow = d < 0.3 && ((y - horizon) & 1) === 1 ? 1 - d / 0.3 : 0;
+      // the aurora's light keeps to a narrow band at the far shore, however deep the fjord is drawn
+      const gd = (y - horizon) / Math.min(depthRows * 0.3, 12);
+      const glowRow = gd < 1 && ((y - horizon) & 1) === 1 ? 1 - gd : 0;
       for (let x = 0; x < W; x++) {
         const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
         const s = buf[src + sx];
