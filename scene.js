@@ -172,6 +172,26 @@
         waterK[k * W + x] = best;
       }
     }
+    // a reflected ridge's ribs and tongues fold into short bright slivers: a sliver no longer
+    // than four pixels with nothing as bright above or below it is a speck in the mirror, not a
+    // shape, so it takes the darker water on either side
+    const wk = waterK.slice();
+    for (let k = 0; k < depthRows; k++) {
+      for (let x = 0; x < W; ) {
+        const v = wk[k * W + x];
+        let e = x;
+        while (e < W && wk[k * W + e] === v) e++;
+        if (e - x <= 4 && x > 0 && e < W) {
+          const l = wk[k * W + x - 1], rr = wk[k * W + e];
+          let held = false;
+          for (let i = x; i < e && !held; i++) {
+            if ((k > 0 && wk[(k - 1) * W + i] >= v) || (k + 1 < depthRows && wk[(k + 1) * W + i] >= v)) held = true;
+          }
+          if (v > l && v > rr && !held) waterK.fill(Math.max(l, rr), k * W + x, k * W + e);
+        }
+        x = e;
+      }
+    }
     // ripples come in bands that thicken with depth, as nearer swell looks larger; each band slides
     // as one, and never more than a pixel either way: this is still water, not a chop
     waterWave = new Uint16Array(depthRows);
@@ -453,6 +473,16 @@
     }
 
     litBoughs(base, W, 0, horizon, P.pine, P.pineLit);
+
+    // the shore under the pines carries snow, as the bank at the page foot does: in each clearing
+    // its top row is shaded snow, and it fades into the dark shore at the stands' feet, so the
+    // trees stand on ground rather than on a flat dark strip
+    for (let x = 0; x < W; x++) {
+      const y = nearTop[x], i = y * W + x;
+      if (base[i] !== P.near) continue;
+      const open = (d) => x + d >= 0 && x + d < W && base[nearTop[x + d] * W + x + d] !== P.pine;
+      set(x, y, open(-1) && open(1) && open(-2) && open(2) ? C.snowShade : C.haze);
+    }
 
     // a thin rim of snow along the waterline, broken where the shore runs dark
     for (let x = 0; x < W; x++) {
