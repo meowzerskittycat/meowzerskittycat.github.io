@@ -13,7 +13,7 @@
   <meta property="og:site_name" content="Vivien">
   <meta property="og:description" content="Mechanical engineer, formerly a musician and programmer.">
   <meta property="og:url" content="https://meowzerskittycat.github.io/">
-  <meta property="og:image" content="https://meowzerskittycat.github.io/og.png?v=eafd4049">
+  <meta property="og:image" content="https://meowzerskittycat.github.io/og.png?v=5ee9d176">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -23,8 +23,22 @@
   <link rel="preload" href="fonts/pixelify-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <style>html{background:#0f2b4c}</style>
   <link rel="stylesheet" href="style.css">
-  <script>matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.classList.add("reveal");</script>
+  <script>
+    // before first paint: the scene's pixel size, so nothing resizes when scene.js arrives; the
+    // page waits, hidden behind a small loader, until the scene is drawn at its final size with
+    // the font in (scene.js lifts .wait, and a timeout does too in case it never loads); the
+    // arrival animation only when motion is welcome
+    (function (e) {
+      var w = e.clientWidth, s = w >= 2400 ? 6 : w >= 1760 ? 5 : Math.min(4, Math.max(3, Math.floor(w / 320)));
+      e.style.setProperty("--scene-px", s + "px");
+      e.style.setProperty("--ui-px", Math.min(4, s) + "px");
+      e.classList.add("wait");
+      setTimeout(function () { e.classList.remove("wait"); }, 6000);
+      matchMedia("(prefers-reduced-motion: reduce)").matches || e.classList.add("reveal");
+    })(document.documentElement);
+  </script>
 </head>
 <body>
   <header class="night">
