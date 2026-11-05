@@ -174,7 +174,7 @@ Inside a row, items wrap side by side with 0.5rem between lines and `spacing.ite
 
 The nameplate tops out at 44rem.
 
-The scene's responsiveness lives in `scene.js`. The art scale is 4px per art pixel from a 1280px-wide hero up and 3px below; the shore canvas uses the same scale. When the hero is portrait (height over 1.15 times the width), the scene sets a portrait flag: the horizon drops from 80% to 60% of the height so the fjord is taller, the horn peak and moon shift to suit the narrow sky, and the nameplate leaves the sky and rests at the bottom of the hero on the dark water.
+The scene's responsiveness lives in `scene.js`. The art scale is 4px per art pixel from a 1280px-wide hero up and 3px below; the shore canvas uses the same scale. When the hero is portrait (height over 1.15 times the width), the scene sets a portrait flag: the horizon drops from 80% to 60% of the height so the fjord is taller, the horn peak and moon shift to suit the narrow sky (on landscape screens the moon sits in the clear sky just past the name, before the curtain begins, so it never overlaps either), and the nameplate leaves the sky and rests at the bottom of the hero on the dark water.
 
 ### Named Rules
 **The One Edge Rule.** Every ledger row shares one label column and one content edge. New facts join the ledger as rows; they do not open a second layout.
@@ -188,7 +188,7 @@ Flat. Nothing on the page is lifted, layered, or shadowed. Depth is atmospheric 
 
 **The Spruce Rule.** Every pine, in the hero and on the shore, is drawn from one tiered silhouette: a one-pixel tip, then tiers that flare a pixel a row and start each next tier a pixel narrower, never stepping back to the bare stem (which reads as a cross).
 
-**The Dithered Sky Rule.** Sky, aurora, and haze tones change only in flat steps joined by a narrow 4x4 ordered (Bayer) dither seam, at whole art pixels; never a smooth CSS or canvas gradient, and never dither spread across a whole field as texture. The sky is five flat bands (space, two in-between blends, night, ridge) whose seams fall clear of the name; the aurora's faint light breaks into short vertical dashes along its rays, offset column to column so they never line up into rows, never lone dots; lit snow is one clean plane. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, broken by thin calm rows that drift down through it, and fades out into the night field.
+**The Dithered Sky Rule.** Sky, aurora, and haze tones change only in flat steps joined by a narrow ordered dither seam, at whole art pixels; never a smooth CSS or canvas gradient, and never dither spread across a whole field as texture. The sky is five flat bands (space, two in-between blends, night, ridge) whose seams are exactly two rows of 50% checker, falling clear of the name; the aurora's faint light breaks into short vertical dashes along its rays, offset column to column so they never line up into rows, and any lit pixel with no lit neighbour above or below is dropped, so there are never lone dots; lit snow is one clean plane. The water is the one exception: it reads the mirror in pixel pairs, so a checker seam above reflects as one flat band rather than a dotted line, and blends the reflection into the fjord tint row by row, still on whole art pixels, broken by thin calm rows that drift down through it, and fades out into the night field.
 
 ## Shapes
 

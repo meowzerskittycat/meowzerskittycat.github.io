@@ -114,11 +114,15 @@
     img = ctx.createImageData(W, H);
     buf = new Uint32Array(img.data.buffer);
     skyRows = new Array(horizon);
+    // flat bands of night; where one band meets the next, two rows of checker and nothing more
+    const lvl = (y) => Math.max(0, Math.min(4, Math.floor(skyV(y) * 4 + 0.5)));
     for (let y = 0; y < horizon; y++) {
-      const v = skyV(y), row = new Uint32Array(4);
-      for (let x = 0; x < 4; x++) row[x] = pack(skyStep(v, x, y));
+      const L = lvl(y), row = new Uint32Array(4);
+      const seam = y + 1 < horizon && lvl(y + 1) > L ? L + 1 : y > 0 && lvl(y - 1) < L ? L - 1 : -1;
+      for (let x = 0; x < 4; x++) row[x] = pack(SKY[seam >= 0 && ((x + y) & 1) === (seam > L ? 1 : 0) ? seam : L]);
       skyRows[y] = row;
     }
+    aurMask = new Uint8Array(W * horizon);
     aurCols = { env: [new Float32Array(W), new Float32Array(W)], bottom: [new Float32Array(W), new Float32Array(W)], len: [new Float32Array(W), new Float32Array(W)], rays: [new Float32Array(W), new Float32Array(W)] };
     buildStatic();
   }
@@ -297,9 +301,9 @@
     set(cabin.wx, cabin.wy, C.lamp); set(cabin.wx + 1, cabin.wy, C.lamp);
     set(cabin.wx, cabin.wy + 1, C.lamp); set(cabin.wx + 1, cabin.wy + 1, C.ember);
 
-    // a crescent moon
+    // a crescent moon, in the clear sky between the name and the curtain, never overlapping either
     const mr = Math.max(3, Math.round(Math.min(W, H) * 0.028));
-    const mx = Math.round(W * (W > H ? 0.45 : 0.22)), my = Math.round(H * (W > H ? 0.12 : 0.08));
+    const mx = W > H ? Math.round(aurStart * W + mr + 2) : Math.round(W * 0.22), my = Math.round(H * (W > H ? 0.12 : 0.08));
     moon = { x: mx, y: my, r: mr };
     for (let y = -mr - 1; y <= mr + 1; y++) for (let x = -mr - 1; x <= mr + 1; x++) {
       const inA = x * x + y * y <= mr * mr + mr * 0.4;
@@ -329,7 +333,6 @@
   // five flat steps of night, each pair of neighbours blended only in a narrow dithered seam
   const mid = (a, b) => a.map((v, i) => Math.round((v + b[i]) / 2));
   const SKY = [C.space, mid(C.space, C.night), C.night, mid(C.night, C.ridge), C.ridge];
-  const skyStep = (v, x, y) => SKY[Math.max(0, Math.min(4, Math.floor(v * 4 + 0.5 + (dither(x, y) - 0.5) * 0.4)))];
   const AUR = [C.abyss, C.glacier, C.ice, C.frost];
 
   function ramp(steps, v, x, y) {
@@ -340,7 +343,7 @@
   }
 
   const skyV = (y) => 0.05 + 0.95 * Math.pow(y / horizon, 1.3);
-  let aurCols = null, aurTop = 0, aurBot = 0;
+  let aurCols = null, aurMask = null, aurTop = 0, aurBot = 0;
 
   // everything about the curtain that depends only on the column, worked out once a frame
   function auroraPrep(t) {
@@ -394,11 +397,21 @@
       const sky = skyRows[y], inAur = y >= aurTop && y <= aurBot;
       for (let x = 0; x < W; x++) {
         const i = y * W + x;
-        if (base[i]) { buf[i] = base[i]; continue; }
+        if (base[i]) { buf[i] = base[i]; aurMask[i] = 0; continue; }
         const a = inAur ? aurora(x, y) : 0;
         // faint light breaks into short vertical dashes along the rays, never lone dots;
         // each column's dashes are offset so they never line up into rows
-        buf[i] = a > 0.05 + dither(x + 1, (y + ((x * 7) % 5)) >> 2) * 0.22 ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y >> 1)) : sky[x & 3];
+        const lit = a > 0.05 + dither(x + 1, (y + ((x * 7) % 5)) >> 2) * 0.22;
+        aurMask[i] = lit ? 1 : 0;
+        buf[i] = lit ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y >> 1)) : sky[x & 3];
+      }
+    }
+    // a lit pixel with no lit neighbour above or below is a lone dot, not part of a ray: drop it
+    const y0 = Math.max(1, Math.floor(aurTop)), y1 = Math.min(horizon - 2, Math.ceil(aurBot));
+    for (let y = y0; y <= y1; y++) {
+      for (let x = 0; x < W; x++) {
+        const i = y * W + x;
+        if (aurMask[i] && !aurMask[i - W] && !aurMask[i + W]) buf[i] = skyRows[y][x & 3];
       }
     }
     for (const s of stars) {
@@ -436,7 +449,8 @@
       const glowRow = gd < 1 && ((y - horizon) & 1) === 1 ? 1 - gd : 0;
       for (let x = 0; x < W; x++) {
         const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
-        const s = buf[src + sx];
+        // read the mirror in pixel pairs: water carries no dither, so a checker seam above reflects as one flat band
+        const s = buf[src + (sx & ~1)];
         const r = Math.round((s & 255) * fade + wr), g = Math.round(((s >> 8) & 255) * fade + wg), b = Math.round(((s >> 16) & 255) * fade + wb);
         buf[row + x] = (255 << 24) | (b << 16) | (g << 8) | r;
         // the aurora's light lies on the near water in broken ripple lines, rippling with it
