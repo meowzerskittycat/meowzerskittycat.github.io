@@ -69,6 +69,8 @@
   function smooth(a, b, x) { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
   const pack = (c) => (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0];
 
+  const GLOW = pack([0x1d, 0x5f, 0x8f]), GLOW_HI = pack([0x2a, 0x7d, 0xbf]); // aurora on water: glacier sunk into the fjord
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   let W = 0, H = 0, horizon = 0, scale = 4;
@@ -78,6 +80,7 @@
   let skyRows = null; // per sky row: the four dithered colours of the 4x4 cell, packed
   const start = performance.now();
   let cabin = null, moon = null;
+  const wishes = []; // shooting stars asked for by a tap: { x, y, t } in art pixels and seconds
   let shore = null; // { w, h, ctx, im, b, base, flakes }
 
   function layout() {
@@ -345,6 +348,16 @@
     return best;
   }
 
+  // an eight-pixel streak: a bright head, an ice body, a glacier tail
+  function meteor(x0, y0, p, dir) {
+    for (let k = 0; k < 8; k++) {
+      const run = p * W * 0.12 - k;
+      const x = Math.round(x0 + run * dir), y = Math.round(y0 + run * 0.4);
+      if (x < 0 || x >= W || y < 0 || y >= horizon || base[y * W + x]) continue;
+      buf[y * W + x] = pack(k < 2 ? C.frost : k < 5 ? C.ice : C.glacier);
+    }
+  }
+
   function draw(t) {
     auroraPrep(t);
     for (let y = 0; y < horizon; y++) {
@@ -373,13 +386,13 @@
     const SP = 29, cyc = Math.floor((t + SP - 6) / SP), lt = t + SP - 6 - cyc * SP;
     if (lt < 0.8) {
       const rr = rng(cyc * 7 + 3);
-      const x0 = W * (0.15 + rr() * 0.6), y0 = H * (0.04 + rr() * 0.16);
-      const p = lt / 0.8;
-      for (let k = 0; k < 8; k++) {
-        const x = Math.round(x0 + p * W * 0.12 - k), y = Math.round(y0 + (p * W * 0.12 - k) * 0.4);
-        if (x < 0 || x >= W || y < 0 || y >= horizon || base[y * W + x]) continue;
-        buf[y * W + x] = pack(k < 2 ? C.frost : k < 5 ? C.ice : C.glacier);
-      }
+      meteor(W * (0.15 + rr() * 0.6), H * (0.04 + rr() * 0.16), lt / 0.8, 1);
+    }
+    // and one wherever the sky is tapped, falling toward the middle of the scene
+    for (let k = wishes.length - 1; k >= 0; k--) {
+      const w = wishes[k], p = (t - w.t) / 0.8;
+      if (p >= 1 || p < 0) { wishes.splice(k, 1); continue; }
+      meteor(w.x, w.y, p, w.x > W / 2 ? -1 : 1);
     }
 
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
@@ -395,11 +408,17 @@
       const wg = (C.deep[1] + (C.fjord[1] - C.deep[1]) * tint) * f1;
       const wb = (C.deep[2] + (C.fjord[2] - C.deep[2]) * tint) * f1;
       const row = y * W, src = sy * W;
+      const glowRow = d < 0.3 && ((y - horizon) & 1) === 1 ? 1 - d / 0.3 : 0;
       for (let x = 0; x < W; x++) {
         const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
         const s = buf[src + sx];
         const r = Math.round((s & 255) * fade + wr), g = Math.round(((s >> 8) & 255) * fade + wg), b = Math.round(((s >> 16) & 255) * fade + wb);
         buf[row + x] = (255 << 24) | (b << 16) | (g << 8) | r;
+        // the aurora's light lies on the near water in broken ripple lines, rippling with it
+        if (glowRow > 0) {
+          const glow = (aurCols.env[0][sx] * aurCols.rays[0][sx] + 0.6 * aurCols.env[1][sx] * aurCols.rays[1][sx]) * glowRow * nRay(sx * 0.21 + y * 7.3 + t * 0.7);
+          if (glow > 0.2) buf[row + x] = glow > 0.4 ? GLOW_HI : GLOW;
+        }
       }
       const g = Math.floor(nRay(y * 3.1 + t * 0.8) * W * 1.3);
       if (g < W && d < 0.55) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
@@ -420,6 +439,8 @@
 
     // lamplight reflected beneath the cabin, and a thread of chimney smoke
     if (cabin) {
+      // the lamp gutters now and then: one pane dips to ember for a frame or two
+      if (nRay(t * 1.9 + 400) > 0.8) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = pack(C.ember);
       for (let y = horizon + 1; y < Math.min(H, horizon + Math.round(depthRows * 0.3)); y += 2) {
         if (Math.sin(y * 1.7 + t * 3) <= -0.2) continue;
         const x = cabin.wx + Math.round(Math.sin(y * 0.9 + t * 1.8) * 1.2);
@@ -543,6 +564,16 @@
     shoreVisible = entries[0].isIntersecting;
     kick();
   }).observe(shoreCanvas);
+
+  // tap the sky for a shooting star (only when motion is welcome; it is never the only way to see one)
+  canvas.parentElement.addEventListener("pointerdown", (e) => {
+    if (reduceMotion.matches || !e.isPrimary) return;
+    const r = canvas.getBoundingClientRect();
+    const x = (e.clientX - r.left) / scale, y = (e.clientY - r.top) / scale;
+    if (y < 0 || y >= horizon * 0.85 || x < 0 || x >= W) return;
+    if (wishes.length < 3) wishes.push({ x, y, t: (performance.now() - start) / 1000 });
+    kick();
+  });
 
   document.addEventListener("visibilitychange", kick);
   reduceMotion.addEventListener?.("change", render);
