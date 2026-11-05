@@ -188,7 +188,7 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "The name only; size is calc(var(--scene-px) * 32.64), so 131px at a 4px scene scale and about 98px at 3px."
+        "purpose": "The name only; size is calc(var(--scene-px) * 32.64), so 131px at a 4px scene scale, about 98px at 3px and up to 196px at 6px."
       },
       "item": {
         "displayName": "Item",
@@ -206,7 +206,7 @@
     "shadows": [
       {
         "name": "meter-cap",
-        "value": "inset 0 var(--scene-px) 0 #e3f2fd",
+        "value": "inset 0 var(--ui-px) 0 #e3f2fd",
         "purpose": "Not elevation: an unblurred inset that paints the frost top pixel of each level-meter bar."
       }
     ],
@@ -314,7 +314,7 @@
     "northStar": "One Polar Night",
     "overview": "**Creative North Star: \"One Polar Night\"**\n\nThe whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, a crescent moon, falling snow, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.\n\nBelow the waterline the introduction is one ledger: a few rows, each a small label beside its content, separated by rows of square pixel dots. One label column and one content edge hold every row, so the eye runs straight down. Small pixel marks drawn on the scene's grid (9x9 glyphs, square markers, a stepped level meter) give the text a little of the night's life. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light, which lives only in the scene. Hierarchy comes from size in one pixel face at one weight. There are no links, controls, borders, shadows-as-depth, or containers; the system is made of a field, two scenes, type, and a few pixel marks.\n\nThe direction contract still names a lamplight text mark; it was removed from the build at the user's request, and the build is the record here.",
     "keyCharacteristics": [
-      "Canvas scenes drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel) and upscaled with crisp, pixelated edges; the hero scene opens the page and a shore canvas closes it.",
+      "Canvas scenes drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel, 5 from 1760px wide and 6 from 2400px so wide screens keep the same composition) and upscaled with crisp, pixelated edges; the hero scene opens the page and a shore canvas closes it.",
       "Dark fjord set as ground; the ice-blue set is light: the sky, plus a few small pixel marks in the text.",
       "One warm accent, the cabin's lamplight, and only inside the scene.",
       "One face (Pixelify Sans, 400) across every role; size is the main hierarchy lever.",
@@ -361,7 +361,7 @@
     ],
     "dos": [
       "Do keep the page field night and every surface flat; the canvases are the only images.",
-      "Do draw any new pixel art on the same whole-number art-pixel grid (3 or 4 screen px) with `image-rendering: pixelated`, and size small marks in multiples of the scene pixel.",
+      "Do draw any new pixel art on the same whole-number art-pixel grid (3 to 6 screen px) with `image-rendering: pixelated`, and size small text-layer marks in multiples of `--ui-px` (the scene pixel, capped at 4px).",
       "Do step sky, aurora, and haze tones with ordered dither between palette colors.",
       "Do set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.",
       "Do keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.",
