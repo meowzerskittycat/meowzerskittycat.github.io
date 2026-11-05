@@ -301,16 +301,43 @@ dd {
   padding: 0 var(--gutter) clamp(1.5rem, 5vh, 3rem);
 }
 
-/* arrival: the hero stays hidden (.wait, set in the page head) until the scene is drawn in its
-   font, so nothing shows in a stand-in font or at a passing size. Then the name wipes in left to
-   right, about a letter a step, then the cue. .reveal is only added when motion is welcome;
-   without it, everything just shows. The clip lifts once the wipe ends (fill: backwards). */
-.wait .scene,
-.wait .nameplate,
-.wait .cue { visibility: hidden; }
+/* loading: the whole page stays hidden (.wait, set in the page head) until the scene is drawn at
+   its final size around the name in its own font, so nothing ever shows small, in a stand-in
+   font or in a passing place. If that takes a moment, three pixels step in the middle of the
+   night, the way the scroll cue does; on a quick load they never appear. */
+.wait body { visibility: hidden; }
 
-.reveal:not(.wait) h1 { animation: wipe 0.7s steps(6, end) 0.1s backwards; }
-.reveal:not(.wait) .cue { animation: wipe 0.4s steps(4, end) 0.9s backwards, nudge 1.4s steps(1, end) 1.3s infinite; }
+.wait body::after {
+  --u: var(--ui-px, 4px);
+  content: "";
+  visibility: visible;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 2);
+  margin: calc(var(--u) * -1) 0 0 calc(var(--u) * -5);
+  background: var(--ice);
+  box-shadow: calc(var(--u) * 4) 0 0 var(--ridge), calc(var(--u) * 8) 0 0 var(--ridge);
+  animation: loader-in 0.01s 0.35s backwards, loading 0.9s steps(1, end) 0.35s infinite;
+}
+
+@keyframes loader-in { from { opacity: 0; } }
+
+@keyframes loading {
+  0%   { background: var(--ice); box-shadow: calc(var(--u) * 4) 0 0 var(--ridge), calc(var(--u) * 8) 0 0 var(--ridge); }
+  33%  { background: var(--ridge); box-shadow: calc(var(--u) * 4) 0 0 var(--ice), calc(var(--u) * 8) 0 0 var(--ridge); }
+  66%  { background: var(--ridge); box-shadow: calc(var(--u) * 4) 0 0 var(--ridge), calc(var(--u) * 8) 0 0 var(--ice); }
+}
+
+/* arrival: the page comes up in four flat steps, like a screen warming, then the name wipes in
+   left to right, about a letter a step, then the cue. .reveal is only added when motion is
+   welcome; without it, everything just shows. The clip lifts once the wipe ends (fill: backwards). */
+.reveal:not(.wait) body { animation: power-on 0.32s steps(4, end); }
+.reveal:not(.wait) h1 { animation: wipe 0.7s steps(6, end) 0.3s backwards; }
+.reveal:not(.wait) .cue { animation: wipe 0.4s steps(4, end) 1.1s backwards, nudge 1.4s steps(1, end) 1.5s infinite; }
+
+@keyframes power-on { from { opacity: 0; } }
 
 @keyframes wipe {
   from { clip-path: inset(-1rem 100% -1rem -1rem); }
@@ -324,8 +351,10 @@ dd {
 @media (prefers-reduced-motion: reduce) {
   .eq i,
   .cue,
+  .reveal:not(.wait) body,
   .reveal:not(.wait) .cue,
-  .reveal:not(.wait) h1 { animation: none; }
+  .reveal:not(.wait) h1,
+  .wait body::after { animation: none; }
 }
 
 /* on paper: the words only, dark on white, no night to spend a cartridge on */

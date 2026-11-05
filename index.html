@@ -27,14 +27,15 @@
   <link rel="stylesheet" href="style.css">
   <script>
     // before first paint: the scene's pixel size, so nothing resizes when scene.js arrives; the
-    // hero waits, hidden, until the scene and the font are both ready (scene.js lifts .wait, and
-    // a timeout does too in case it never loads); the name's wipe only when motion is welcome
+    // page waits, hidden behind a small loader, until the scene is drawn at its final size with
+    // the font in (scene.js lifts .wait, and a timeout does too in case it never loads); the
+    // arrival animation only when motion is welcome
     (function (e) {
       var w = e.clientWidth, s = w >= 2400 ? 6 : w >= 1760 ? 5 : Math.min(4, Math.max(3, Math.floor(w / 320)));
       e.style.setProperty("--scene-px", s + "px");
       e.style.setProperty("--ui-px", Math.min(4, s) + "px");
       e.classList.add("wait");
-      setTimeout(function () { e.classList.remove("wait"); }, 5000);
+      setTimeout(function () { e.classList.remove("wait"); }, 6000);
       matchMedia("(prefers-reduced-motion: reduce)").matches || e.classList.add("reveal");
     })(document.documentElement);
   </script>
