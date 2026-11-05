@@ -184,7 +184,7 @@
         if (e - x <= 4 && x > 0 && e < W) {
           const l = wk[k * W + x - 1], rr = wk[k * W + e];
           let held = false;
-          for (let i = x; i < e && !held; i++) {
+          for (let i = x; i < e && !held && e - x > 2; i++) { // a one- or two-pixel fleck is a speck even when held
             if ((k > 0 && wk[(k - 1) * W + i] >= v) || (k + 1 < depthRows && wk[(k + 1) * W + i] >= v)) held = true;
           }
           if (v > l && v > rr && !held) waterK.fill(Math.max(l, rr), k * W + x, k * W + e);
@@ -229,7 +229,9 @@
       REP.forEach((s, k) => {
         // the dark shore reflects darker than the sky does, so the water under the pines reads as
         // their reflection, not as open water
-        const f = k === 0 ? Math.min(1, fade * 1.8) : fade;
+        // and far down, where the peaks' snow lands, it is a soft pale shape, never the brightest
+        // thing on the lower water: snow keeps half its strength in the two faintest bands
+        const f = k === 0 ? Math.min(1, fade * 1.8) : k >= 4 && b >= 3 ? fade * 0.55 : fade;
         const c = last ? C.deep : s.map((v, i) => Math.round(v * f + (C.deep[i] + (C.fjord[i] - C.deep[i]) * tint) * (1 - f)));
         waterPal[b * NK + k] = pack(c);
       });
@@ -612,9 +614,10 @@
     // never blink, they only ride the swell of the row they sit on
     if (moon) {
       const rows = Math.round(depthRows * Math.min(0.65, waterCalm * 0.9));
-      for (let y = horizon + 1; y < horizon + rows; y += 2) {
+      // the dashes thin out evenly with depth, two rows apart at the shore and up to five further
+      // out, so the path fades as one column and never leaves a lone dash stranded below a gap
+      for (let y = horizon + 1; y < horizon + rows; y += 2 + Math.floor(((y - horizon) / rows) * 3.5)) {
         const d = (y - horizon) / rows;
-        if (nRay(y * 2.3) < 0.3 + d * 0.4) continue;
         const len = 1 + Math.round(nRay(y * 5.7) * (1 + d * (1 + moon.r)));
         const x0 = moon.x + waterWob[y - horizon] - (len >> 1);
         const c = d < 0.25 ? P.snowLit : d < 0.6 ? P.snowMid : P.snowShade;
