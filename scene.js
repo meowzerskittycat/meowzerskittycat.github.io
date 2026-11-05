@@ -470,4 +470,13 @@
   reduceMotion.addEventListener?.("change", render);
 
   render();
+
+  // the ledger rows wipe in once each as they surface; nothing is hidden without motion
+  if (!reduceMotion.matches) {
+    document.documentElement.classList.add("reveal");
+    const rows = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); rows.unobserve(e.target); }
+    }, { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(".row").forEach((r) => rows.observe(r));
+  }
 })();

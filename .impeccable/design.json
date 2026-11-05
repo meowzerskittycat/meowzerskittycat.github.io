@@ -188,11 +188,7 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "The name only; size is calc(var(--scene-px) * 21.76), so 87px at a 4px scene scale and about 65px at 3px."
-      },
-      "lead": {
-        "displayName": "Lead",
-        "purpose": "The plain role line under the name."
+        "purpose": "The name only; size is calc(var(--scene-px) * 32.64), so 131px at a 4px scene scale and about 98px at 3px."
       },
       "item": {
         "displayName": "Item",
@@ -269,9 +265,9 @@
       "name": "Nameplate",
       "kind": "custom",
       "refersTo": "nameplate",
-      "description": "The name set directly on the night sky with the plain role line beneath; no glyph, panel, or scrim.",
-      "html": "<div class=\"ds-nameplate\"><h1 class=\"ds-name\">Vivien</h1><p class=\"ds-role\">Mechanical engineer.</p></div>",
-      "css": ".ds-nameplate { background: #0f2b4c; padding: 3rem 2rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-name { margin: 0; font-weight: 400; font-size: 87px; line-height: 0.9; color: #f3f3f3; } .ds-role { margin: 1.25rem 0 0; font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem); line-height: 1.2; color: #f3f3f3; } .ds-nameplate ::selection { background: #e3f2fd; color: #0f2b4c; }"
+      "description": "The name alone, set directly on the night sky; no role line, glyph, panel, or scrim.",
+      "html": "<div class=\"ds-nameplate\"><h1 class=\"ds-name\">Vivien</h1></div>",
+      "css": ".ds-nameplate { background: #0f2b4c; padding: 3rem 2rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-name { margin: 0; font-weight: 400; font-size: 131px; line-height: 0.9; color: #f3f3f3; } .ds-nameplate ::selection { background: #e3f2fd; color: #0f2b4c; }"
     },
     {
       "name": "Ledger",

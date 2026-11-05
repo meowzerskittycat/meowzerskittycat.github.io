@@ -17,14 +17,9 @@ colors:
 typography:
   display:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
-    fontSize: "87px"
+    fontSize: "131px"
     fontWeight: 400
     lineHeight: 0.9
-  lead:
-    fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
-    fontSize: "clamp(1.375rem, 1.1rem + 1vw, 2rem)"
-    fontWeight: 400
-    lineHeight: 1.2
   item:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
     fontSize: "clamp(1.5rem, 1.15rem + 1.2vw, 2.25rem)"
@@ -60,9 +55,9 @@ components:
     typography: "{typography.display}"
     padding: "clamp(5rem, 16vh, 10rem) clamp(1rem, 6vw, 6rem) 0"
     width: "44rem"
-  role-line:
-    textColor: "{colors.snow}"
-    typography: "{typography.lead}"
+  scroll-cue:
+    textColor: "{colors.ice}"
+    size: "calc(var(--scene-px) * 7) x calc(var(--scene-px) * 4)"
   ledger:
     width: "64rem"
   ledger-row:
@@ -139,7 +134,7 @@ A cold, low-light palette of fjord blues on deep navy, lit by ice-blue aurora an
 - **Upper Space** (space): the darkest sky at the top of the canvas. Scene-only.
 - **Ridge Blue** (ridge): the sky's lowest step near the horizon, the back hill on the shore canvas, the pixel-dot rules between ledger rows, and the scrollbar thumb.
 - **Fjord Water** (fjord): the water's tint at the shoreline (it shades toward night with depth) and the ice glints on the water.
-- **Snow** (snow): primary ink; the name, the role line, the ledger items, and the band names.
+- **Snow** (snow): primary ink; the name, the ledger items, and the band names.
 - **Soft Frost Ink** (ink-soft): secondary ink for the ledger labels and the note above the bands (9.3:1 on night).
 
 The scenes shade their terrain with in-between blues defined in `scene.js` and nowhere else: haze (#24496f) and haze snow (#4a76a0) for the back range; lit snow (#a4c5e2), mid snow (#7fa7cc) and shaded snow (#46719c) for the alpine faces, couloirs and the shore's snowbank; far rock (#1b3c60) and far shade (#132e4e) for the ribs; hill (#0f2745), hill tree (#0b1f3a) and hill snow (#3f6a94) for the forested foothills; near shore (#0a1e36), pine (#06152a) and cabin timber (#081829). Chimney smoke reuses shaded snow and haze. These are rendering shades of the palette, not page tokens; do not use them in CSS.
@@ -157,8 +152,7 @@ The scenes shade their terrain with in-between blues defined in `scene.js` and n
 **Character:** A single pixel face that shares the scene's grid, so the name looks drawn in the same night as the mountains. It stays at regular weight everywhere; the pixel grid already gives it all the weight it needs.
 
 ### Hierarchy
-- **Display** (400, display size, 0.9): the name only. Sized from the scene scale, not a fluid clamp: `calc(var(--scene-px) * 21.76)`, so each glyph pixel lands on exactly two art pixels. That is the listed 87px at a 4px scene scale and about 65px at 3px.
-- **Lead** (400, lead size, 1.2): the role line under the name, plain text with no glyph.
+- **Display** (400, display size, 0.9): the name only. Sized from the scene scale, not a fluid clamp: `calc(var(--scene-px) * 32.64)`, so each glyph pixel lands on exactly three art pixels. That is the listed 131px at a 4px scene scale and about 98px at 3px. The name stands alone in the hero; what Vivien does is said once, in the ledger.
 - **Item** (400, item size, 1.2): the content of each ledger row (the trades and the band names). The largest type below the hero; every row's content shares it so the rows read as equals.
 - **Body** (400, body size, 1.5): the note above the bands and default text.
 - **Label** (400, 1rem, 0.06em tracking, uppercase): the ledger's row labels only, in ink-soft.
@@ -204,13 +198,18 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, two drifting aurora curtains, a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills with a comb of small pines, a pine shore, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord.
 - **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled with crisp pixels; the art scale is published to CSS as `--scene-px`.
 - **Motion:** aurora drift, star twinkle, snowfall at two depths, a shooting star of about 0.8s roughly every 11s, chimney smoke, water ripple, and a flickering lamp reflection, stepped at 10 frames a second. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
+- **Arrival:** when motion is welcome, scene.js adds `.reveal` to the root: the name wipes in left to right in 6 whole steps, the cue follows, and each ledger row wipes in with 8 steps the first time it surfaces (rows entering together stagger by 0.12s). Without the class nothing is hidden, so no-JS and reduced-motion visitors see the page as is.
+- **Favicon:** `favicon.svg`, a 16x16 pixel peak with a snow cap under an aurora band, on night, in the page palette.
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
 ### Shore
 - A full-bleed canvas closing the page: the night field dithering down onto a ridge-blue back hill, a snowbank stepped from frost through lit, mid, and shaded snow, and dark pines standing in it. Drawn once at the scene's art scale, decorative and hidden from assistive tech.
 
 ### Nameplate
-- Display-size snow text set directly over the sky at the left, with the plain lead-size role line beneath (1.25rem gap). No glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water.
+- Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water.
+
+**Scroll Cue**
+- A 7x4 ice pixel chevron centred at the foot of the hero, drawn at scene-pixel size, nudging down one scene pixel on a 1.4s `steps()` loop. Hidden in portrait (the name occupies the hero's foot there), still under reduced motion, decorative and hidden from assistive tech.
 
 ### Ledger (signature)
 - A definition list of rows. Each row is an ink-soft uppercase label and snow item-size content, with a ridge-blue pixel-dot rule on every row but the first. Labels and contents line up in two columns from 46rem and stack below it. Content is either items (a glyph and a word each, wrapping side by side) or a body-size ink-soft note followed by a list.
