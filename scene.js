@@ -116,7 +116,7 @@
     skyRows = new Array(horizon);
     for (let y = 0; y < horizon; y++) {
       const v = skyV(y), row = new Uint32Array(4);
-      for (let x = 0; x < 4; x++) row[x] = pack(ramp(SKY, v, x, y));
+      for (let x = 0; x < 4; x++) row[x] = pack(skyStep(v, x, y));
       skyRows[y] = row;
     }
     aurCols = { env: [new Float32Array(W), new Float32Array(W)], bottom: [new Float32Array(W), new Float32Array(W)], len: [new Float32Array(W), new Float32Array(W)], rays: [new Float32Array(W), new Float32Array(W)] };
@@ -210,8 +210,9 @@
           const snowy = (y < sl && !rib) || couloir || (y - far.top[x] < 1 && y < sl + hz * 0.05);
           if (snowy) {
             if (!lit) c = C.snowShade;
-            else if (y - far.top[x] < 1) c = C.frost;
-            else c = dither(x, y) > 0.8 && nSnow(x * 0.3 + y * 0.2) > 0.5 ? C.snowMid : C.snowLit;
+            // a frost crest only above the snowline; lower ridges carry a quieter edge
+            else if (y - far.top[x] < 1) c = y < sl ? C.frost : C.snowMid;
+            else c = C.snowLit; // lit snow is one clean plane: no dotted texture
           } else c = lit ? C.farRock : C.farShade;
         } else if (y >= haze.top[x]) {
           c = y < hz * 0.6 && y - haze.top[x] < 3 && dither(x, y) > 0.3 ? C.hazeSnow : C.haze;
@@ -300,7 +301,10 @@
 
   // ---------------------------------------------------------------- sky
 
-  const SKY = [C.space, C.night, C.ridge];
+  // five flat steps of night, each pair of neighbours blended only in a narrow dithered seam
+  const mid = (a, b) => a.map((v, i) => Math.round((v + b[i]) / 2));
+  const SKY = [C.space, mid(C.space, C.night), C.night, mid(C.night, C.ridge), C.ridge];
+  const skyStep = (v, x, y) => SKY[Math.max(0, Math.min(4, Math.floor(v * 4 + 0.5 + (dither(x, y) - 0.5) * 0.4)))];
   const AUR = [C.abyss, C.glacier, C.ice, C.frost];
 
   function ramp(steps, v, x, y) {
@@ -367,7 +371,8 @@
         const i = y * W + x;
         if (base[i]) { buf[i] = base[i]; continue; }
         const a = inAur ? aurora(x, y) : 0;
-        buf[i] = a > 0.05 + dither(x + 1, y) * 0.22 ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y)) : sky[x & 3];
+        // faint light breaks into short vertical dashes along the rays, never lone dots
+        buf[i] = a > 0.05 + dither(x + 1, y >> 2) * 0.22 ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y >> 1)) : sky[x & 3];
       }
     }
     for (const s of stars) {
@@ -391,7 +396,9 @@
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
       // a shallow fjord (wide screens) folds the mirror tighter so the peaks still reach it
       const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * mirror));
-      const fade = horizon < H * 0.7 ? 0.32 * Math.pow(1 - d, 1.1) : 0.5 * (1 - smooth(0.6, 1, d));
+      // thin calm-water breaks drift down through the mirror: rows where the reflection gives way to the water
+      const brk = nRay((y - horizon) * 0.8 - t * 0.6 + 300) > 0.7 ? 0.4 : 1;
+      const fade = brk * (horizon < H * 0.7 ? 0.32 * Math.pow(1 - d, 1.1) : 0.5 * (1 - smooth(0.5, 0.88, d)));
       const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
       const f1 = 1 - fade;
       const wr = (C.deep[0] + (C.fjord[0] - C.deep[0]) * tint) * f1;

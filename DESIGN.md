@@ -186,7 +186,7 @@ Flat. Nothing on the page is lifted, layered, or shadowed. Depth is atmospheric 
 ### Named Rules
 **The Depth Is Distance Rule.** Separation comes from atmospheric value steps in the scene and from space on the page, never from drop shadows, overlays, or raised surfaces.
 
-**The Dithered Sky Rule.** Sky, aurora, and haze tones change only through a 4x4 ordered (Bayer) dither between palette steps, at whole art pixels; never a smooth CSS or canvas gradient. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, and its last fifth dithers out into the night field.
+**The Dithered Sky Rule.** Sky, aurora, and haze tones change only in flat steps joined by a narrow 4x4 ordered (Bayer) dither seam, at whole art pixels; never a smooth CSS or canvas gradient, and never dither spread across a whole field as texture. The sky is five flat bands (space, two in-between blends, night, ridge) whose seams fall clear of the name; the aurora's faint light breaks into short vertical dashes along its rays, never lone dots; lit snow is one clean plane. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, broken by thin calm rows that drift down through it, and fades out into the night field.
 
 ## Shapes
 
@@ -237,7 +237,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 ### Do:
 - **Do** keep the page field night and every surface flat; the canvases are the only images.
 - **Do** draw any new pixel art on the same whole-number art-pixel grid (3 to 6 screen px) with `image-rendering: pixelated`, and size small text-layer marks in multiples of `--ui-px` (the scene pixel, capped at 4px).
-- **Do** step sky, aurora, and haze tones with ordered dither between palette colors.
+- **Do** step sky, aurora, and haze tones in flat bands, with ordered dither only in the narrow seam between two of them.
 - **Do** set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.
 - **Do** keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.
 - **Do** keep motion slow and stepped (10fps for the scene, `steps()` timing for CSS), pause it offscreen, and hold it still for reduced-motion users.
@@ -247,7 +247,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Don't** use lamplight amber or ember anywhere beyond the cabin window and its reflection.
 - **Don't** use the ice-blue set for words, labels, or surfaces; in the text layer it is only for small pixel marks.
 - **Don't** round corners, add drop shadows, or put content in cards, panels, or bordered boxes.
-- **Don't** use smooth gradients for sky, aurora, or haze tones.
+- **Don't** use smooth gradients for sky, aurora, or haze tones, or spread dither over a whole surface as texture; it reads as noise and leaves orphan pixels.
 - **Don't** draw rules with `border` or the browser's round dotted style.
 - **Don't** add bold weights, italics, or a second typeface, or use uppercase tracking anywhere but the ledger label.
 - **Don't** center the name over the scene or place it on a scrim; it sits on the sky (or, on portrait screens, on the water).
