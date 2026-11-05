@@ -37,7 +37,7 @@ Confirmed facts about Vivien, and the only ones the page may state:
 - Mechanical engineer.
 - Used to be a musician and a programmer.
 - Loves Nordic metal; named bands: Moonsorrow, Korpiklaani, Darkthrone, Enslaved, Taake.
-- Politics: far left, anarcho-communist. To appear as a quiet nod, low emphasis, near the end.
+- Politics: removed from the page at Vivien's request; do not add it back.
 
 Absent and must not be fabricated: location, employer, education, instruments played, languages, photos, contact details, projects.
 
