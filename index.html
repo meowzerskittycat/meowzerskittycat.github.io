@@ -1,11 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My First Website</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vivien</title>
+  <meta name="description" content="Vivien: mechanical engineer, former musician and programmer.">
+  <meta name="theme-color" content="#071a31">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vivien">
+  <meta property="og:description" content="Mechanical engineer, former musician and programmer.">
+  <meta property="og:url" content="https://meowzerskittycat.github.io/">
+  <meta property="og:image" content="https://meowzerskittycat.github.io/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vivien, written over a pixel-art polar night: mountains, a fjord, a blue aurora and a lit cabin.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="fonts/pixelify-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>Welcome to my GitHub Pages website.</p>
+  <header class="night">
+    <canvas class="scene" id="scene" role="img"
+      aria-label="Pixel-art night: an alpine range above a still fjord under a blue aurora and a crescent moon, moonlight and one lit cabin window reflected on the water."></canvas>
+    <div class="nameplate">
+      <h1>Vivien</h1>
+    </div>
+    <svg class="cue" viewBox="0 0 7 4" aria-hidden="true"><path d="M0 0h1v1h-1zM6 0h1v1h-1zM1 1h1v1h-1zM5 1h1v1h-1zM2 2h1v1h-1zM4 2h1v1h-1zM3 3h1v1h-1z"/></svg>
+  </header>
+
+  <main>
+    <dl class="ledger">
+      <div class="row">
+        <dt>Now</dt>
+        <dd><span class="item"><svg class="px-icon" viewBox="0 0 9 9" aria-hidden="true"><path d="M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM3 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM7 1h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM1 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1z"/></svg>Mechanical engineering</span></dd>
+      </div>
+      <div class="row">
+        <dt>Before</dt>
+        <dd>
+          <span class="item"><svg class="px-icon" viewBox="0 0 9 9" aria-hidden="true"><path d="M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM3 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM3 2h1v1h-1zM8 2h1v1h-1zM3 3h1v1h-1zM3 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM0 7h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1z"/></svg>Music</span>
+          <span class="item"><svg class="px-icon" viewBox="0 0 9 9" aria-hidden="true"><path d="M0 1h1v1h-1zM1 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1z"/></svg>Programming</span>
+        </dd>
+      </div>
+      <div class="row">
+        <dt>
+          Listening
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </dt>
+        <dd>
+          <p class="note">Nordic metal. A few bands I really like:</p>
+          <ul class="bands">
+            <li>Moonsorrow</li>
+            <li>Korpiklaani</li>
+            <li>Darkthrone</li>
+            <li>Enslaved</li>
+            <li>Taake</li>
+          </ul>
+        </dd>
+      </div>
+    </dl>
+  </main>
+
+  <div class="foot">
+    <canvas class="shore" id="shore" aria-hidden="true"></canvas>
+  </div>
+
+  <script src="scene.js" defer></script>
 </body>
 </html>
