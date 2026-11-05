@@ -170,11 +170,11 @@ Everything is left-aligned inside a generous fluid gutter (`spacing.gutter`) on 
 
 The introduction is one ledger, at most 64rem wide. Each row has `spacing.row` above and below its content and a pixel-dot rule along its top edge; the first row has neither rule nor top padding, so the ledger starts flush under the descent. From 46rem wide each row is two columns: an 11rem label column and the content, with `spacing.label-gap` between, aligned on the baseline. Below 46rem the label stacks above its content with `spacing.stack` between.
 
-Inside a row, items wrap side by side with 0.5rem between lines and `spacing.item-gap` between items. A glyph or marker sits `spacing.glyph-gap` before its word. A note above a list takes the full row width with 0.5rem under it. The band names form an even grid, three columns from 46rem, two below, and one under 23rem, at the same item gap with 0.35em between lines; a name never wraps. The level meter sits 0.9rem under its label.
+Inside a row, items wrap side by side with 0.5rem between lines and `spacing.item-gap` between items. A glyph or marker sits `spacing.glyph-gap` before its word. A note above a list takes the full row width with 0.5rem under it. The band names form an even grid, three columns from 72rem, two below, and one under 24rem, at the same item gap with 0.35em between lines; a name never wraps. The level meter sits 0.9rem under its label when rows are two columns; when they stack (phones) it stands beside the label on its baseline, so it doesn't take a line of its own.
 
 The nameplate tops out at 44rem.
 
-The scene's responsiveness lives in `scene.js`. The art scale is 4px per art pixel from a 1280px-wide hero up and 3px below; the shore canvas uses the same scale. When the hero is portrait (height over 1.15 times the width), the scene sets a portrait flag: the horizon drops from 80% to 60% of the height so the fjord is taller, the horn peak and moon shift to suit the narrow sky, and the nameplate leaves the sky and rests at the bottom of the hero on the dark water.
+The scene's responsiveness lives in `scene.js`. The art scale is 4px per art pixel from a 1280px-wide hero up and 3px below; the shore canvas uses the same scale. When the hero is portrait (height over 1.15 times the width), the scene sets a portrait flag: the horizon drops from 80% to 60% of the height so the fjord is taller, the horn peak and moon shift to suit the narrow sky (on landscape screens the moon sits in the clear sky just past the name, before the curtain begins, so it never overlaps either), and the nameplate leaves the sky and rests at the bottom of the hero on the dark water.
 
 ### Named Rules
 **The One Edge Rule.** Every ledger row shares one label column and one content edge. New facts join the ledger as rows; they do not open a second layout.
@@ -186,7 +186,9 @@ Flat. Nothing on the page is lifted, layered, or shadowed. Depth is atmospheric 
 ### Named Rules
 **The Depth Is Distance Rule.** Separation comes from atmospheric value steps in the scene and from space on the page, never from drop shadows, overlays, or raised surfaces.
 
-**The Dithered Sky Rule.** Sky, aurora, and haze tones change only through a 4x4 ordered (Bayer) dither between palette steps, at whole art pixels; never a smooth CSS or canvas gradient. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, and its last fifth dithers out into the night field.
+**The Spruce Rule.** Every pine, in the hero and on the shore, is drawn from one tiered silhouette: a one-pixel tip, then tiers that flare a pixel a row and start each next tier a pixel narrower, never stepping back to the bare stem (which reads as a cross).
+
+**The Dithered Sky Rule.** Sky, aurora, and haze tones change only in flat steps joined by a narrow ordered dither seam, at whole art pixels; never a smooth CSS or canvas gradient, and never dither spread across a whole field as texture. The sky is five flat bands (space, two in-between blends, night, ridge) whose seams are exactly two rows of 50% checker, falling clear of the name; the aurora's faint light breaks into short vertical dashes along its rays, offset column to column so they never line up into rows, and any lit pixel with no lit neighbour above or below is dropped, so there are never lone dots; lit snow is one clean plane. The water is the one exception: it reads the mirror in pixel pairs, so a checker seam above reflects as one flat band rather than a dotted line, and blends the reflection into the fjord tint row by row, still on whole art pixels, broken by thin calm rows that drift down through it, and fades out into the night field.
 
 ## Shapes
 
@@ -197,7 +199,7 @@ Square and hard-edged throughout (`rounded.none`). Both canvases render with `im
 The page has no buttons, inputs, navigation, or cards, by product decision (no links). The recurring pieces are scene, type, the ledger, and pixel marks.
 
 ### Pixel Night Scene (signature)
-- **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, two drifting aurora curtains (broad slow folds with faint vertical streaks, brightest at a lit hem, dissolving upward into the sky through dither so the top never forms a hard spiky edge), a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills with a comb of small pines, a pine shore, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord. The sky is clear: no snow falls in the hero, so nothing crosses the name.
+- **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, two drifting aurora curtains (broad slow folds hung with fine vertical rays that drift along them, brightest at a lit two-pixel hem; each ray's height follows its brightness, so the top reads as a comb of streaks thinning into the sky through dither rather than a haze), a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills edged with small distant spruce (tapering spires, close-set where the forest is dense, so the crest is a serrated forest edge), valley mist where the range's foot meets the foothills (a solid haze band with a thin dithered edge, so the planes part), a pine shore with a faint broken snow rim along the waterline, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord: a mirror of the whole range, its rows folded tighter on wide screens (where the fjord is shallow) so the peaks and their snow still reach the water, fading into the page colour by the hero's foot. The sky is clear: no snow falls in the hero, so nothing crosses the name.
 - **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled by an exact whole number (the canvas element is sized to W x scale, overhanging its box by under one art pixel), so every art pixel is the same size; the art scale is published to CSS as `--scene-px` (and as `--ui-px`, capped at 4px, for the icons, meter, band markers and row rules so they stay in proportion to the text), and the nameplate's padding is rounded to it so the name's pixels sit on the art's. Per frame, the aurora's column terms are computed once and only its band of rows is evaluated; the sky's dither colours are precomputed per row (about 2ms a frame on desktop).
 - **Aurora placement:** on landscape screens the curtain begins a few art pixels to the right of the name's ink, measured after the font loads, so the two never touch.
 - **Stars:** scattered over open sky only: never on the terrain, around the moon, or in or right beside the name's letters, where a lone pixel would read as a flaw in the type.
@@ -209,10 +211,10 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
 ### Shore
-- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank stepped from frost through lit, mid, and shaded snow, and dark pines standing in it, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
+- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank rolling in low drifts (a frost edge, then lit, mid, and shaded snow in clean bands that follow the drift's own contour, with no dithered seams, and the lit lip and shaded fall of a lower drift crest here and there), dark pines standing in it with their skirts reaching the drift beneath and a short shaded-snow moon shadow to their right, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
 
 ### Nameplate
-- Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water.
+- Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water, clamp(1.5rem, 5vh, 3rem) above it, so the name stays close to the first ledger row.
 
 **Scroll Cue**
 - A 7x4 ice pixel chevron centred at the foot of the hero, drawn at scene-pixel size, nudging down one scene pixel on a 1.4s `steps()` loop. Hidden in portrait (the name occupies the hero's foot there), still under reduced motion, decorative and hidden from assistive tech.
@@ -227,7 +229,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - An unstyled list of names at item size in snow, set as an even grid (three columns from 72rem, where they still end inside the row rule; two below, one under 24rem), each name led by a two-scene-pixel ice square and never wrapping.
 
 ### Level Meter
-- Seven ice bars under the Listening label, each two scene pixels wide with one scene pixel between, standing in a box ten scene pixels tall, each capped with a frost pixel. Each bar jumps between whole-pixel heights on its own 1.1 to 1.9s cycle with `steps()` timing, never easing. Under reduced motion the bars stand still at their resting heights. Decorative and hidden from assistive tech.
+- Seven ice bars under the Listening label (beside it when rows stack), each two scene pixels wide with one scene pixel between, standing in a box ten scene pixels tall, each capped with a frost pixel. Each bar jumps between whole-pixel heights on its own 1.1 to 1.9s cycle with `steps()` timing, never easing. Under reduced motion the bars stand still at their resting heights. Decorative and hidden from assistive tech.
 
 ### Selection
 - Frost background with night text: the single cool-white highlight state the page has.
@@ -237,7 +239,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 ### Do:
 - **Do** keep the page field night and every surface flat; the canvases are the only images.
 - **Do** draw any new pixel art on the same whole-number art-pixel grid (3 to 6 screen px) with `image-rendering: pixelated`, and size small text-layer marks in multiples of `--ui-px` (the scene pixel, capped at 4px).
-- **Do** step sky, aurora, and haze tones with ordered dither between palette colors.
+- **Do** step sky, aurora, and haze tones in flat bands, with ordered dither only in the narrow seam between two of them.
 - **Do** set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.
 - **Do** keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.
 - **Do** keep motion slow and stepped (10fps for the scene, `steps()` timing for CSS), pause it offscreen, and hold it still for reduced-motion users.
@@ -247,7 +249,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Don't** use lamplight amber or ember anywhere beyond the cabin window and its reflection.
 - **Don't** use the ice-blue set for words, labels, or surfaces; in the text layer it is only for small pixel marks.
 - **Don't** round corners, add drop shadows, or put content in cards, panels, or bordered boxes.
-- **Don't** use smooth gradients for sky, aurora, or haze tones.
+- **Don't** use smooth gradients for sky, aurora, or haze tones, or spread dither over a whole surface as texture; it reads as noise and leaves orphan pixels.
 - **Don't** draw rules with `border` or the browser's round dotted style.
 - **Don't** add bold weights, italics, or a second typeface, or use uppercase tracking anywhere but the ledger label.
 - **Don't** center the name over the scene or place it on a scrim; it sits on the sky (or, on portrait screens, on the water).

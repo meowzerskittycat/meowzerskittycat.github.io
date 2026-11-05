@@ -114,11 +114,15 @@
     img = ctx.createImageData(W, H);
     buf = new Uint32Array(img.data.buffer);
     skyRows = new Array(horizon);
+    // flat bands of night; where one band meets the next, two rows of checker and nothing more
+    const lvl = (y) => Math.max(0, Math.min(4, Math.floor(skyV(y) * 4 + 0.5)));
     for (let y = 0; y < horizon; y++) {
-      const v = skyV(y), row = new Uint32Array(4);
-      for (let x = 0; x < 4; x++) row[x] = pack(ramp(SKY, v, x, y));
+      const L = lvl(y), row = new Uint32Array(4);
+      const seam = y + 1 < horizon && lvl(y + 1) > L ? L + 1 : y > 0 && lvl(y - 1) < L ? L - 1 : -1;
+      for (let x = 0; x < 4; x++) row[x] = pack(SKY[seam >= 0 && ((x + y) & 1) === (seam > L ? 1 : 0) ? seam : L]);
       skyRows[y] = row;
     }
+    aurMask = new Uint8Array(W * horizon);
     aurCols = { env: [new Float32Array(W), new Float32Array(W)], bottom: [new Float32Array(W), new Float32Array(W)], len: [new Float32Array(W), new Float32Array(W)], rays: [new Float32Array(W), new Float32Array(W)] };
     buildStatic();
   }
@@ -160,6 +164,22 @@
       owner[x] = who;
     }
     return { top, owner };
+  }
+
+  // a spruce's half-widths from tip to foot: tiers hung on a cone, each flaring one pixel a
+  // row to its own width, the next starting a pixel narrower, never back to the bare stem
+  // (which would read as a cross)
+  function spruce(h) {
+    const m = h * 0.2 + 0.6, n = Math.max(2, Math.round(h / 3.2)), out = [0];
+    let prev = 0;
+    for (let i = 0; i < n; i++) {
+      const L = Math.round((h * (i + 1)) / n) - Math.round((h * i) / n);
+      const e = Math.max(1, Math.round(((i + 1) / n) * m));
+      const s0 = Math.max(i === 0 ? 0 : Math.max(1, prev - 1), e - L + 1);
+      for (let r = 0; r < L; r++) out.push(Math.min(e, s0 + r));
+      prev = e;
+    }
+    return out;
   }
 
   function buildStatic() {
@@ -210,9 +230,13 @@
           const snowy = (y < sl && !rib) || couloir || (y - far.top[x] < 1 && y < sl + hz * 0.05);
           if (snowy) {
             if (!lit) c = C.snowShade;
-            else if (y - far.top[x] < 1) c = C.frost;
-            else c = dither(x, y) > 0.8 && nSnow(x * 0.3 + y * 0.2) > 0.5 ? C.snowMid : C.snowLit;
+            // a frost crest only above the snowline; lower ridges carry a quieter edge
+            else if (y - far.top[x] < 1) c = y < sl ? C.frost : C.snowMid;
+            else c = C.snowLit; // lit snow is one clean plane: no dotted texture
           } else c = lit ? C.farRock : C.farShade;
+          // valley mist: the range's foot thins into haze above the foothills, so the planes part
+          const md = hillTop[x] - y;
+          if (md < 3 || (md < 5 && dither(x, y) < (5 - md) * 0.25)) c = C.haze;
         } else if (y >= haze.top[x]) {
           c = y < hz * 0.6 && y - haze.top[x] < 3 && dither(x, y) > 0.3 ? C.hazeSnow : C.haze;
         }
@@ -220,18 +244,21 @@
       }
     }
 
-    // a comb of small pines along the foothill crests
+    // distant spruce along the foothill crests: small tapering spires, close-set in the
+    // dense stretches so the crest reads as a serrated forest edge, never as posts
     const rh = rng(4321);
     for (let x = 1; x < W - 1; x++) {
-      if (rh() > 0.15 + 0.5 * smooth(0.4, 0.65, fbm(nMid, x * 0.08 + 30, 2))) continue;
-      const h = 2 + Math.floor(rh() * 3);
+      const dense = smooth(0.38, 0.62, fbm(nMid, x * 0.08 + 30, 2));
+      if (rh() > 0.12 + 0.6 * dense) continue;
+      const h = 3 + Math.floor(rh() * (2 + 3 * dense));
       for (let k = 0; k <= h; k++) {
-        const hw = k >= h - 0 ? 1 : 0;
+        const hw = Math.floor(k * 0.5 + 0.25);
         for (let dx = -hw; dx <= hw; dx++) {
-          const y = hillTop[x] - h + k;
+          const y = hillTop[x] - h + k + 1;
           if (y >= 0 && y < nearTop[x]) set(x + dx, y, C.hillTree);
         }
       }
+      x += 1; // spires stand at least two pixels apart, so their tips stay distinct
     }
 
     // pines on the near shore, in stands and clearings
@@ -241,13 +268,19 @@
       if (Math.abs(x - cabinX) < 9) continue;
       if (r() > 0.08 + 0.55 * smooth(0.35, 0.7, fbm(nNear, x * 0.06 + 50, 2))) continue;
       const h = 4 + Math.floor(r() * (H > 160 ? 11 : 7));
-      const top = nearTop[x] - h;
+      const top = nearTop[x] - h, rows = spruce(h);
       for (let k = 0; k <= h; k++) {
-        const hw = Math.floor((k / h) * 2.6 + ((k % 3) === 0 ? 0 : 0.6));
+        const hw = rows[k];
         for (let dx = -hw; dx <= hw; dx++) {
           set(x + dx, top + k, C.pine);
         }
       }
+    }
+
+    // a thin rim of snow along the waterline, broken where the shore runs dark
+    for (let x = 0; x < W; x++) {
+      const v = fbm(nSnow, x * 0.15 + 70, 2);
+      if (v > 0.5) set(x, horizon - 1, v > 0.62 ? C.hazeSnow : C.haze);
     }
 
     // the cabin: dark timber, snow on the roof, one lit window
@@ -268,9 +301,9 @@
     set(cabin.wx, cabin.wy, C.lamp); set(cabin.wx + 1, cabin.wy, C.lamp);
     set(cabin.wx, cabin.wy + 1, C.lamp); set(cabin.wx + 1, cabin.wy + 1, C.ember);
 
-    // a crescent moon
+    // a crescent moon, in the clear sky between the name and the curtain, never overlapping either
     const mr = Math.max(3, Math.round(Math.min(W, H) * 0.028));
-    const mx = Math.round(W * (W > H ? 0.45 : 0.22)), my = Math.round(H * (W > H ? 0.12 : 0.08));
+    const mx = W > H ? Math.round(aurStart * W + mr + 2) : Math.round(W * 0.22), my = Math.round(H * (W > H ? 0.12 : 0.08));
     moon = { x: mx, y: my, r: mr };
     for (let y = -mr - 1; y <= mr + 1; y++) for (let x = -mr - 1; x <= mr + 1; x++) {
       const inA = x * x + y * y <= mr * mr + mr * 0.4;
@@ -297,7 +330,9 @@
 
   // ---------------------------------------------------------------- sky
 
-  const SKY = [C.space, C.night, C.ridge];
+  // five flat steps of night, each pair of neighbours blended only in a narrow dithered seam
+  const mid = (a, b) => a.map((v, i) => Math.round((v + b[i]) / 2));
+  const SKY = [C.space, mid(C.space, C.night), C.night, mid(C.night, C.ridge), C.ridge];
   const AUR = [C.abyss, C.glacier, C.ice, C.frost];
 
   function ramp(steps, v, x, y) {
@@ -308,7 +343,7 @@
   }
 
   const skyV = (y) => 0.05 + 0.95 * Math.pow(y / horizon, 1.3);
-  let aurCols = null, aurTop = 0, aurBot = 0;
+  let aurCols = null, aurMask = null, aurTop = 0, aurBot = 0;
 
   // everything about the curtain that depends only on the column, worked out once a frame
   function auroraPrep(t) {
@@ -326,11 +361,12 @@
           + Math.sin(u * 6.0 + t * 0.3 + k * 2) * horizon * 0.08
           + Math.sin(u * 17.0 - t * 0.6) * horizon * 0.02;
         bottom[x] = bt;
-        // broad folds that sway slowly, with a faint fine shimmer; brighter folds reach higher
+        // a curtain: broad folds that sway slowly, hung with fine vertical rays that drift along
+        // them; a bright ray reaches higher, so the top edge is a comb of streaks, not a haze
         const fold = nRay(u * 7 + t * 0.12 + k * 90);
-        const streak = 0.45 + 0.55 * Math.pow(nRay(x * 0.38 + t * 0.25 + k * 30), 1.5);
-        rays[x] = (0.4 + 0.6 * fold) * streak;
-        len[x] = horizon * (0.1 + 0.2 * fold);
+        const ray = Math.pow(nRay(x * 0.55 + t * 0.35 + k * 30), 2.2);
+        rays[x] = (0.35 + 0.65 * fold) * (0.3 + 0.7 * ray);
+        len[x] = horizon * (0.05 + (0.1 + 0.17 * fold) * (0.25 + 0.75 * Math.sqrt(ray)));
         if (bt - horizon * 0.4 < aurTop) aurTop = bt - horizon * 0.4;
         if (bt + 1 > aurBot) aurBot = bt + 1;
       }
@@ -346,9 +382,10 @@
       if (d < -1 || d > horizon * 0.4) continue;
       const len = aurCols.len[k][x];
       // light pools at the hem and thins upward, so the top dissolves into the sky
-      const prof = d < 0 ? 0.45 : Math.max(0, 1 - d / len);
-      const hem = d >= 0 && d < 2 ? 0.3 : 0;
-      const v = env * (aurCols.rays[k][x] * Math.pow(prof, 1.6) + hem) * (k === 0 ? 0.9 : 0.55);
+      const prof = d < 0 ? 0.4 : Math.max(0, 1 - d / len);
+      // the lower hem is the brightest line of the curtain, one step brighter than its rays
+      const hem = d >= 0 && d < 2 ? 0.45 : d >= 2 && d < 4 ? 0.15 : 0;
+      const v = env * (aurCols.rays[k][x] * Math.pow(prof, 1.1) + hem) * (k === 0 ? 0.9 : 0.55);
       if (v > best) best = v;
     }
     return best;
@@ -360,9 +397,21 @@
       const sky = skyRows[y], inAur = y >= aurTop && y <= aurBot;
       for (let x = 0; x < W; x++) {
         const i = y * W + x;
-        if (base[i]) { buf[i] = base[i]; continue; }
+        if (base[i]) { buf[i] = base[i]; aurMask[i] = 0; continue; }
         const a = inAur ? aurora(x, y) : 0;
-        buf[i] = a > 0.05 + dither(x + 1, y) * 0.22 ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y)) : sky[x & 3];
+        // faint light breaks into short vertical dashes along the rays, never lone dots;
+        // each column's dashes are offset so they never line up into rows
+        const lit = a > 0.05 + dither(x + 1, (y + ((x * 7) % 5)) >> 2) * 0.22;
+        aurMask[i] = lit ? 1 : 0;
+        buf[i] = lit ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y >> 1)) : sky[x & 3];
+      }
+    }
+    // a lit pixel with no lit neighbour above or below is a lone dot, not part of a ray: drop it
+    const y0 = Math.max(1, Math.floor(aurTop)), y1 = Math.min(horizon - 2, Math.ceil(aurBot));
+    for (let y = y0; y <= y1; y++) {
+      for (let x = 0; x < W; x++) {
+        const i = y * W + x;
+        if (aurMask[i] && !aurMask[i - W] && !aurMask[i + W]) buf[i] = skyRows[y][x & 3];
       }
     }
     for (const s of stars) {
@@ -380,11 +429,15 @@
 
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
     const depthRows = H - horizon;
+    const mirror = Math.max(1.15, (horizon * 0.6) / (depthRows * 0.85));
     for (let y = horizon; y < H; y++) {
       const d = (y - horizon) / depthRows;
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
-      const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * 1.15));
-      const fade = (horizon < H * 0.7 ? 0.3 : 0.4) * Math.pow(1 - d, 1.5);
+      // a shallow fjord (wide screens) folds the mirror tighter so the peaks still reach it
+      const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * mirror));
+      // thin calm-water breaks drift down through the mirror: rows where the reflection gives way to the water
+      const brk = nRay((y - horizon) * 0.8 - t * 0.6 + 300) > 0.7 ? 0.4 : 1;
+      const fade = brk * (horizon < H * 0.7 ? 0.32 * Math.pow(1 - d, 1.1) : 0.5 * (1 - smooth(0.5, 0.88, d)));
       const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
       const f1 = 1 - fade;
       const wr = (C.deep[0] + (C.fjord[0] - C.deep[0]) * tint) * f1;
@@ -396,7 +449,8 @@
       const glowRow = gd < 1 && ((y - horizon) & 1) === 1 ? 1 - gd : 0;
       for (let x = 0; x < W; x++) {
         const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
-        const s = buf[src + sx];
+        // read the mirror in pixel pairs: water carries no dither, so a checker seam above reflects as one flat band
+        const s = buf[src + (sx & ~1)];
         const r = Math.round((s & 255) * fade + wr), g = Math.round(((s >> 8) & 255) * fade + wg), b = Math.round(((s >> 16) & 255) * fade + wb);
         buf[row + x] = (255 << 24) | (b << 16) | (g << 8) | r;
         // the aurora's light lies on the near water in broken ripple lines, rippling with it
@@ -457,29 +511,54 @@
     const sctx = shoreCanvas.getContext("2d", { alpha: false });
     const im = sctx.createImageData(sw, sh);
     const b = new Uint32Array(im.data.buffer);
-    const ground = [];
-    for (let x = 0; x < sw; x++) ground[x] = Math.round(sh * 0.72 - fbm(nNear, x * 0.03 + 200, 3) * sh * 0.18);
-    // page field above, a low snowbank, pines standing in it
+    // the bank rolls in low drifts; a second, lower crest catches the light here and there
+    const ground = [], crest = [];
+    for (let x = 0; x < sw; x++) {
+      ground[x] = Math.round(sh * 0.7 - fbm(nNear, x * 0.045 + 200, 3) * sh * 0.16 - Math.sin(x * 0.11) * 1.2);
+      crest[x] = ground[x] + 4 + Math.round(fbm(nSnow, x * 0.07 + 30, 2) * (sh - ground[x]) * 0.5);
+      // a crest climbs or falls one pixel a column at most, so its line never breaks into a stub
+      if (x > 0) crest[x] = Math.max(crest[x - 1] - 1, Math.min(crest[x - 1] + 1, crest[x]));
+    }
+    const SNOW = [C.snowLit, C.snowMid, C.snowShade];
+    // page field above, a ridge-blue back hill, the snowbank
     for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) {
       let c = C.deep;
       const hill = Math.round(sh * 0.5 - fbm(nMid, x * 0.02 + 90, 3) * sh * 0.22);
       if (y >= hill) c = C.ridge;
-      if (y >= ground[x]) c = y - ground[x] < 1 ? C.frost : C.snowLit;
-      if (y >= ground[x] + 3) c = C.snowMid;
-      if (y >= ground[x] + 6) c = C.snowShade;
+      const g = y - ground[x];
+      if (g >= 0) {
+        // moonlit on top, shading in clean bands toward the foot of the page; each band follows
+        // the drift's own contour, so the layers read as packed snow, with no dotted seams
+        const v = Math.pow((g - 1) / Math.max(1, sh - ground[x] - 1), 0.8) * 3.2;
+        c = g === 0 ? C.frost : SNOW[Math.max(0, Math.min(2, Math.floor(v)))];
+        // the drift crest: a lit lip, a shaded fall below it
+        const cr = y - crest[x];
+        if (crest[x] < sh - 2 && fbm(nSnow, x * 0.09 + 5, 2) > 0.48) {
+          if (cr === 0) c = C.snowLit;
+          else if (cr === 1) c = C.snowShade;
+        }
+      }
       b[y * sw + x] = pack(c);
     }
+    // pines standing in the snow, each casting a short moon shadow down-slope to its right
     const r = rng(77);
     for (let x = 1; x < sw - 1; x++) {
       if (r() > 0.1 + 0.5 * smooth(0.35, 0.7, fbm(nNear, x * 0.05 + 9, 2))) continue;
       const h = 5 + Math.floor(r() * sh * 0.4);
       const top = ground[x] + 1 - h;
+      for (let dx = 2; dx < 2 + Math.round(h * 0.35); dx++) {
+        const px = x + dx;
+        if (px < sw && b[ground[px] * sw + px] === pack(C.frost)) b[ground[px] * sw + px] = pack(C.snowShade);
+      }
+      const rows = spruce(h);
       for (let k = 0; k <= h; k++) {
-        const hw = Math.floor((k / h) * 3 + ((k % 3) === 0 ? 0 : 0.6));
+        const hw = rows[k];
         for (let dx = -hw; dx <= hw; dx++) {
-          const px = x + dx, py = top + k;
-          if (px < 0 || px >= sw || py < 0 || py >= sh) continue;
-          b[py * sw + px] = pack(C.pine);
+          const px = x + dx;
+          if (px < 0 || px >= sw) continue;
+          // the skirt reaches down to the drift under it, so no tree floats over a hollow
+          const y1 = k === h ? Math.max(top + k, ground[px]) : top + k;
+          for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = pack(C.pine);
         }
       }
     }
