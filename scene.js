@@ -130,9 +130,8 @@
   // the fjord keeps a fixed, small palette like the rest of the scene: a few depth bands, and in
   // each band one colour per kind of thing reflected (dark shore, shaded rock, sky and lit rock,
   // haze, shaded snow, lit snow). A continuous blend would mint a new in-between colour for every pixel.
-  let waterBand = null, waterPal = null, waterK = null, waterWave = null, waterAmp = null, waterWob = null;
+  let waterBand = null, waterPal = null, waterK = null, waterWave = null, waterAmp = null, waterWob = null, waterCalm = 0.88;
   const NK = 6; // reflection classes, darkest first
-  const WATER_EDGES = [0, 0.14, 0.32, 0.5, 0.68, 0.86]; // the last band is the page colour itself
   function buildWater() {
     const depthRows = H - horizon;
     const REP = [C.hill, C.farShade, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
@@ -143,11 +142,11 @@
     cls.set(pack(C.haze), 3);
     for (const c of [C.hazeSnow, C.snowShade, C.snowMid]) cls.set(pack(c), 4);
     for (const c of [C.snowLit, C.frost]) cls.set(pack(c), 5);
-    // the mirror is true to size at the shoreline, so the pines reflect as pines, and folds tighter
-    // with depth so the peaks still reach the water: source rows run u + a*u^2 above the horizon
-    const reach = Math.max(depthRows * 1.15, horizon * 0.6);
-    const a = (reach - depthRows) / (depthRows * depthRows);
-    const fold = (u) => u + a * u * u;
+    // the mirror is true to size where the fjord is deep; where it is shallow (wide screens) it is
+    // squashed by a whole number, two or three source rows to each water row, so the peaks still
+    // reach the water and every row steps the same way: no uneven row skips, no jagged smear
+    const squash = Math.max(1, Math.min(3, Math.round((horizon * 0.55) / depthRows)));
+    const fold = (u) => u * squash;
     // the mirror never changes, so what each water pixel reflects is worked out once: read in pixel
     // pairs from the static scene (stars and the moon never reflect; the moon has its own glade),
     // so a checker seam above reflects as one flat band; where the mirror folds several rows into
@@ -158,7 +157,11 @@
       const sy = Math.max(0, horizon - 1 - s0), span = Math.max(1, Math.min(sy + 1, s1 - s0));
       for (let x = 0; x < W; x++) {
         let best = 0;
+        // the cabin reflects as part of the dark shore: its one-pixel roof lines would only break
+        // into specks in the water, and its lamp has a reflection of its own
+        const inCabin = cabin && (x | 1) >= cabin.x0 && (x & ~1) <= cabin.x1;
         for (let r = 0; r < span; r++) {
+          if (inCabin && sy - r >= cabin.y0) continue;
           const v = cls.get(base[(sy - r) * W + (x & ~1)]);
           const kk = v === undefined ? 2 : v;
           if (kk > best) best = kk;
@@ -181,18 +184,25 @@
     // on portrait screens the name rests on the water: the mirror settles to calm water just
     // above it, so the letters never sit on reflected snow
     const calm = horizon < H * 0.7 && nameBox ? Math.max(0.3, Math.min(0.88, (nameBox.y0 - horizon) / depthRows)) : 0.88;
+    waterCalm = calm;
+    // the mirror steps down in five even bands that end exactly at the calm line, each a little
+    // fainter than the last, so it fades out rather than stopping on a hard edge; below the calm
+    // line plain water steps on into the page colour, the last band
+    const edges = [0, 0.16, 0.36, 0.58, 0.8].map((e) => e * calm), fades = [0.5, 0.42, 0.32, 0.21, 0.1];
+    if (calm < 0.8) { edges.push(calm, (calm + 0.86) / 2); fades.push(0, 0); }
+    edges.push(Math.max(calm, 0.86));
     waterBand = new Uint8Array(depthRows);
     for (let k = 0; k < depthRows; k++) {
       const d = k / depthRows;
       let b = 0;
-      while (b + 1 < WATER_EDGES.length && d >= WATER_EDGES[b + 1]) b++;
+      while (b + 1 < edges.length && d >= edges[b + 1]) b++;
       waterBand[k] = b;
     }
-    waterPal = new Uint32Array(WATER_EDGES.length * NK);
-    for (let b = 0; b < WATER_EDGES.length; b++) {
-      const last = b === WATER_EDGES.length - 1;
-      const d = last ? 1 : (WATER_EDGES[b] + WATER_EDGES[b + 1]) / 2;
-      const fade = 0.5 * (1 - smooth(calm * 0.55, calm, d));
+    waterPal = new Uint32Array(edges.length * NK);
+    for (let b = 0; b < edges.length; b++) {
+      const last = b === edges.length - 1;
+      const d = last ? 1 : (edges[b] + edges[b + 1]) / 2;
+      const fade = last ? 0 : fades[b];
       const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
       REP.forEach((s, k) => {
         // the dark shore reflects darker than the sky does, so the water under the pines reads as
@@ -436,7 +446,7 @@
     // the cabin: dark timber, snow on the roof, one lit window
     const groundY = nearTop[cabinX];
     const bx = cabinX - 4, by = groundY - 5;
-    cabin = { wx: cabinX - 1, wy: by + 2, chimney: [bx + 6, by - 7] };
+    cabin = { wx: cabinX - 1, wy: by + 2, chimney: [bx + 6, by - 7], x0: bx - 2, x1: bx + 10, y0: by - 7 };
     for (let y = by; y <= groundY + 1; y++) for (let x = bx; x < bx + 9; x++) set(x, y, C.cabin);
     for (let k = 0; k < 5; k++) {
       for (let x = bx - 1 + k; x < bx + 10 - k; x++) set(x, by - 1 - k, C.cabin);
@@ -554,12 +564,12 @@
     // shore and widening toward the viewer as a glitter path does, paling with depth; the dashes
     // never blink, they only ride the swell of the row they sit on
     if (moon) {
-      const rows = Math.round(depthRows * 0.65);
+      const rows = Math.round(depthRows * Math.min(0.65, waterCalm * 0.9));
       for (let y = horizon + 1; y < horizon + rows; y += 2) {
         const d = (y - horizon) / rows;
         if (nRay(y * 2.3) < 0.3 + d * 0.4) continue;
         const len = 1 + Math.round(nRay(y * 5.7) * (1 + d * (1 + moon.r)));
-        const x0 = moon.x + waterWob[y - horizon] + Math.round((nRay(y * 1.3 + 40) - 0.5) * 2) - (len >> 1);
+        const x0 = moon.x + waterWob[y - horizon] - (len >> 1);
         const c = d < 0.25 ? P.snowLit : d < 0.6 ? P.snowMid : P.snowShade;
         for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = c;
       }
