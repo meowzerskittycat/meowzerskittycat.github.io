@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-05T12:00:00Z",
+  "generatedAt": "2026-11-05T18:00:00Z",
   "title": "Design System: Vivien",
   "extensions": {
     "colorMeta": {
@@ -190,25 +190,21 @@
         "displayName": "Display",
         "purpose": "The name only; size is calc(var(--scene-px) * 21.76), so 87px at a 4px scene scale and about 65px at 3px."
       },
-      "lineup": {
-        "displayName": "Lineup",
-        "purpose": "Band names, one per line, poster-style; the largest type below the hero."
-      },
-      "statement": {
-        "displayName": "Statement",
-        "purpose": "The lead sentence below the waterline, ink-soft with snow trade words; a step above the section title."
-      },
-      "headline": {
-        "displayName": "Headline",
-        "purpose": "Section titles."
-      },
       "lead": {
         "displayName": "Lead",
-        "purpose": "The role line under the name."
+        "purpose": "The plain role line under the name."
+      },
+      "item": {
+        "displayName": "Item",
+        "purpose": "Ledger row content: trades and band names. The largest type below the hero."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "The aside and default text."
+        "purpose": "The note above the bands and default text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Ledger row labels only: 1rem, uppercase, 0.06em tracking, ink-soft."
       }
     },
     "shadows": [
@@ -232,7 +228,7 @@
       {
         "name": "level-meter",
         "value": "steps(1, end), 1.1s to 1.9s per bar, staggered negative delays",
-        "purpose": "Bars jump between whole scene-pixel heights; never eased."
+        "purpose": "Seven bars jump between whole scene-pixel heights (2 to 10); never eased."
       },
       {
         "name": "reduced-motion",
@@ -247,8 +243,12 @@
     ],
     "breakpoints": [
       {
-        "name": "metal-two-column",
-        "value": "min-width 52rem: music section splits into a minmax(14rem, 20rem) head column and the lineup"
+        "name": "ledger-two-column",
+        "value": "min-width 46rem: each row splits into an 11rem label column and the content; band grid goes to three columns"
+      },
+      {
+        "name": "bands-one-column",
+        "value": "max-width 23rem: band grid drops to one column (two otherwise)"
       },
       {
         "name": "scene-scale-3",
@@ -269,23 +269,23 @@
       "name": "Nameplate",
       "kind": "custom",
       "refersTo": "nameplate",
-      "description": "The name set directly on the night sky with the gear-led role line beneath; no panel or scrim.",
-      "html": "<div class=\"ds-nameplate\"><h1 class=\"ds-name\">Vivien</h1><p class=\"ds-role\"><svg class=\"ds-icon\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM3 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM7 1h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM1 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1z\"/></svg>Mechanical engineer.</p></div>",
-      "css": ".ds-nameplate { background: #0f2b4c; padding: 3rem 2rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-name { margin: 0; font-weight: 400; font-size: 87px; line-height: 0.9; color: #f3f3f3; } .ds-role { margin: 1.25rem 0 0; display: flex; align-items: center; gap: 0.6em; font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem); line-height: 1.2; color: #f3f3f3; } .ds-icon { width: 0.9em; height: 0.9em; flex: none; fill: #90caf9; shape-rendering: crispEdges; } .ds-nameplate ::selection { background: #e3f2fd; color: #0f2b4c; }"
+      "description": "The name set directly on the night sky with the plain role line beneath; no glyph, panel, or scrim.",
+      "html": "<div class=\"ds-nameplate\"><h1 class=\"ds-name\">Vivien</h1><p class=\"ds-role\">Mechanical engineer.</p></div>",
+      "css": ".ds-nameplate { background: #0f2b4c; padding: 3rem 2rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-name { margin: 0; font-weight: 400; font-size: 87px; line-height: 0.9; color: #f3f3f3; } .ds-role { margin: 1.25rem 0 0; font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem); line-height: 1.2; color: #f3f3f3; } .ds-nameplate ::selection { background: #e3f2fd; color: #0f2b4c; }"
     },
     {
-      "name": "Lead Sentence",
+      "name": "Ledger",
       "kind": "custom",
-      "refersTo": "lead-sentence",
-      "description": "The opening line below the waterline at statement size in ink-soft; each trade word is snow, led by its ice pixel glyph, and never wraps away from it.",
-      "html": "<p class=\"ds-lead\">Used to be a <span class=\"ds-trade\"><svg class=\"ds-glyph\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM3 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM3 2h1v1h-1zM8 2h1v1h-1zM3 3h1v1h-1zM3 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM0 7h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1z\"/></svg>musician</span> and a <span class=\"ds-trade\"><svg class=\"ds-glyph\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M0 1h1v1h-1zM1 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1z\"/></svg>programmer</span>.</p>",
-      "css": ".ds-lead { margin: 0; padding: 2rem; background: #0f2b4c; max-width: 38rem; text-wrap: balance; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.75rem); line-height: 1.35; color: #c4d3e0; } .ds-trade { display: inline-flex; align-items: baseline; gap: 0.3em; color: #f3f3f3; white-space: nowrap; } .ds-glyph { width: 0.72em; height: 0.72em; align-self: center; flex: none; fill: #90caf9; shape-rendering: crispEdges; } .ds-lead ::selection { background: #e3f2fd; color: #0f2b4c; }"
+      "refersTo": "ledger-row",
+      "description": "Rows of ink-soft uppercase labels beside snow item-size content, one label column and one content edge, ridge-blue pixel-dot rules between rows; items each led by a 9x9 ice glyph.",
+      "html": "<dl class=\"ds-ledger\"><div class=\"ds-row\"><dt>Now</dt><dd><span class=\"ds-item\"><svg class=\"ds-glyph\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM3 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM7 1h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM1 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1z\"/></svg>Mechanical engineering</span></dd></div><div class=\"ds-row\"><dt>Before</dt><dd><span class=\"ds-item\"><svg class=\"ds-glyph\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM3 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM3 2h1v1h-1zM8 2h1v1h-1zM3 3h1v1h-1zM3 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM0 7h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1z\"/></svg>Music</span><span class=\"ds-item\"><svg class=\"ds-glyph\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M0 1h1v1h-1zM1 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1z\"/></svg>Programming</span></dd></div></dl>",
+      "css": ".ds-ledger { margin: 0; padding: 2.5rem 2rem; max-width: 64rem; background: #0f2b4c; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; padding: clamp(1.5rem, 4vh, 2.25rem) 0; background: linear-gradient(90deg, #1c3b5e 50%, transparent 0) left top / 8px 4px repeat-x; } .ds-row:first-child { background: none; padding-top: 0; } @media (min-width: 46rem) { .ds-row { grid-template-columns: 11rem minmax(0, 1fr); gap: 0 clamp(2rem, 5vw, 4rem); align-items: baseline; } } .ds-row dt { color: #c4d3e0; font-size: 1rem; line-height: 1.5; letter-spacing: 0.06em; text-transform: uppercase; } .ds-row dd { margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem clamp(1.5rem, 4vw, 3rem); font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.25rem); line-height: 1.2; color: #f3f3f3; } .ds-item { display: inline-flex; align-items: center; gap: 0.45em; } .ds-glyph { width: 36px; height: 36px; flex: none; fill: #90caf9; shape-rendering: crispEdges; } .ds-ledger ::selection { background: #e3f2fd; color: #0f2b4c; }"
     },
     {
       "name": "Pixel Glyph",
       "kind": "custom",
       "refersTo": "pixel-icon",
-      "description": "9x9 grids of unit squares in ice: gear, note, prompt. Decorative, one per role or trade word.",
+      "description": "9x9 grids of unit squares in ice: gear, note, prompt. Nine scene pixels square (36px at a 4px scale); decorative, one per ledger item.",
       "html": "<div class=\"ds-glyphs\"><svg class=\"ds-px\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM3 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM7 1h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM1 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1z\"/></svg><svg class=\"ds-px\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM3 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM3 2h1v1h-1zM8 2h1v1h-1zM3 3h1v1h-1zM3 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM0 7h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1z\"/></svg><svg class=\"ds-px\" viewBox=\"0 0 9 9\" aria-hidden=\"true\"><path d=\"M0 1h1v1h-1zM1 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1z\"/></svg></div>",
       "css": ".ds-glyphs { display: flex; gap: 12px; padding: 1.5rem 2rem; background: #0f2b4c; } .ds-px { width: 36px; height: 36px; fill: #90caf9; shape-rendering: crispEdges; }"
     },
@@ -293,17 +293,17 @@
       "name": "Level Meter",
       "kind": "custom",
       "refersTo": "level-meter-bar",
-      "description": "Nine ice bars with frost cap pixels, jumping between whole scene-pixel heights with steps() timing; still under reduced motion.",
-      "html": "<div class=\"ds-meter-wrap\"><div class=\"ds-eq\" aria-hidden=\"true\"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>",
-      "css": ".ds-meter-wrap { padding: 1.5rem 2rem; background: #0f2b4c; } .ds-eq { --b: 4px; display: flex; align-items: flex-end; gap: var(--b); height: calc(var(--b) * 12); } .ds-eq i { width: calc(var(--b) * 3); height: calc(var(--b) * var(--h, 3)); background: #90caf9; box-shadow: inset 0 var(--b) 0 #e3f2fd; animation: ds-level 1.6s steps(1, end) infinite; } .ds-eq i:nth-child(1) { --h: 4; animation-duration: 1.3s; } .ds-eq i:nth-child(2) { --h: 7; animation-duration: 1.7s; animation-delay: -0.4s; } .ds-eq i:nth-child(3) { --h: 5; animation-duration: 1.1s; animation-delay: -0.9s; } .ds-eq i:nth-child(4) { --h: 9; animation-duration: 1.9s; animation-delay: -0.2s; } .ds-eq i:nth-child(5) { --h: 6; animation-duration: 1.4s; animation-delay: -1.1s; } .ds-eq i:nth-child(6) { --h: 8; animation-duration: 1.2s; animation-delay: -0.6s; } .ds-eq i:nth-child(7) { --h: 3; animation-duration: 1.8s; animation-delay: -1.3s; } .ds-eq i:nth-child(8) { --h: 6; animation-duration: 1.5s; animation-delay: -0.3s; } .ds-eq i:nth-child(9) { --h: 4; animation-duration: 1.25s; animation-delay: -0.8s; } @keyframes ds-level { 0% { height: calc(var(--b) * var(--h)); } 25% { height: calc(var(--b) * 2); } 50% { height: calc(var(--b) * 12); } 75% { height: calc(var(--b) * 5); } } @media (prefers-reduced-motion: reduce) { .ds-eq i { animation: none; } }"
+      "description": "Seven ice bars with frost cap pixels under the Listening label, jumping between whole scene-pixel heights with steps() timing; still under reduced motion.",
+      "html": "<div class=\"ds-meter-wrap\"><span class=\"ds-label\">Listening</span><span class=\"ds-eq\" aria-hidden=\"true\"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>",
+      "css": ".ds-meter-wrap { padding: 1.5rem 2rem; background: #0f2b4c; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-label { display: block; color: #c4d3e0; font-size: 1rem; line-height: 1.5; letter-spacing: 0.06em; text-transform: uppercase; } .ds-eq { --b: 4px; display: flex; align-items: flex-end; gap: var(--b); height: calc(var(--b) * 10); margin-top: 0.9rem; } .ds-eq i { width: calc(var(--b) * 2); height: calc(var(--b) * var(--h, 3)); background: #90caf9; box-shadow: inset 0 var(--b) 0 #e3f2fd; animation: ds-level 1.6s steps(1, end) infinite; } .ds-eq i:nth-child(1) { --h: 4; animation-duration: 1.3s; } .ds-eq i:nth-child(2) { --h: 7; animation-duration: 1.7s; animation-delay: -0.4s; } .ds-eq i:nth-child(3) { --h: 5; animation-duration: 1.1s; animation-delay: -0.9s; } .ds-eq i:nth-child(4) { --h: 9; animation-duration: 1.9s; animation-delay: -0.2s; } .ds-eq i:nth-child(5) { --h: 6; animation-duration: 1.4s; animation-delay: -1.1s; } .ds-eq i:nth-child(6) { --h: 8; animation-duration: 1.2s; animation-delay: -0.6s; } .ds-eq i:nth-child(7) { --h: 3; animation-duration: 1.8s; animation-delay: -1.3s; } @keyframes ds-level { 0% { height: calc(var(--b) * var(--h)); } 25% { height: calc(var(--b) * 2); } 50% { height: calc(var(--b) * 10); } 75% { height: calc(var(--b) * 5); } } @media (prefers-reduced-motion: reduce) { .ds-eq i { animation: none; } }"
     },
     {
-      "name": "Band Lineup",
+      "name": "Band Grid",
       "kind": "custom",
-      "refersTo": "band-lineup",
-      "description": "Two columns from 52rem: title, ink-soft aside and meter beside a poster-style list with ridge-blue square-dot dividers drawn as a background.",
-      "html": "<section class=\"ds-metal\"><div><h2 class=\"ds-title\">Nordic metal</h2><p class=\"ds-aside\">A few bands I really like:</p></div><ul class=\"ds-bands\"><li>Moonsorrow</li><li>Korpiklaani</li><li>Darkthrone</li><li>Enslaved</li><li>Taake</li></ul></section>",
-      "css": ".ds-metal { display: grid; gap: 2rem 4rem; align-items: start; background: #0f2b4c; padding: 2.5rem 2rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } @media (min-width: 52rem) { .ds-metal { grid-template-columns: minmax(14rem, 20rem) 1fr; } } .ds-title { margin: 0; font-weight: 400; font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); line-height: 1.1; color: #f3f3f3; } .ds-aside { margin: 0.6rem 0 0; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; color: #c4d3e0; } .ds-bands { list-style: none; margin: 0; padding: 0; font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem); line-height: 1.2; color: #f3f3f3; } .ds-bands li { padding: 0.2em 0; background: linear-gradient(90deg, #1c3b5e 50%, transparent 0) left bottom / 8px 4px repeat-x; } .ds-bands li:last-child { background: none; } .ds-metal ::selection { background: #e3f2fd; color: #0f2b4c; }"
+      "refersTo": "band-name",
+      "description": "A body-size ink-soft note over an even grid of snow item-size names (three, two, or one column by width), each led by a two-scene-pixel ice square and never wrapping.",
+      "html": "<div class=\"ds-listen\"><p class=\"ds-note\">Nordic metal. A few bands I really like:</p><ul class=\"ds-bands\"><li>Moonsorrow</li><li>Korpiklaani</li><li>Darkthrone</li><li>Enslaved</li><li>Taake</li></ul></div>",
+      "css": ".ds-listen { padding: 2rem; background: #0f2b4c; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-note { margin: 0 0 0.5rem; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; color: #c4d3e0; } .ds-bands { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35em clamp(1.5rem, 4vw, 3rem); font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.25rem); line-height: 1.2; color: #f3f3f3; } @media (max-width: 23rem) { .ds-bands { grid-template-columns: 1fr; } } @media (min-width: 46rem) { .ds-bands { grid-template-columns: repeat(3, minmax(0, 1fr)); } } .ds-bands li { display: flex; align-items: center; gap: 0.45em; white-space: nowrap; } .ds-bands li::before { content: \"\"; flex: none; width: 8px; height: 8px; background: #90caf9; } .ds-listen ::selection { background: #e3f2fd; color: #0f2b4c; }"
     },
     {
       "name": "Dithered Sky Band",
@@ -316,13 +316,14 @@
   ],
   "narrative": {
     "northStar": "One Polar Night",
-    "overview": "**Creative North Star: \"One Polar Night\"**\n\nThe whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, a crescent moon, falling snow, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.\n\nDensity is low but no longer bare: the copy is plain, and small pixel marks drawn on the same grid as the scene (three 9x9 glyphs and a stepped level meter) give the text a little of the night's life. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light, which now lives only in the scene. Hierarchy comes from size in one pixel face at one weight. There are no links, controls, borders, shadows-as-depth, or containers; the system is made of a field, two scenes, type, and a few pixel marks.\n\nThe direction contract still names a lamplight text mark and a closing political line; both were removed from the build at the user's request, and the build is the record here.",
+    "overview": "**Creative North Star: \"One Polar Night\"**\n\nThe whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, a crescent moon, falling snow, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.\n\nBelow the waterline the introduction is one ledger: a few rows, each a small label beside its content, separated by rows of square pixel dots. One label column and one content edge hold every row, so the eye runs straight down. Small pixel marks drawn on the scene's grid (9x9 glyphs, square markers, a stepped level meter) give the text a little of the night's life. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light, which lives only in the scene. Hierarchy comes from size in one pixel face at one weight. There are no links, controls, borders, shadows-as-depth, or containers; the system is made of a field, two scenes, type, and a few pixel marks.\n\nThe direction contract still names a lamplight text mark; it was removed from the build at the user's request, and the build is the record here.",
     "keyCharacteristics": [
       "Canvas scenes drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel) and upscaled with crisp, pixelated edges; the hero scene opens the page and a shore canvas closes it.",
       "Dark fjord set as ground; the ice-blue set is light: the sky, plus a few small pixel marks in the text.",
       "One warm accent, the cabin's lamplight, and only inside the scene.",
       "One face (Pixelify Sans, 400) across every role; size is the main hierarchy lever.",
-      "Square everything: no radius, no card, no border; dividers are rows of square pixel dots.",
+      "One ledger below the scene: a fixed label column, one content edge, pixel-dot rules between rows.",
+      "Square everything: no radius, no card, no border; rules and markers are square pixels on the scene grid.",
       "Quiet, stepped motion (the scene at 10 frames a second, the meter by whole-pixel jumps), paused offscreen and frozen for reduced-motion users."
     ],
     "rules": [
@@ -333,18 +334,23 @@
       },
       {
         "name": "The Ice Is Light Rule",
-        "body": "The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (aurora, stars, moon, snowfall, shooting star, snow crests, glints) and, in the text layer, only to small pixel marks: the 9x9 glyphs and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, headings, and surfaces stay in snow, ink-soft, and night.",
+        "body": "The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (aurora, stars, moon, snowfall, shooting star, snow crests, glints) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.",
         "section": "colors"
       },
       {
         "name": "The One Face, One Weight Rule",
-        "body": "Every role is Pixelify Sans at 400. Hierarchy is made by size (and ink-soft versus snow), never by bold, italics, caps, tracking, or a second family.",
+        "body": "Every role is Pixelify Sans at 400. Hierarchy is made by size (and ink-soft versus snow), never by bold, italics, or a second family. Uppercase and tracking belong to the ledger label alone.",
         "section": "typography"
       },
       {
         "name": "The Name on the Grid Rule",
         "body": "The display size is derived from the scene's pixel scale so the name's pixels align with the art's pixels. Never set the name in a free fluid size that breaks that lock.",
         "section": "typography"
+      },
+      {
+        "name": "The One Edge Rule",
+        "body": "Every ledger row shares one label column and one content edge. New facts join the ledger as rows; they do not open a second layout.",
+        "section": "layout"
       },
       {
         "name": "The Depth Is Distance Rule",
@@ -362,17 +368,17 @@
       "Do draw any new pixel art on the same whole-number art-pixel grid (3 or 4 screen px) with `image-rendering: pixelated`, and size small marks in multiples of the scene pixel.",
       "Do step sky, aurora, and haze tones with ordered dither between palette colors.",
       "Do set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.",
-      "Do keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; split into two columns only where a heading and its list sit side by side.",
+      "Do keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.",
       "Do keep motion slow and stepped (10fps for the scene, `steps()` timing for CSS), pause it offscreen, and hold it still for reduced-motion users.",
-      "Do draw dividers as rows of square pixel dots in ridge blue."
+      "Do draw rules as rows of square pixel dots in ridge blue."
     ],
     "donts": [
       "Don't use lamplight amber or ember anywhere beyond the cabin window and its reflection.",
-      "Don't use the ice-blue set for words, headings, or surfaces; in the text layer it is only for small pixel marks.",
+      "Don't use the ice-blue set for words, labels, or surfaces; in the text layer it is only for small pixel marks.",
       "Don't round corners, add drop shadows, or put content in cards, panels, or bordered boxes.",
       "Don't use smooth gradients for sky, aurora, or haze tones.",
-      "Don't draw dividers with `border` or the browser's round dotted style.",
-      "Don't add bold weights, italics, uppercase tracking, or a second typeface.",
+      "Don't draw rules with `border` or the browser's round dotted style.",
+      "Don't add bold weights, italics, or a second typeface, or use uppercase tracking anywhere but the ledger label.",
       "Don't center the name over the scene or place it on a scrim; it sits on the sky (or, on portrait screens, on the water)."
     ]
   }
