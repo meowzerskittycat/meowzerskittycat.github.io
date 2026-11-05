@@ -818,7 +818,11 @@
     render();
     requestAnimationFrame(() => requestAnimationFrame(() => {
       if (currentKey() !== sizeKey) render();
-      document.documentElement.classList.remove("wait");
+      // a first visit holds the loading screen for its one full step (set in the page head)
+      setTimeout(() => {
+        document.documentElement.classList.remove("wait");
+        try { sessionStorage.setItem("seen", "1"); } catch (x) {}
+      }, Math.max(0, (window.bootUntil || 0) - performance.now()));
     }));
   });
   fontIn.then(() => { if (fontLate) render(); });

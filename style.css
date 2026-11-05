@@ -305,7 +305,8 @@ dd {
 /* loading: the whole page stays hidden (.wait, set in the page head) until the scene is drawn at
    its final size around the name in its own font, so nothing ever shows small, in a stand-in
    font or in a passing place. If that takes a moment, three pixels step in the middle of the
-   night, the way the scroll cue does; on a quick load they never appear. */
+   night, the way the scroll cue does; on a quick load they never appear, except on the first
+   visit in a session (.boot), when they show at once and hold for one full step. */
 .wait body { visibility: hidden; }
 
 .wait body::after {
@@ -315,20 +316,23 @@ dd {
   position: fixed;
   left: 50%;
   top: 50%;
-  width: calc(var(--u) * 2);
-  height: calc(var(--u) * 2);
-  margin: calc(var(--u) * -1) 0 0 calc(var(--u) * -5);
+  width: calc(var(--u) * 4);
+  height: calc(var(--u) * 4);
+  margin: calc(var(--u) * -2) 0 0 calc(var(--u) * -9);
   background: var(--ice);
-  box-shadow: calc(var(--u) * 4) 0 0 var(--ridge), calc(var(--u) * 8) 0 0 var(--ridge);
+  box-shadow: calc(var(--u) * 7) 0 0 var(--ridge), calc(var(--u) * 14) 0 0 var(--ridge);
   animation: loader-in 0.01s 0.35s backwards, loading 0.9s steps(1, end) 0.35s infinite;
 }
+
+/* the first visit in a session: the pixels are there from the first frame */
+.boot.wait body::after { animation: loading 0.9s steps(1, end) infinite; }
 
 @keyframes loader-in { from { opacity: 0; } }
 
 @keyframes loading {
-  0%   { background: var(--ice); box-shadow: calc(var(--u) * 4) 0 0 var(--ridge), calc(var(--u) * 8) 0 0 var(--ridge); }
-  33%  { background: var(--ridge); box-shadow: calc(var(--u) * 4) 0 0 var(--ice), calc(var(--u) * 8) 0 0 var(--ridge); }
-  66%  { background: var(--ridge); box-shadow: calc(var(--u) * 4) 0 0 var(--ridge), calc(var(--u) * 8) 0 0 var(--ice); }
+  0%   { background: var(--ice); box-shadow: calc(var(--u) * 7) 0 0 var(--ridge), calc(var(--u) * 14) 0 0 var(--ridge); }
+  33%  { background: var(--ridge); box-shadow: calc(var(--u) * 7) 0 0 var(--ice), calc(var(--u) * 14) 0 0 var(--ridge); }
+  66%  { background: var(--ridge); box-shadow: calc(var(--u) * 7) 0 0 var(--ridge), calc(var(--u) * 14) 0 0 var(--ice); }
 }
 
 /* arrival: the page comes up in four flat steps, like a screen warming, then the name wipes in
@@ -355,7 +359,8 @@ dd {
   .reveal:not(.wait) body,
   .reveal:not(.wait) .cue,
   .reveal:not(.wait) h1,
-  .wait body::after { animation: none; }
+  .wait body::after,
+  .boot.wait body::after { animation: none; }
 }
 
 /* on paper: the words only, dark on white, no night to spend a cartridge on */
