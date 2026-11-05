@@ -66,7 +66,7 @@
   const nFar = valueNoise(7), nMid = valueNoise(19), nNear = valueNoise(41), nRay = valueNoise(73);
   const nRib = valueNoise(88), nCouloir = valueNoise(131), nSnow = valueNoise(57);
   function smooth(a, b, x) { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
-  const pack = (c) => (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0];
+  const pack = (c) => ((255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]) >>> 0; // unsigned, to match the Uint32Array buffers it is compared against
 
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -209,8 +209,8 @@
     const snowline = (x) => hz * 0.67 + (fbm(nSnow, x * 0.06, 3) - 0.5) * hz * 0.1;
 
     for (let x = 0; x < W; x++) {
-      const jag = (fbm(nMid, x * 0.4 + 7, 2) - 0.5) * 4;
-      const sl = snowline(x);
+      const jag = Math.round((fbm(nMid, x * 0.12 + 7, 2) - 0.5) * 5); // the light/shadow split meanders, no per-column notches
+      const slx = snowline(x);
       for (let y = 0; y < horizon; y++) {
         let c = null;
         if (y >= nearTop[x]) c = C.near;
@@ -218,12 +218,16 @@
           c = C.hill;
         } else if (y >= far.top[x]) {
           const p = far.owner[Math.max(0, Math.min(W - 1, Math.round(x - (y - far.top[x]) * 0.6)))];
-          const lit = x <= p.x + (y - p.y) * 0.4 + jag; // west faces catch the moon, which hangs to the west of the range
+          const lit = x <= p.x + Math.floor((y - p.y) * 0.5) + jag; // west faces catch the moon, which hangs to the west of the range
           const side = x >= p.x ? 1 : -1;
-          // rock ribs run down the fall line; couloirs carry snow below the snowline
-          const along = (x - p.x) - side * (y - p.y) * 0.75;
+          // rock ribs run down the fall line at a clean 1:2 step, two pixels wide, so they read as
+          // rock bands and never as a broken scratch; couloirs carry snow below the snowline
+          const along = Math.floor(((x - p.x) - side * Math.floor((y - p.y) * 0.5)) / 2) * 2;
+          // the cap's lower edge breaks into tongues down the fall line, never a flat cut
+          const sl = slx + (nCouloir(along * 0.21 + p.x * 0.5 + 31) - 0.5) * hz * 0.1;
           const rib = nRib(along * 0.3 + p.x) > 0.8 && y - far.top[x] > 3 && y > p.y + (sl - p.y) * 0.35;
-          const couloir = nCouloir(along * 0.35 + p.x * 0.3) > 0.78 && y < sl + hz * 0.07;
+          // couloirs only hang from a real snowcap: on a low ridge with no cap they read as stray light beams
+          const couloir = p.y < slx - hz * 0.08 && nCouloir(along * 0.35 + p.x * 0.3) > 0.78 && y < sl + hz * 0.06;
           const snowy = (y < sl && !rib) || couloir || (y - far.top[x] < 1 && y < sl + hz * 0.05);
           if (snowy) {
             if (!lit) c = C.snowShade;
@@ -238,6 +242,41 @@
           c = y < hz * 0.62 && y - haze.top[x] < 1 ? C.hazeSnow : C.haze; // a clean snow edge on the highest back peaks
         }
         if (c) base[y * W + x] = pack(c);
+      }
+    }
+
+    // no snow specks or floating shards: a patch of six pixels or fewer is noise, and a small
+    // patch that never reaches the ridge crest hangs in the rock face with nothing holding it,
+    // so either takes the rock colour beside it
+    {
+      const SNOWSET = new Set([C.frost, C.snowLit, C.snowMid, C.snowShade].map(pack));
+      const seen = new Uint8Array(W * horizon);
+      for (let i = 0; i < W * horizon; i++) {
+        if (seen[i] || !SNOWSET.has(base[i])) continue;
+        const comp = [i], stack = [i];
+        let crest = false;
+        seen[i] = 1;
+        while (stack.length) {
+          const j = stack.pop(), jx = j % W;
+          if (Math.floor(j / W) - far.top[jx] < 1) crest = true;
+          for (const n of [jx > 0 ? j - 1 : -1, jx < W - 1 ? j + 1 : -1, j - W, j + W]) {
+            if (n < 0 || n >= W * horizon || seen[n] || !SNOWSET.has(base[n])) continue;
+            seen[n] = 1; comp.push(n); stack.push(n);
+          }
+        }
+        if (comp.length > 6 && (crest || comp.length >= 40)) continue;
+        // each pixel takes the nearest rock along its own row, so a patch several pixels thick
+        // fills right through instead of keeping a core whose neighbours are all snow
+        const fill = comp.map((j) => {
+          const row = j - (j % W);
+          for (let d = 1; d < W; d++) {
+            for (const n of [j - d, j + d]) {
+              if (n >= row && n < row + W && base[n] && !SNOWSET.has(base[n])) return base[n];
+            }
+          }
+          return base[j];
+        });
+        comp.forEach((j, k) => { base[j] = fill[k]; });
       }
     }
 
@@ -288,13 +327,15 @@
     for (let k = 0; k < 5; k++) {
       for (let x = bx - 1 + k; x < bx + 10 - k; x++) set(x, by - 1 - k, C.cabin);
       set(bx - 1 + k, by - 1 - k, C.frost);
-      set(bx + 9 - k, by - 1 - k, C.frost);
+      set(bx + 9 - k, by - 1 - k, C.snowMid); // the east slope turns from the moon
       set(bx - 2 + k, by - k, C.ice);
-      set(bx + 10 - k, by - k, C.ice);
+      set(bx + 10 - k, by - k, C.snowShade);
     }
     set(bx + 4, by - 5, C.frost);
-    for (let y = by - 6; y < by - 2; y++) set(bx + 6, y, C.cabin); // chimney
-    set(bx + 6, by - 7, C.frost);
+    // a stone chimney, a step lighter than the timber so it does not vanish into the pines,
+    // its snow cap sitting on it rather than floating above an unseen stack
+    for (let y = by - 6; y < by - 3; y++) set(bx + 6, y, C.farRock);
+    set(bx + 6, by - 7, C.snowMid);
     set(cabin.wx, cabin.wy, C.lamp); set(cabin.wx + 1, cabin.wy, C.lamp);
     set(cabin.wx, cabin.wy + 1, C.lamp); set(cabin.wx + 1, cabin.wy + 1, C.ember);
 
@@ -404,8 +445,9 @@
         const r = Math.round((s & 255) * fade + wr), g = Math.round(((s >> 8) & 255) * fade + wg), b = Math.round(((s >> 16) & 255) * fade + wb);
         buf[row + x] = (255 << 24) | (b << 16) | (g << 8) | r;
       }
-      const g = Math.floor(nRay(y * 3.1 + t * 0.8) * W * 1.3);
-      if (g < W && d < 0.55) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
+      // a glint: each row has its own fixed spot that brightens and fades slowly, never jumping about
+      const g = Math.floor(nRay(y * 3.1 + 500) * W * 1.3);
+      if (g < W && d < 0.55 && nRay(y * 1.9 + t * 0.5) > 0.62) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
     }
 
     // the moon's glade: thin broken dashes of cool light on the water below it
@@ -425,11 +467,15 @@
     if (cabin) {
       // the lamp gutters now and then: one pane dips to ember for a frame or two
       if (nRay(t * 1.9 + 400) > 0.93) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = pack(C.ember);
-      for (let y = horizon + 1; y < Math.min(H, horizon + Math.round(depthRows * 0.3)); y += 2) {
-        if (Math.sin(y * 1.7 + t * 3) <= -0.2) continue;
-        const x = cabin.wx + Math.round(Math.sin(y * 0.9 + t * 1.8) * 1.2);
-        const c = (y - horizon) < depthRows * 0.25 ? C.lamp : C.ember;
-        if (x >= 0 && x + 1 < W) { buf[y * W + x] = pack(c); if (y % 4 === 1) buf[y * W + x + 1] = pack(C.ember); }
+      // a column of short warm dashes under the window, rippling with the water rows they sit on;
+      // two pixels wide like the window near the shore, narrowing and cooling to ember with depth
+      const rows = Math.round(depthRows * 0.3);
+      for (let y = horizon + 1; y < Math.min(H, horizon + rows); y += 2) {
+        const d = (y - horizon) / rows;
+        if (nRay(y * 2.1 + t * 0.7 + 60) < 0.2 + d * 0.5) continue;
+        const x = cabin.wx + Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + ((y - horizon) / depthRows) * 2.2));
+        const c = pack(d < 0.5 ? C.lamp : C.ember);
+        if (x >= 0 && x + 1 < W) { buf[y * W + x] = c; if (d < 0.4) buf[y * W + x + 1] = c; }
       }
       const [cx, cy] = cabin.chimney;
       for (let k = 1; k < 14; k++) {
