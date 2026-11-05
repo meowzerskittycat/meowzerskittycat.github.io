@@ -449,7 +449,7 @@
     // lamplight reflected beneath the cabin, and a thread of chimney smoke
     if (cabin) {
       // the lamp gutters now and then: one pane dips to ember for a frame or two
-      if (nRay(t * 1.9 + 400) > 0.8) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = pack(C.ember);
+      if (nRay(t * 1.9 + 400) > 0.93) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = pack(C.ember);
       for (let y = horizon + 1; y < Math.min(H, horizon + Math.round(depthRows * 0.3)); y += 2) {
         if (Math.sin(y * 1.7 + t * 3) <= -0.2) continue;
         const x = cabin.wx + Math.round(Math.sin(y * 0.9 + t * 1.8) * 1.2);
