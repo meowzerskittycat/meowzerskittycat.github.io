@@ -68,7 +68,7 @@
   function smooth(a, b, x) { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
   const pack = (c) => (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0];
 
-  const GLOW = pack([0x1d, 0x5f, 0x8f]), GLOW_HI = pack([0x2a, 0x7d, 0xbf]); // aurora on water: glacier sunk into the fjord
+  const GLOW = pack([0x1f, 0x62, 0x8a]); // aurora on water: glacier sunk into the fjord, one quiet tone
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -410,7 +410,7 @@
       const wb = (C.deep[2] + (C.fjord[2] - C.deep[2]) * tint) * f1;
       const row = y * W, src = sy * W;
       // the aurora's light keeps to a narrow band at the far shore, however deep the fjord is drawn
-      const gd = (y - horizon) / Math.min(depthRows * 0.3, 12);
+      const gd = (y - horizon) / Math.min(depthRows * 0.25, 9);
       const glowRow = gd < 1 && ((y - horizon) & 1) === 1 ? 1 - gd : 0;
       for (let x = 0; x < W; x++) {
         const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
@@ -420,7 +420,7 @@
         // the aurora's light lies on the near water in broken ripple lines, rippling with it
         if (glowRow > 0) {
           const glow = (aurCols.env[0][sx] * aurCols.rays[0][sx] + 0.6 * aurCols.env[1][sx] * aurCols.rays[1][sx]) * glowRow * nRay(sx * 0.21 + y * 7.3 + t * 0.7);
-          if (glow > 0.2) buf[row + x] = glow > 0.4 ? GLOW_HI : GLOW;
+          if (glow > 0.3) buf[row + x] = GLOW;
         }
       }
       const g = Math.floor(nRay(y * 3.1 + t * 0.8) * W * 1.3);
