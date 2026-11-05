@@ -679,6 +679,12 @@
     kick();
   }).observe(shoreCanvas);
 
+  // the CSS loops (the level meter, the scroll cue) rest while they are out of view
+  const rest = new IntersectionObserver((entries) => {
+    for (const e of entries) e.target.toggleAttribute("data-rest", !e.isIntersecting);
+  });
+  document.querySelectorAll(".eq, .cue").forEach((el) => rest.observe(el));
+
   document.addEventListener("visibilitychange", kick);
   reduceMotion.addEventListener?.("change", render);
   document.fonts?.ready.then(render);

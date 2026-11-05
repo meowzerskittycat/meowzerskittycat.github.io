@@ -10,6 +10,7 @@ Plain static files, no build step:
 - `og.png` – the link preview image (a capture of the hero)
 - `tools/og.js` – regenerates `og.png` and its cache-busting `?v=` hash in `index.html`; run `node tools/og.js` after any visual change (needs Playwright)
 - `favicon.svg`, `apple-touch-icon.png` – a pixel peak under a crescent moon
+- `_config.yml` – keeps the design notes, this readme and `tools/` in the repository but off the published site
 - `fonts/` – Pixelify Sans, self-hosted (SIL Open Font License, see `fonts/OFL.txt`)
 
 Preview locally with any static server, e.g. `python3 -m http.server`.

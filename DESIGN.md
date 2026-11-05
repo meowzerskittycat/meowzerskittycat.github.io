@@ -109,7 +109,8 @@ The direction contract still names a lamplight text mark; it was removed from th
 - One face (Pixelify Sans, 400) across every role; size is the main hierarchy lever.
 - One ledger below the scene: a fixed label column, one content edge, pixel-dot rules between rows.
 - Square everything: no radius, no card, no border; rules and markers are square pixels on the scene grid.
-- Quiet, stepped motion (the scene at 10 frames a second, the meter by whole-pixel jumps), paused offscreen and frozen for reduced-motion users.
+- Quiet, stepped motion (the scene at 10 frames a second, the meter by whole-pixel jumps), paused offscreen and frozen for reduced-motion users. The CSS loops (meter, scroll cue) move by transform only, never height, so they cost no layout, and scene.js pauses each one while it is out of view.
+- On paper the night drops away: print shows the name and the ledger dark on white, with no canvases, cue or meter.
 
 ## Colors
 
