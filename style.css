@@ -152,7 +152,7 @@ main {
   }
   .row dt { font-size: calc(var(--g) * 2); }
   .row dd { font-size: calc(var(--g) * 3); }
-  .note { font-size: calc(var(--g) * 2); }
+  .row .note { font-size: calc(var(--g) * 2); }
 }
 
 dt {
