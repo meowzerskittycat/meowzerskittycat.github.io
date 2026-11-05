@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T00:00:00Z",
+  "title": "Design System: Vivien",
+  "extensions": {
+    "colorMeta": {
+      "night": {
+        "role": "neutral",
+        "displayName": "Polar Night",
+        "canonical": "oklch(28.7% 0.069 254)",
+        "tonalRamp": [
+          "#071a31",
+          "#0f2b4c",
+          "#1c3b5e",
+          "#1e5568",
+          "#90caf9",
+          "#c4d3e0",
+          "#e3f2fd",
+          "#f3f3f3"
+        ]
+      },
+      "space": {
+        "role": "neutral",
+        "displayName": "Upper Space",
+        "canonical": "oklch(21.6% 0.052 255)",
+        "tonalRamp": [
+          "#000b1e",
+          "#14263c",
+          "#344356",
+          "#566272",
+          "#7b838e",
+          "#a1a5ab",
+          "#c6c9ce",
+          "#ebeff4"
+        ]
+      },
+      "ridge": {
+        "role": "neutral",
+        "displayName": "Ridge Blue",
+        "canonical": "oklch(34.7% 0.072 253)",
+        "tonalRamp": [
+          "#000b1f",
+          "#0c2642",
+          "#264465",
+          "#4b6380",
+          "#71849b",
+          "#99a7b7",
+          "#c2cad3",
+          "#eaeff6"
+        ]
+      },
+      "fjord": {
+        "role": "neutral",
+        "displayName": "Fjord Water",
+        "canonical": "oklch(42.2% 0.065 224)",
+        "tonalRamp": [
+          "#000e16",
+          "#022a36",
+          "#16495a",
+          "#3b687a",
+          "#658997",
+          "#8faab5",
+          "#bbcdd4",
+          "#e8f0f4"
+        ]
+      },
+      "snow": {
+        "role": "neutral",
+        "displayName": "Snow",
+        "canonical": "oklch(96.4% 0.000 90)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Frost Ink",
+        "canonical": "oklch(85.9% 0.024 244)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#404245",
+          "#5d6267",
+          "#7b838b",
+          "#9ba7b0",
+          "#bdcbd8",
+          "#e3f0fc"
+        ]
+      },
+      "frost": {
+        "role": "tertiary",
+        "displayName": "Frost",
+        "canonical": "oklch(95.3% 0.022 239)",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#242526",
+          "#404243",
+          "#5e6264",
+          "#7d8388",
+          "#9ea6ad",
+          "#bfcbd4",
+          "#e2f1fc"
+        ]
+      },
+      "ice": {
+        "role": "tertiary",
+        "displayName": "Ice",
+        "canonical": "oklch(81.6% 0.090 244)",
+        "tonalRamp": [
+          "#070c10",
+          "#20262b",
+          "#36444f",
+          "#4c6478",
+          "#6387a4",
+          "#7babd2",
+          "#98d0fe",
+          "#c7f5ff"
+        ]
+      },
+      "glacier": {
+        "role": "primary",
+        "displayName": "Aurora Glacier",
+        "canonical": "oklch(65.8% 0.169 249)",
+        "tonalRamp": [
+          "#020c18",
+          "#072742",
+          "#0e4471",
+          "#1664a4",
+          "#1e86da",
+          "#4dabff",
+          "#89cfff",
+          "#c0f4ff"
+        ]
+      },
+      "abyss": {
+        "role": "primary",
+        "displayName": "Deep Aurora Abyss",
+        "canonical": "oklch(42.2% 0.157 260)",
+        "tonalRamp": [
+          "#00052f",
+          "#001f5c",
+          "#063c8e",
+          "#2d5eaf",
+          "#5a82c4",
+          "#87a6d9",
+          "#b5caec",
+          "#e5efff"
+        ]
+      },
+      "lamp": {
+        "role": "secondary",
+        "displayName": "Cabin Lamplight",
+        "canonical": "oklch(81.0% 0.129 74)",
+        "tonalRamp": [
+          "#100a04",
+          "#2b241b",
+          "#4f3f2a",
+          "#775c37",
+          "#a17a44",
+          "#ce9a50",
+          "#f9bd68",
+          "#ffe5a2"
+        ]
+      },
+      "ember": {
+        "role": "secondary",
+        "displayName": "Banked Ember",
+        "canonical": "oklch(48.1% 0.071 64)",
+        "tonalRamp": [
+          "#150800",
+          "#35200a",
+          "#583b1e",
+          "#7d5835",
+          "#9b7b5f",
+          "#b9a089",
+          "#d8c5b5",
+          "#f7ece3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The name only; size is calc(var(--scene-px) * 21.76), so 87px at a 4px scene scale and about 65px at 3px."
+      },
+      "lineup": {
+        "displayName": "Lineup",
+        "purpose": "Band names, one per line, poster-style; the largest type below the hero."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Role line under the name and the opening sentence below the waterline."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Asides and default text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "The closing line beside the lamp mark."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "scene-frame",
+        "value": "100ms (10fps), requestAnimationFrame-stepped",
+        "purpose": "Aurora drift, star twinkle, water ripple, lamp-reflection flicker. Paused offscreen and when the tab is hidden."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "single still frame (t = 4s)",
+        "purpose": "prefers-reduced-motion: reduce renders one frame and never animates."
+      },
+      {
+        "name": "resize-debounce",
+        "value": "120ms",
+        "purpose": "Scene re-layout after resize."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "scene-scale-3",
+        "value": "hero width < 1280px: 3px per art pixel"
+      },
+      {
+        "name": "scene-scale-4",
+        "value": "hero width >= 1280px: 4px per art pixel"
+      },
+      {
+        "name": "portrait",
+        "value": "hero height > 1.15 x width: horizon at 60%, nameplate on the water"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Nameplate",
+      "kind": "custom",
+      "refersTo": "nameplate",
+      "description": "The name set directly on the night sky with the role line beneath; no panel or scrim.",
+      "html": "<div class=\"ds-nameplate\"><h1 class=\"ds-name\">Vivien</h1><p class=\"ds-role\">Mechanical engineer.</p></div>",
+      "css": ".ds-nameplate { background: #0f2b4c; padding: 3rem 2rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-name { margin: 0; font-weight: 400; font-size: 87px; line-height: 0.9; color: #f3f3f3; } .ds-role { margin: 1.25rem 0 0; font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem); line-height: 1.2; color: #f3f3f3; } .ds-nameplate ::selection { background: #e3f2fd; color: #0f2b4c; }"
+    },
+    {
+      "name": "Band Lineup",
+      "kind": "custom",
+      "refersTo": "band-lineup",
+      "description": "Section title, ink-soft aside, and a poster-style list with one name per line.",
+      "html": "<section class=\"ds-lineup\"><h2 class=\"ds-title\">Nordic metal</h2><p class=\"ds-aside\">A few bands I really like:</p><ul class=\"ds-bands\"><li>Moonsorrow</li><li>Korpiklaani</li><li>Darkthrone</li><li>Enslaved</li><li>Taake</li></ul></section>",
+      "css": ".ds-lineup { background: #0f2b4c; padding: 2.5rem 2rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; } .ds-title { margin: 0; font-weight: 400; font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem); line-height: 1.1; color: #f3f3f3; } .ds-aside { margin: 0.75rem 0 0; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem); line-height: 1.5; color: #c4d3e0; } .ds-bands { list-style: none; margin: 2rem 0 0; padding: 0; font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem); line-height: 1.12; color: #f3f3f3; } .ds-lineup ::selection { background: #e3f2fd; color: #0f2b4c; }"
+    },
+    {
+      "name": "Lead Sentence",
+      "kind": "custom",
+      "refersTo": "aside-line",
+      "description": "The plain opening line below the waterline, in ink-soft at lead size with balanced wrapping.",
+      "html": "<p class=\"ds-lead\">Used to be a musician and a programmer.</p>",
+      "css": ".ds-lead { margin: 0; padding: 2rem; background: #0f2b4c; max-width: 34rem; text-wrap: balance; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem); line-height: 1.25; color: #c4d3e0; } .ds-lead::selection { background: #e3f2fd; color: #0f2b4c; }"
+    },
+    {
+      "name": "Lamp Mark",
+      "kind": "custom",
+      "refersTo": "lamp-mark",
+      "description": "The single warm text mark: a 2-unit square of lamplight beside the closing line.",
+      "html": "<p class=\"ds-nod\"><span class=\"ds-lamp\" aria-hidden=\"true\"></span>Anarcho-communist.</p>",
+      "css": ".ds-nod { margin: 0; padding: 1.5rem 2rem; background: #0f2b4c; display: flex; align-items: center; gap: 0.75rem; font-family: \"Pixelify Sans\", ui-sans-serif, sans-serif; font-size: 1rem; color: #c4d3e0; } .ds-lamp { width: 8px; height: 8px; background: #f2b45a; flex: none; }"
+    },
+    {
+      "name": "Dithered Sky Band",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Approximation of the scene's sky material: palette steps joined by an ordered checker at whole 4px pixels, never a smooth gradient.",
+      "html": "<div class=\"ds-sky\"><div class=\"ds-sky-step ds-a\"></div><div class=\"ds-sky-mix ds-ab\"></div><div class=\"ds-sky-step ds-b\"></div><div class=\"ds-sky-mix ds-bc\"></div><div class=\"ds-sky-step ds-c\"></div></div>",
+      "css": ".ds-sky { width: 320px; } .ds-sky-step, .ds-sky-mix { height: 16px; } .ds-a { background: #071a31; } .ds-b { background: #0f2b4c; } .ds-c { background: #1c3b5e; } .ds-sky-mix { background-color: var(--ds-lo); background-image: conic-gradient(var(--ds-hi) 25%, transparent 0 50%, var(--ds-hi) 0 75%, transparent 0); background-size: 8px 8px; } .ds-ab { --ds-lo: #071a31; --ds-hi: #0f2b4c; } .ds-bc { --ds-lo: #0f2b4c; --ds-hi: #1c3b5e; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "One Polar Night",
+    "overview": "**Creative North Star: \"One Polar Night\"**\n\nThe whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, layered snowy ridges, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction below reads as text under the waterline, not as a separate section.\n\nDensity is very low and the copy is plain. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light. Hierarchy comes from size alone in one pixel face at one weight. There are no links, controls, borders, shadows, or containers; the system is made of a field, a scene, and type.",
+    "keyCharacteristics": [
+      "A canvas scene drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel) and upscaled with crisp, pixelated edges.",
+      "Dark fjord set as ground; ice-blue set reserved for aurora, frost, starlight and glints.",
+      "One warm accent, the cabin's lamplight, plus a single matching text mark.",
+      "One face (Pixelify Sans, 400) across every role; size is the only hierarchy lever.",
+      "Square everything: no radius, no shadow, no card, no border.",
+      "Quiet motion at 10 frames a second, paused offscreen and frozen for reduced-motion users."
+    ],
+    "rules": [
+      {
+        "name": "The One Warm Light Rule",
+        "body": "Lamplight amber appears in exactly two places: the cabin window (with its reflection) and one small text mark. Every other color on the page is cold. A second warm element breaks the night.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ice Stays in the Sky Rule",
+        "body": "The ice-blue set (frost, ice, glacier, abyss) belongs to aurora, stars, snow crests, and glints. Text and page surfaces use snow, ink-soft, and night; ice blue is never a text or fill color in the layout. Frost's one CSS use is the selection highlight.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Face, One Weight Rule",
+        "body": "Every role is Pixelify Sans at 400. Hierarchy is made by size (and ink-soft versus snow), never by bold, italics, caps, tracking, or a second family.",
+        "section": "typography"
+      },
+      {
+        "name": "The Name on the Grid Rule",
+        "body": "The display size is derived from the scene's pixel scale so the name's pixels align with the art's pixels. Never set the name in a free fluid size that breaks that lock.",
+        "section": "typography"
+      },
+      {
+        "name": "The Depth Is Distance Rule",
+        "body": "Separation comes from atmospheric value steps in the scene and from space on the page, never from shadows, overlays, or raised surfaces.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Dithered Sky Rule",
+        "body": "Sky and aurora tones change only through a 4x4 ordered (Bayer) dither between palette steps, at whole art pixels; never a smooth CSS or canvas gradient. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, and its last fifth dithers out into the night field.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the page field night and every surface flat; the scene is the only image.",
+      "Do draw any new pixel art on the same whole-number art-pixel grid (3 or 4 screen px) with `image-rendering: pixelated`, and size small marks in multiples of the 4px unit.",
+      "Do step sky and aurora tones with ordered dither between palette colors.",
+      "Do set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.",
+      "Do keep layout left-aligned in one column inside the fluid gutter, with generous viewport-scaled vertical space.",
+      "Do keep motion slow and stepped (10fps), pause it offscreen, and render a still frame for reduced-motion users."
+    ],
+    "donts": [
+      "Don't use lamplight amber anywhere beyond the cabin window, its reflection, and the single text mark.",
+      "Don't use the ice-blue set for text, fills, or layout elements; it belongs to the sky.",
+      "Don't round corners, add shadows, or put content in cards, panels, or bordered boxes.",
+      "Don't use smooth gradients for sky or aurora tones.",
+      "Don't add bold weights, italics, uppercase tracking, or a second typeface.",
+      "Don't center the name over the scene or place it on a scrim; it sits on the sky (or, on portrait screens, on the water)."
+    ]
+  }
+}
