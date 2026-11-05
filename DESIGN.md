@@ -207,7 +207,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
 ### Shore
-- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank rolling in low drifts (a frost edge, then lit, mid, and shaded snow in clean bands that follow the drift's own contour, with no dithered seams), dark pines standing in it with their skirts reaching the drift beneath and a short shaded-snow moon shadow to their right, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
+- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank rolling in low drifts (a frost edge, then lit, mid, and shaded snow in clean bands that follow the drift's own contour, with no dithered seams), dark pines standing in it, never on top of it: the drift banks up one row over the foot of every stand (only the outermost bough tips show above it), and each tree casts a tapering mid-snow moon shadow to its right, two rows deep by the trunk and one row further out, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
 
 ### Nameplate
 - Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water, clamp(1.5rem, 5vh, 3rem) above it, so the name stays close to the first ledger row.

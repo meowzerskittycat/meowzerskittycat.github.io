@@ -654,19 +654,28 @@
       b[y * sw + x] = pack(c);
     }
     // pines standing in the snow, each casting a short moon shadow down-slope to its right
-    const r = rng(77);
+    const r = rng(77), trees = [];
     for (let x = 1; x < sw - 1; x++) {
       if (r() > 0.1 + 0.5 * smooth(0.35, 0.7, fbm(nNear, x * 0.05 + 9, 2))) continue;
-      const h = 5 + Math.floor(r() * sh * 0.4);
-      const top = ground[x] + 1 - h;
-      for (let dx = 2; dx < 2 + Math.round(h * 0.35); dx++) {
+      trees.push([x, 5 + Math.floor(r() * sh * 0.4)]);
+    }
+    // the shadows first, all of them: a tapering wedge two rows deep by the trunk and one row
+    // further out, a step below the snow it falls on
+    for (const [x, h] of trees) {
+      const len = 2 + Math.round(h * 0.45);
+      for (let dx = 0; dx < len && x + dx < sw; dx++) {
         const px = x + dx;
-        if (px < sw && b[ground[px] * sw + px] === P.frost) b[ground[px] * sw + px] = P.snowShade;
+        for (let k = 0; k < (dx < len * 0.55 ? 2 : 1) && ground[px] + k < sh; k++) {
+          const i = (ground[px] + k) * sw + px;
+          if (b[i] === P.frost || b[i] === P.snowLit) b[i] = P.snowMid;
+        }
       }
-      const rows = spruce(h);
+    }
+    const snow = b.slice();
+    for (const [x, h] of trees) {
+      const top = ground[x] + 1 - h, rows = spruce(h);
       for (let k = 0; k <= h; k++) {
-        const hw = rows[k];
-        for (let dx = -hw; dx <= hw; dx++) {
+        for (let dx = -rows[k]; dx <= rows[k]; dx++) {
           const px = x + dx;
           if (px < 0 || px >= sw) continue;
           // the skirt reaches down to the drift under it, so no tree floats over a hollow
@@ -674,6 +683,14 @@
           for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = P.pine;
         }
       }
+    }
+    // then the drift banks up against every foot: the snow keeps its own surface, and one row
+    // above it the lowest boughs sink into a lit lip of snow, only their outermost tips showing
+    const stand = b.slice();
+    for (let x = 1; x < sw - 1; x++) {
+      for (let y = ground[x]; y < sh; y++) b[y * sw + x] = snow[y * sw + x];
+      const y = ground[x] - 1, i = y * sw + x;
+      if (y >= 0 && stand[i] === P.pine && stand[i - 1] === P.pine && stand[i + 1] === P.pine) b[i] = snow[ground[x] * sw + x] === P.snowMid ? P.snowMid : P.snowLit;
     }
     litBoughs(b, sw, 0, sh, P.pine, P.pineLit);
     const rf = rng(808), fl = [];
