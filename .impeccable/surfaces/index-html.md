@@ -15,7 +15,7 @@ THESIS: The page is one polar night. A pixel-art Nordic scene is the first viewp
 
 OWN-WORLD: Ground is the dark fjord set (#0F2B4C night, #1C3B5E ridge, #1E5568 fjord water, #F3F3F3 snow/ink). Ice-blue set (#E3F2FD..#0D47A1) lives only in the aurora and frost. One warm accent: the cabin window's lamplight amber, used nowhere else except a single text mark. Sky tones are ordered-dither bands at integer pixel scale, never smooth gradients (raise from one-bit desktop). Hard pixel edges, no rounded corners, no shadows, no cards.
 
-STORY: Visitor sees mountains, fjord, aurora, one lit cabin; reads "Vivien"; scrolls down into the dark water where a short plain introduction states: mechanical engineer; formerly musician and programmer; Nordic metal (five bands); a quiet anarcho-communist nod at the very end.
+STORY: Visitor sees mountains, fjord, aurora, one lit cabin; reads "Vivien"; scrolls down into the dark water where a short plain introduction states: mechanical engineer; formerly musician and programmer; Nordic metal (five bands) beside a pixel level meter; a snowy pine shore closes the page. (Politics removed at the user's request.)
 
 FIRST VIEWPORT: Full-bleed canvas scene, aurora upper third, layered ridges middle, fjord reflection bottom fifth, cabin with lit window lower-right third. "Vivien" set large over the sky at left, one line beneath: "Mechanical engineer." No nav. Portrait screens: the narrow sky belongs to the aurora and peaks, so scene.js draws a taller fjord (horizon at 60%) and the nameplate rests on the dark water at the hero's foot (finish-review amendment).
 

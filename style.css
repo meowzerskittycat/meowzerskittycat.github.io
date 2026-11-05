@@ -25,8 +25,6 @@
   --ice: #90caf9;
   --glacier: #2196f3;
   --abyss: #0d47a1;
-  /* the one warm light */
-  --lamp: #f2b45a;
 
   --ink: var(--snow);
   --ink-soft: #c4d3e0;
@@ -104,8 +102,9 @@ h1 {
 
 /* pixel icons: 9x9 grids drawn as rects, scaled whole */
 .px-icon {
-  width: 0.9em;
-  height: 0.9em;
+  /* 9 grid cells, each one whole scene pixel */
+  width: calc(var(--scene-px, 4px) * 9);
+  height: calc(var(--scene-px, 4px) * 9);
   flex: none;
   fill: var(--ice);
   shape-rendering: crispEdges;
@@ -137,8 +136,6 @@ main {
 }
 
 .trade .px-icon {
-  width: 0.72em;
-  height: 0.72em;
   align-self: center;
 }
 
@@ -218,11 +215,9 @@ h2 {
   padding: 0.2em 0;
   /* square pixel dots, not the browser's round dotted border */
   background: linear-gradient(90deg, var(--ridge) 50%, transparent 0) left bottom / calc(var(--scene-px, 4px) * 2) var(--scene-px, 4px) repeat-x;
-  transition: color 0.2s ease-out;
 }
 
 .bands li:last-child { background: none; }
-.bands li:hover { color: var(--ice); }
 
 /* ---------- the shore ---------- */
 
@@ -247,5 +242,4 @@ footer { line-height: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .eq i { animation: none; }
-  .bands li { transition: none; }
 }
