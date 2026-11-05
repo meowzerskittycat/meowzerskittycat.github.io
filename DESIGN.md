@@ -1,6 +1,6 @@
 ---
 name: Vivien
-description: One polar night in pixel art; a fjord, an aurora, one lit cabin, and a plain introduction below the waterline.
+description: One polar night in pixel art; an alpine fjord, an aurora, one lit cabin, and a plain introduction below the waterline that ends on a snowy shore.
 colors:
   night: "#0f2b4c"
   space: "#071a31"
@@ -24,53 +24,73 @@ typography:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
     fontSize: "clamp(1.75rem, 1.2rem + 2vw, 3rem)"
     fontWeight: 400
-    lineHeight: 1.12
+    lineHeight: 1.2
+  statement:
+    fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
+    fontSize: "clamp(1.625rem, 1.2rem + 1.8vw, 2.75rem)"
+    fontWeight: 400
+    lineHeight: 1.35
   headline:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
-    fontSize: "clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem)"
+    fontSize: "clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem)"
     fontWeight: 400
     lineHeight: 1.1
   lead:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
     fontSize: "clamp(1.375rem, 1.1rem + 1vw, 2rem)"
     fontWeight: 400
-    lineHeight: 1.25
+    lineHeight: 1.2
   body:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
     fontSize: "clamp(1.125rem, 1rem + 0.4vw, 1.375rem)"
-    fontWeight: 400
-    lineHeight: 1.5
-  label:
-    fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
-    fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.5
 rounded:
   none: "0px"
 spacing:
   px: "4px"
-  gap: "0.75rem"
+  tight: "0.6em"
   gutter: "clamp(1rem, 6vw, 6rem)"
-  section: "clamp(5rem, 16vh, 10rem)"
+  sky-top: "clamp(5rem, 16vh, 10rem)"
+  descent: "clamp(3.5rem, 9vh, 6rem)"
+  section: "clamp(4rem, 11vh, 7rem)"
 components:
   nameplate:
     textColor: "{colors.snow}"
     typography: "{typography.display}"
     padding: "clamp(5rem, 16vh, 10rem) clamp(1rem, 6vw, 6rem) 0"
     width: "44rem"
-  band-lineup:
+  role-line:
     textColor: "{colors.snow}"
-    typography: "{typography.lineup}"
+    typography: "{typography.lead}"
+  lead-sentence:
+    textColor: "{colors.ink-soft}"
+    typography: "{typography.statement}"
+    width: "38rem"
+  trade-word:
+    textColor: "{colors.snow}"
+    typography: "{typography.statement}"
+  pixel-icon:
+    backgroundColor: "{colors.ice}"
+    rounded: "{rounded.none}"
+    size: "0.9em"
   section-title:
     textColor: "{colors.snow}"
     typography: "{typography.headline}"
   aside-line:
     textColor: "{colors.ink-soft}"
     typography: "{typography.body}"
-  lamp-mark:
-    backgroundColor: "{colors.lamp}"
+  level-meter-bar:
+    backgroundColor: "{colors.ice}"
     rounded: "{rounded.none}"
-    size: "8px"
+    width: "calc(var(--scene-px) * 3)"
+  band-lineup:
+    textColor: "{colors.snow}"
+    typography: "{typography.lineup}"
+    width: "64rem"
+  lineup-divider:
+    backgroundColor: "{colors.ridge}"
+    height: "var(--scene-px)"
 ---
 
 # Design System: Vivien
@@ -79,63 +99,65 @@ components:
 
 **Creative North Star: "One Polar Night"**
 
-The whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, layered snowy ridges, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction below reads as text under the waterline, not as a separate section.
+The whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, a crescent moon, falling snow, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.
 
-Density is very low and the copy is plain. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light. Hierarchy comes from size alone in one pixel face at one weight. There are no links, controls, borders, shadows, or containers; the system is made of a field, a scene, and type.
+Density is low but no longer bare: the copy is plain, and small pixel marks drawn on the same grid as the scene (three 9x9 glyphs and a stepped level meter) give the text a little of the night's life. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light, which now lives only in the scene. Hierarchy comes from size in one pixel face at one weight. There are no links, controls, borders, shadows-as-depth, or containers; the system is made of a field, two scenes, type, and a few pixel marks.
+
+The direction contract still names a lamplight text mark and a closing political line; both were removed from the build at the user's request, and the build is the record here.
 
 **Key Characteristics:**
-- A canvas scene drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel) and upscaled with crisp, pixelated edges.
-- Dark fjord set as ground; ice-blue set reserved for aurora, frost, starlight and glints.
-- One warm accent, the cabin's lamplight, plus a single matching text mark.
-- One face (Pixelify Sans, 400) across every role; size is the only hierarchy lever.
-- Square everything: no radius, no shadow, no card, no border.
-- Quiet motion at 10 frames a second, paused offscreen and frozen for reduced-motion users.
+- Canvas scenes drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel) and upscaled with crisp, pixelated edges; the hero scene opens the page and a shore canvas closes it.
+- Dark fjord set as ground; the ice-blue set is light: the sky, plus a few small pixel marks in the text.
+- One warm accent, the cabin's lamplight, and only inside the scene.
+- One face (Pixelify Sans, 400) across every role; size is the main hierarchy lever.
+- Square everything: no radius, no card, no border; dividers are rows of square pixel dots.
+- Quiet, stepped motion (the scene at 10 frames a second, the meter by whole-pixel jumps), paused offscreen and frozen for reduced-motion users.
 
 ## Colors
 
 A cold, low-light palette of fjord blues on deep navy, lit by ice-blue aurora and one amber window.
 
 ### Primary
-- **Aurora Glacier** (glacier): the bright core of the aurora curtains. Lives only inside the scene's aurora ramp (abyss, glacier, ice, frost, dithered between steps).
-- **Deep Aurora Abyss** (abyss): the faint outer edge of the aurora, where the curtain fades into sky.
+- **Aurora Glacier** (glacier): the bright core of the aurora curtains and the tail of the shooting star. Lives only inside the scene.
+- **Deep Aurora Abyss** (abyss): the faint outer edge of the aurora where the curtain fades into sky, and the cross-shaped halo on the largest stars.
 
 ### Secondary
-- **Cabin Lamplight** (lamp): the one warm light. The cabin window, its broken reflection on the water, and the small square mark beside the closing line. Nowhere else.
+- **Cabin Lamplight** (lamp): the one warm light. The cabin window and the near part of its broken reflection on the water. Scene-only; nothing in the text layer is warm.
 - **Banked Ember** (ember): the dimmed lamplight; the window's shaded pixel and the far end of the lamp's reflection. Scene-only.
 
 ### Tertiary
-- **Ice** (ice): starlight, the lit edge under the cabin's snowy roof, and the aurora's upper-bright step.
-- **Frost** (frost): the brightest snow crest pixels, roof snow, brightest stars, the aurora's peak step, and the text selection background.
+- **Ice** (ice): in the scene, starlight, distant snowflakes, the crescent moon's limb, the lit edge under the cabin's roof snow, and the aurora's upper-bright step. In the text layer, the fill of the 9x9 pixel glyphs and the bars of the level meter.
+- **Frost** (frost): the brightest snow crests, roof snow, the moon's face, near snowflakes, the brightest stars, the shooting star's head, the aurora's peak step, the top cap pixel of each meter bar, the shore's snow edge, and the text selection background.
 
 ### Neutral
-- **Polar Night** (night): the page field and the hero background, and the middle step of the sky ramp. The CSS also carries it as `--deep` (same value) for the field below the waterline; treat them as one color.
+- **Polar Night** (night): the page field and hero background, and the middle step of the sky ramp. The CSS also carries it as `--deep` (same value) for the field below the waterline; treat them as one color.
 - **Upper Space** (space): the darkest sky at the top of the canvas. Scene-only.
-- **Ridge Blue** (ridge): the sky's lowest step near the horizon and the scrollbar thumb.
+- **Ridge Blue** (ridge): the sky's lowest step near the horizon, the back hill on the shore canvas, the square-dot dividers between band names, and the scrollbar thumb.
 - **Fjord Water** (fjord): the water's tint at the shoreline (it shades toward night with depth) and the ice glints on the water.
-- **Snow** (snow): primary ink; the name, section title, and band lineup.
-- **Soft Frost Ink** (ink-soft): secondary ink for the lead sentence, asides, and the closing line (9.3:1 on night).
+- **Snow** (snow): primary ink; the name, the role line, the trade words in the lead sentence, the section title, and the band lineup.
+- **Soft Frost Ink** (ink-soft): secondary ink for the lead sentence and the aside (9.3:1 on night).
 
-The scene also shades its mountains with in-between blues (lit snow, shaded snow, far and mid rock, near shore, pine, cabin timber) defined in `scene.js`. They are rendering shades of this palette, not page tokens; do not use them in CSS.
+The scenes shade their terrain with in-between blues defined in `scene.js` and nowhere else: haze (#24496f) and haze snow (#4a76a0) for the back range; lit snow (#a4c5e2), mid snow (#7fa7cc) and shaded snow (#46719c) for the alpine faces, couloirs and the shore's snowbank; far rock (#1b3c60) and far shade (#132e4e) for the ribs; hill (#0f2745), hill tree (#0b1f3a) and hill snow (#3f6a94) for the forested foothills; near shore (#0a1e36), pine (#06152a) and cabin timber (#081829). Chimney smoke reuses shaded snow and haze. These are rendering shades of the palette, not page tokens; do not use them in CSS.
 
 ### Named Rules
-**The One Warm Light Rule.** Lamplight amber appears in exactly two places: the cabin window (with its reflection) and one small text mark. Every other color on the page is cold. A second warm element breaks the night.
+**The One Warm Light Rule.** Lamplight amber and ember appear only in the cabin window and its reflection on the water. Every other color on the page, scene and text alike, is cold. A second warm element breaks the night.
 
-**The Ice Stays in the Sky Rule.** The ice-blue set (frost, ice, glacier, abyss) belongs to aurora, stars, snow crests, and glints. Text and page surfaces use snow, ink-soft, and night; ice blue is never a text or fill color in the layout. Frost's one CSS use is the selection highlight.
+**The Ice Is Light Rule.** The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (aurora, stars, moon, snowfall, shooting star, snow crests, glints) and, in the text layer, only to small pixel marks: the 9x9 glyphs and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, headings, and surfaces stay in snow, ink-soft, and night.
 
 ## Typography
 
-**Display Font:** Pixelify Sans (with ui-sans-serif, sans-serif), self-hosted woff2, variable 400 to 700
-**Body Font:** Pixelify Sans (same file)
+**Display Font:** Pixelify Sans (with ui-sans-serif, sans-serif), self-hosted woff2 in latin and latin-ext subsets, variable 400 to 700
+**Body Font:** Pixelify Sans (same files)
 
 **Character:** A single pixel face that shares the scene's grid, so the name looks drawn in the same night as the mountains. It stays at regular weight everywhere; the pixel grid already gives it all the weight it needs.
 
 ### Hierarchy
 - **Display** (400, display size, 0.9): the name only. Sized from the scene scale, not a fluid clamp: `calc(var(--scene-px) * 21.76)`, so each glyph pixel lands on exactly two art pixels. That is the listed 87px at a 4px scene scale and about 65px at 3px.
-- **Lineup** (400, lineup size, 1.12): the five band names, one per line, set like a festival lineup poster. Deliberately the largest type below the hero, larger than the section title.
+- **Lineup** (400, lineup size, 1.2): the five band names, one per line, set like a festival lineup poster. The largest type below the hero.
+- **Statement** (400, statement size, 1.35): the lead sentence below the waterline, in ink-soft with snow trade words, balanced wrapping, and a 38rem measure. Deliberately a step above the section title so the page opens on a sentence, not a heading.
 - **Headline** (400, headline size, 1.1): section titles.
-- **Lead** (400, lead size, 1.2 to 1.25): the role line under the name and the opening sentence below the waterline; the lead sentence uses ink-soft, balanced wrapping, and a 34rem measure.
-- **Body** (400, body size, 1.5): asides and default text.
-- **Label** (400, 1rem): the closing line beside the lamp mark, in ink-soft.
+- **Lead** (400, lead size, 1.2): the role line under the name.
+- **Body** (400, body size, 1.5): the aside and default text.
 
 ### Named Rules
 **The One Face, One Weight Rule.** Every role is Pixelify Sans at 400. Hierarchy is made by size (and ink-soft versus snow), never by bold, italics, caps, tracking, or a second family.
@@ -144,43 +166,51 @@ The scene also shades its mountains with in-between blues (lit snow, shaded snow
 
 ## Layout
 
-A single left-aligned column with a generous fluid gutter (`spacing.gutter`) on both sides; nothing is centered. The hero is 92svh (minimum 30rem) and holds the full-bleed canvas. Below it, `main` opens with large section padding (`spacing.section` at the top, a slightly smaller clamp at the bottom), so the descent from the scene into the text feels like sinking into the water.
+Everything is left-aligned inside a generous fluid gutter (`spacing.gutter`) on both sides; nothing is centered. The hero is 92svh (minimum 30rem) and holds the full-bleed scene canvas, with the nameplate starting `spacing.sky-top` down. Below it, `main` opens after `spacing.descent` and separates its blocks by `spacing.section`, so the descent from the scene into the text feels like sinking into the water. The page ends on a full-bleed shore canvas, clamp(7rem, 20vh, 12rem) tall, with no gap or rule above it.
 
-Measures are narrow: the nameplate tops out at 44rem, the lead sentence at 34rem, the music section at 60rem. Small vertical steps use `spacing.gap` and 1.25rem; larger gaps use viewport-scaled clamps (2 to 3.5rem). Lists are unstyled; each band name is its own line and is never left to wrap.
+Measures stay narrow: the nameplate tops out at 44rem, the lead sentence at 38rem, the music section at 64rem. Small gaps inside a line or block use `spacing.tight` (0.6em between a glyph and its words, 0.6rem under the section title); the level meter sits 1.75rem below the aside.
 
-Responsive behavior lives in the scene, not in media queries. The art scale is 4px per art pixel from a 1280px-wide hero up, and 3px below that. When the hero is portrait (height over 1.15 times the width), the scene sets a portrait flag: the horizon drops from 80% to 60% of the height so the fjord is taller, and the nameplate leaves the sky and rests at the bottom of the hero on the dark water.
+The music section is the one place with two columns: from 52rem wide it splits into a head column (minmax(14rem, 20rem)) holding the title, aside, and meter, and a lineup column taking the rest, with a clamp(3rem, 8vw, 8rem) column gap. Below 52rem it stacks. Lists are unstyled; each band name is its own line and is never left to wrap.
+
+The scene's responsiveness lives in `scene.js`. The art scale is 4px per art pixel from a 1280px-wide hero up and 3px below; the shore canvas uses the same scale. When the hero is portrait (height over 1.15 times the width), the scene sets a portrait flag: the horizon drops from 80% to 60% of the height so the fjord is taller, the horn peak and moon shift to suit the narrow sky, and the nameplate leaves the sky and rests at the bottom of the hero on the dark water.
 
 ## Elevation & Depth
 
-Flat. No shadows exist in this system, and none should be added. Depth is atmospheric and lives inside the scene: farther ridges are lighter and bluer, nearer ones darker, the shore near-black; the water is a darkened, rippling mirror that fades with depth and dithers into the page field. On the page itself there is one plane, the night field, and type sits directly on it.
+Flat. Nothing on the page is lifted, layered, or shadowed. Depth is atmospheric and lives inside the scenes: a pale hazy back range, the brighter alpine range, darker forested foothills, a near-black shore; the water is a darkened, rippling mirror that fades with depth and dithers into the page field. On the page itself there is one plane, the night field, and type and pixel marks sit directly on it. The only `box-shadow` in the CSS is an unblurred inset that paints each meter bar's top pixel in frost; it is a pixel fill, not a shadow.
 
 ### Named Rules
-**The Depth Is Distance Rule.** Separation comes from atmospheric value steps in the scene and from space on the page, never from shadows, overlays, or raised surfaces.
+**The Depth Is Distance Rule.** Separation comes from atmospheric value steps in the scene and from space on the page, never from drop shadows, overlays, or raised surfaces.
 
-**The Dithered Sky Rule.** Sky and aurora tones change only through a 4x4 ordered (Bayer) dither between palette steps, at whole art pixels; never a smooth CSS or canvas gradient. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, and its last fifth dithers out into the night field.
+**The Dithered Sky Rule.** Sky, aurora, and haze tones change only through a 4x4 ordered (Bayer) dither between palette steps, at whole art pixels; never a smooth CSS or canvas gradient. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, and its last fifth dithers out into the night field.
 
 ## Shapes
 
-Square and hard-edged throughout (`rounded.none`). The canvas renders with `image-rendering: pixelated`, so every edge in the art is a stair-stepped pixel edge. Sizes of small marks are multiples of the 4px pixel unit (`spacing.px`): the lamp mark is 2 units square. There are no borders, outlines, dividers, or clipped shapes in the layout.
+Square and hard-edged throughout (`rounded.none`). Both canvases render with `image-rendering: pixelated`, so every edge in the art is a stair-stepped pixel edge. Small marks are made of square pixels: the glyphs are 9x9 grids of unit squares rendered with crisp edges, the meter's bars are whole multiples of the scene pixel, and the lineup's dividers are a row of square dots (one scene pixel on, one off, one scene pixel tall) painted as a repeating background, never a border. There are no borders, outlines, boxes, or clipped shapes in the layout.
 
 ## Components
 
-The page has no buttons, inputs, navigation, or cards, by product decision (no links). The recurring pieces are scene and type.
+The page has no buttons, inputs, navigation, or cards, by product decision (no links). The recurring pieces are scene, type, and pixel marks.
 
 ### Pixel Night Scene (signature)
-- **What:** a full-bleed canvas in the hero, drawn procedurally from a fixed seed so every visit shows the same place: stars, two drifting aurora curtains, far and mid ridges with lit east faces, a pine shore, one cabin with snow on the roof and a lit window, and the reflecting fjord.
+- **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, two drifting aurora curtains, a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills with a comb of small pines, a pine shore, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord.
 - **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled with crisp pixels; the art scale is published to CSS as `--scene-px`.
-- **Motion:** aurora drift, star twinkle, water ripple, and a flickering lamp reflection, stepped at 10 frames a second. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
+- **Motion:** aurora drift, star twinkle, snowfall at two depths, a shooting star of about 0.8s roughly every 11s, chimney smoke, water ripple, and a flickering lamp reflection, stepped at 10 frames a second. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
+### Shore
+- A full-bleed canvas closing the page: the night field dithering down onto a ridge-blue back hill, a snowbank stepped from frost through lit, mid, and shaded snow, and dark pines standing in it. Drawn once at the scene's art scale, decorative and hidden from assistive tech.
+
 ### Nameplate
-- Display-size snow text set directly over the sky at the left, with the lead-size role line beneath (1.25rem gap). No backing panel or scrim. In portrait it moves to the hero's foot, over the dark water.
+- Display-size snow text set directly over the sky at the left, with the lead-size role line beneath (1.25rem gap), led by the gear glyph. No backing panel or scrim. In portrait it moves to the hero's foot, over the dark water.
+
+### Pixel Glyph
+- A 9x9 grid of unit squares in ice (gear, note, prompt), decorative and hidden from assistive tech. 0.9em square beside the role line, 0.72em inline before each trade word in the lead sentence, where the trade word itself turns snow and never wraps away from its glyph. One glyph per role or trade; it names the word, it does not decorate the line.
+
+### Level Meter
+- Nine ice bars, each three scene pixels wide with one scene pixel between, standing in a box twelve scene pixels tall, each capped with a frost pixel. Each bar jumps between whole-pixel heights on its own 1.1 to 1.9s cycle with `steps()` timing, never easing. Under reduced motion the bars stand still at their resting heights. Decorative and hidden from assistive tech.
 
 ### Band Lineup
-- An unstyled list in snow at lineup size, one name per line, sitting under a headline and a one-line ink-soft aside.
-
-### Lamp Mark
-- A square of lamplight (2 by 2 pixel units) beside the closing line in ink-soft label type, with a 0.75rem gap. Decorative and hidden from assistive tech. It is the only warm thing outside the scene and echoes the cabin window.
+- An unstyled list in snow at lineup size, one name per line, separated by ridge-blue square-dot rows (none under the last). Sits in the second column beside the section title, aside, and meter on wide screens; stacks beneath them on narrow ones.
 
 ### Selection
 - Frost background with night text: the single cool-white highlight state the page has.
@@ -188,17 +218,19 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep the page field night and every surface flat; the scene is the only image.
-- **Do** draw any new pixel art on the same whole-number art-pixel grid (3 or 4 screen px) with `image-rendering: pixelated`, and size small marks in multiples of the 4px unit.
-- **Do** step sky and aurora tones with ordered dither between palette colors.
+- **Do** keep the page field night and every surface flat; the canvases are the only images.
+- **Do** draw any new pixel art on the same whole-number art-pixel grid (3 or 4 screen px) with `image-rendering: pixelated`, and size small marks in multiples of the scene pixel.
+- **Do** step sky, aurora, and haze tones with ordered dither between palette colors.
 - **Do** set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.
-- **Do** keep layout left-aligned in one column inside the fluid gutter, with generous viewport-scaled vertical space.
-- **Do** keep motion slow and stepped (10fps), pause it offscreen, and render a still frame for reduced-motion users.
+- **Do** keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; split into two columns only where a heading and its list sit side by side.
+- **Do** keep motion slow and stepped (10fps for the scene, `steps()` timing for CSS), pause it offscreen, and hold it still for reduced-motion users.
+- **Do** draw dividers as rows of square pixel dots in ridge blue.
 
 ### Don't:
-- **Don't** use lamplight amber anywhere beyond the cabin window, its reflection, and the single text mark.
-- **Don't** use the ice-blue set for text, fills, or layout elements; it belongs to the sky.
-- **Don't** round corners, add shadows, or put content in cards, panels, or bordered boxes.
-- **Don't** use smooth gradients for sky or aurora tones.
+- **Don't** use lamplight amber or ember anywhere beyond the cabin window and its reflection.
+- **Don't** use the ice-blue set for words, headings, or surfaces; in the text layer it is only for small pixel marks.
+- **Don't** round corners, add drop shadows, or put content in cards, panels, or bordered boxes.
+- **Don't** use smooth gradients for sky, aurora, or haze tones.
+- **Don't** draw dividers with `border` or the browser's round dotted style.
 - **Don't** add bold weights, italics, uppercase tracking, or a second typeface.
 - **Don't** center the name over the scene or place it on a scrim; it sits on the sky (or, on portrait screens, on the water).
