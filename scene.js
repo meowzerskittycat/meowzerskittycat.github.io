@@ -153,6 +153,9 @@
       waterSrc[k] = Math.max(0, horizon - 1 - s0);
       waterSpan[k] = Math.max(1, Math.min(waterSrc[k] + 1, s1 - s0));
     }
+    // on portrait screens the name rests on the water: the mirror settles to calm water just
+    // above it, so the letters never sit on reflected snow
+    const calm = horizon < H * 0.7 && nameBox ? Math.max(0.3, Math.min(0.88, (nameBox.y0 - horizon) / depthRows)) : 0.88;
     waterBand = new Uint8Array(depthRows);
     for (let k = 0; k < depthRows; k++) {
       const d = k / depthRows;
@@ -164,7 +167,7 @@
     for (let b = 0; b < WATER_EDGES.length; b++) {
       const last = b === WATER_EDGES.length - 1;
       const d = last ? 1 : (WATER_EDGES[b] + WATER_EDGES[b + 1]) / 2;
-      const fade = 0.5 * (1 - smooth(0.5, 0.88, d));
+      const fade = 0.5 * (1 - smooth(calm * 0.55, calm, d));
       const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
       REP.forEach((s, k) => {
         // the dark shore reflects darker than the sky does, so the water under the pines reads as
