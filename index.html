@@ -23,8 +23,21 @@
   <link rel="preload" href="fonts/pixelify-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <style>html{background:#0f2b4c}</style>
   <link rel="stylesheet" href="style.css">
-  <script>matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.classList.add("reveal");</script>
+  <script>
+    // before first paint: the scene's pixel size, so nothing resizes when scene.js arrives; the
+    // hero waits, hidden, until the scene and the font are both ready (scene.js lifts .wait, and
+    // a timeout does too in case it never loads); the name's wipe only when motion is welcome
+    (function (e) {
+      var w = e.clientWidth, s = w >= 2400 ? 6 : w >= 1760 ? 5 : Math.min(4, Math.max(3, Math.floor(w / 320)));
+      e.style.setProperty("--scene-px", s + "px");
+      e.style.setProperty("--ui-px", Math.min(4, s) + "px");
+      e.classList.add("wait");
+      setTimeout(function () { e.classList.remove("wait"); }, 5000);
+      matchMedia("(prefers-reduced-motion: reduce)").matches || e.classList.add("reveal");
+    })(document.documentElement);
+  </script>
 </head>
 <body>
   <header class="night">

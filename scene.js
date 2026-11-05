@@ -737,7 +737,14 @@
 
   document.addEventListener("visibilitychange", kick);
   reduceMotion.addEventListener?.("change", render);
-  document.fonts?.ready.then(render);
 
-  render();
+  // the first frame waits for the name's font, since the scene is laid out around the name; then
+  // the hero shows all at once. A font that takes too long gets a second render when it lands.
+  const fontIn = document.fonts ? document.fonts.load('400 1em "Pixelify Sans"').catch(() => {}) : Promise.resolve();
+  let fontLate = false;
+  Promise.race([fontIn, new Promise((r) => setTimeout(() => { fontLate = true; r(); }, 2500))]).then(() => {
+    render();
+    document.documentElement.classList.remove("wait");
+  });
+  fontIn.then(() => { if (fontLate) render(); });
 })();
