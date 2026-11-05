@@ -30,6 +30,7 @@
     hillTree: hex("#0b1f3a"),
     near: hex("#0a1e36"),
     pine: hex("#06152a"),
+    pineLit: hex("#22486e"), // the moon side of each tier of boughs, a step above the shore
     cabin: hex("#081829"),
     lamp: hex("#f2b45a"),
     ember: hex("#7a5531"),
@@ -136,7 +137,7 @@
     const depthRows = H - horizon;
     const REP = [C.hill, C.farShade, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
     const cls = new Map([[0, 2]]);
-    for (const c of [C.near, C.pine, C.hill, C.hillTree, C.cabin, C.lamp, C.ember]) cls.set(pack(c), 0);
+    for (const c of [C.near, C.pine, C.pineLit, C.hill, C.hillTree, C.cabin, C.lamp, C.ember]) cls.set(pack(c), 0);
     for (const c of [C.farShade, C.earthshine]) cls.set(pack(c), 1);
     for (const c of [C.farRock, C.ice, ...SKY]) cls.set(pack(c), 2);
     cls.set(pack(C.haze), 3);
@@ -273,6 +274,19 @@
       prev = e;
     }
     return out;
+  }
+
+  // moonlight catches the boughs from the upper left, as it does the peaks: once a stand of pines
+  // is drawn, a pine pixel open both to its left and above it is on the moonward edge of a tier,
+  // and takes one lighter step. Run on the finished stand, so where trees overlap, only the
+  // outline of the whole stand is lit, never the inside
+  function litBoughs(px, w, y0, y1, pine, lit) {
+    for (let y = y1 - 1; y > y0; y--) {
+      for (let x = 1; x < w; x++) {
+        const i = y * w + x;
+        if (px[i] === pine && px[i - 1] !== pine && px[i - 1] !== lit && px[i - w] !== pine && px[i - w] !== lit) px[i] = lit;
+      }
+    }
   }
 
   function buildStatic() {
@@ -435,6 +449,8 @@
         }
       }
     }
+
+    litBoughs(base, W, 0, horizon, P.pine, P.pineLit);
 
     // a thin rim of snow along the waterline, broken where the shore runs dark
     for (let x = 0; x < W; x++) {
@@ -657,6 +673,7 @@
         }
       }
     }
+    litBoughs(b, sw, 0, sh, P.pine, P.pineLit);
     const rf = rng(808), fl = [];
     for (let i = 0, n = Math.round((sw * sh) / 260); i < n; i++) {
       const near = rf() > 0.7;
@@ -675,7 +692,7 @@
       const y = Math.floor((f.y + t * f.sp) % h);
       const x = Math.floor(((f.x + Math.sin(t * 0.7 + f.ph) * f.sw * 2) % w + w) % w);
       if (y >= ground[x]) continue;
-      if (!f.near && b[y * w + x] === P.pine) continue; // far flakes pass behind the pines
+      if (!f.near && (b[y * w + x] === P.pine || b[y * w + x] === P.pineLit)) continue; // far flakes pass behind the pines
       b[y * w + x] = f.c;
     }
     shore.ctx.putImageData(shore.im, 0, 0);
