@@ -326,11 +326,12 @@
           + Math.sin(u * 6.0 + t * 0.3 + k * 2) * horizon * 0.08
           + Math.sin(u * 17.0 - t * 0.6) * horizon * 0.02;
         bottom[x] = bt;
-        // broad folds that sway slowly, with a faint fine shimmer; brighter folds reach higher
+        // a curtain: broad folds that sway slowly, hung with fine vertical rays that drift along
+        // them; a bright ray reaches higher, so the top edge is a comb of streaks, not a haze
         const fold = nRay(u * 7 + t * 0.12 + k * 90);
-        const streak = 0.45 + 0.55 * Math.pow(nRay(x * 0.38 + t * 0.25 + k * 30), 1.5);
-        rays[x] = (0.4 + 0.6 * fold) * streak;
-        len[x] = horizon * (0.1 + 0.2 * fold);
+        const ray = Math.pow(nRay(x * 0.55 + t * 0.35 + k * 30), 2.2);
+        rays[x] = (0.35 + 0.65 * fold) * (0.3 + 0.7 * ray);
+        len[x] = horizon * (0.05 + (0.1 + 0.17 * fold) * (0.25 + 0.75 * Math.sqrt(ray)));
         if (bt - horizon * 0.4 < aurTop) aurTop = bt - horizon * 0.4;
         if (bt + 1 > aurBot) aurBot = bt + 1;
       }
@@ -346,9 +347,10 @@
       if (d < -1 || d > horizon * 0.4) continue;
       const len = aurCols.len[k][x];
       // light pools at the hem and thins upward, so the top dissolves into the sky
-      const prof = d < 0 ? 0.45 : Math.max(0, 1 - d / len);
-      const hem = d >= 0 && d < 2 ? 0.3 : 0;
-      const v = env * (aurCols.rays[k][x] * Math.pow(prof, 1.6) + hem) * (k === 0 ? 0.9 : 0.55);
+      const prof = d < 0 ? 0.4 : Math.max(0, 1 - d / len);
+      // the lower hem is the brightest line of the curtain, one step brighter than its rays
+      const hem = d >= 0 && d < 2 ? 0.45 : d >= 2 && d < 4 ? 0.15 : 0;
+      const v = env * (aurCols.rays[k][x] * Math.pow(prof, 1.1) + hem) * (k === 0 ? 0.9 : 0.55);
       if (v > best) best = v;
     }
     return best;
@@ -380,11 +382,13 @@
 
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
     const depthRows = H - horizon;
+    const mirror = Math.max(1.15, (horizon * 0.6) / (depthRows * 0.85));
     for (let y = horizon; y < H; y++) {
       const d = (y - horizon) / depthRows;
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
-      const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * 1.15));
-      const fade = (horizon < H * 0.7 ? 0.3 : 0.4) * Math.pow(1 - d, 1.5);
+      // a shallow fjord (wide screens) folds the mirror tighter so the peaks still reach it
+      const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * mirror));
+      const fade = horizon < H * 0.7 ? 0.32 * Math.pow(1 - d, 1.1) : 0.5 * (1 - smooth(0.6, 1, d));
       const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
       const f1 = 1 - fade;
       const wr = (C.deep[0] + (C.fjord[0] - C.deep[0]) * tint) * f1;
@@ -457,29 +461,51 @@
     const sctx = shoreCanvas.getContext("2d", { alpha: false });
     const im = sctx.createImageData(sw, sh);
     const b = new Uint32Array(im.data.buffer);
-    const ground = [];
-    for (let x = 0; x < sw; x++) ground[x] = Math.round(sh * 0.72 - fbm(nNear, x * 0.03 + 200, 3) * sh * 0.18);
-    // page field above, a low snowbank, pines standing in it
+    // the bank rolls in low drifts; a second, lower crest catches the light here and there
+    const ground = [], crest = [];
+    for (let x = 0; x < sw; x++) {
+      ground[x] = Math.round(sh * 0.7 - fbm(nNear, x * 0.045 + 200, 3) * sh * 0.16 - Math.sin(x * 0.11) * 1.2);
+      crest[x] = ground[x] + 4 + Math.round(fbm(nSnow, x * 0.07 + 30, 2) * (sh - ground[x]) * 0.5);
+    }
+    const SNOW = [C.snowLit, C.snowMid, C.snowShade];
+    // page field above, a ridge-blue back hill, the snowbank
     for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) {
       let c = C.deep;
       const hill = Math.round(sh * 0.5 - fbm(nMid, x * 0.02 + 90, 3) * sh * 0.22);
       if (y >= hill) c = C.ridge;
-      if (y >= ground[x]) c = y - ground[x] < 1 ? C.frost : C.snowLit;
-      if (y >= ground[x] + 3) c = C.snowMid;
-      if (y >= ground[x] + 6) c = C.snowShade;
+      const g = y - ground[x];
+      if (g >= 0) {
+        // moonlit on top, shading in clean bands into the night toward the foot of the page;
+        // only the seams between bands are dithered
+        const v = Math.pow((g - 1) / Math.max(1, sh - ground[x] - 1), 0.8) * 3.2;
+        c = g === 0 ? C.frost : SNOW[Math.max(0, Math.min(2, Math.floor(v + (dither(x, y) - 0.5) * 0.3)))];
+        // the drift crest: a lit lip, a shaded fall below it
+        const cr = y - crest[x];
+        if (crest[x] < sh - 2 && fbm(nSnow, x * 0.09 + 5, 2) > 0.48) {
+          if (cr === 0) c = C.snowLit;
+          else if (cr === 1 || (cr === 2 && dither(x, y) > 0.5)) c = C.snowShade;
+        }
+      }
       b[y * sw + x] = pack(c);
     }
+    // pines standing in the snow, each casting a short moon shadow down-slope to its right
     const r = rng(77);
     for (let x = 1; x < sw - 1; x++) {
       if (r() > 0.1 + 0.5 * smooth(0.35, 0.7, fbm(nNear, x * 0.05 + 9, 2))) continue;
       const h = 5 + Math.floor(r() * sh * 0.4);
       const top = ground[x] + 1 - h;
+      for (let dx = 2; dx < 2 + Math.round(h * 0.35); dx++) {
+        const px = x + dx;
+        if (px < sw && b[ground[px] * sw + px] === pack(C.frost)) b[ground[px] * sw + px] = pack(C.snowShade);
+      }
       for (let k = 0; k <= h; k++) {
         const hw = Math.floor((k / h) * 3 + ((k % 3) === 0 ? 0 : 0.6));
         for (let dx = -hw; dx <= hw; dx++) {
-          const px = x + dx, py = top + k;
-          if (px < 0 || px >= sw || py < 0 || py >= sh) continue;
-          b[py * sw + px] = pack(C.pine);
+          const px = x + dx;
+          if (px < 0 || px >= sw) continue;
+          // the skirt reaches down to the drift under it, so no tree floats over a hollow
+          const y1 = k === h ? Math.max(top + k, ground[px]) : top + k;
+          for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = pack(C.pine);
         }
       }
     }
