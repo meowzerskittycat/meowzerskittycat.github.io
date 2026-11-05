@@ -10,7 +10,6 @@ colors:
   ink-soft: "#c4d3e0"
   frost: "#e3f2fd"
   ice: "#90caf9"
-  abyss: "#0d47a1"
   lamp: "#f2b45a"
   ember: "#7a5531"
 typography:
@@ -117,7 +116,6 @@ The direction contract still names a lamplight text mark; it was removed from th
 A cold, low-light palette of fjord blues on deep navy, lit by ice-blue starlight and snow and one amber window.
 
 ### Primary
-- **Deep Abyss** (abyss): the cross-shaped halo on the largest stars. Lives only inside the scene.
 
 ### Secondary
 - **Cabin Lamplight** (lamp): the one warm light. The cabin window and the near part of its broken reflection on the water. Scene-only; nothing in the text layer is warm.
@@ -135,12 +133,12 @@ A cold, low-light palette of fjord blues on deep navy, lit by ice-blue starlight
 - **Snow** (snow): primary ink; the name, the ledger items, and the band names.
 - **Soft Frost Ink** (ink-soft): secondary ink for the ledger labels and the note above the bands (9.3:1 on night).
 
-The scenes shade their terrain with in-between blues defined in `scene.js` and nowhere else: haze (#24496f) and haze snow (#4a76a0) for the back range; lit snow (#a4c5e2), mid snow (#7fa7cc) and shaded snow (#46719c) for the alpine faces, couloirs and the shore's snowbank; far rock (#1b3c60) and far shade (#132e4e) for the ribs; hill (#0f2745), hill tree (#0b1f3a) and hill snow (#3f6a94) for the forested foothills; near shore (#0a1e36), pine (#06152a) and cabin timber (#081829). Chimney smoke reuses shaded snow and haze. These are rendering shades of the palette, not page tokens; do not use them in CSS.
+The scenes shade their terrain with in-between blues defined in `scene.js` and nowhere else: haze (#24496f) and haze snow (#4a76a0) for the back range; lit snow (#a4c5e2), mid snow (#7fa7cc) and shaded snow (#46719c) for the alpine faces, couloirs and the shore's snowbank; far rock (#1b3c60) and far shade (#132e4e) for the ribs; hill (#0f2745), hill tree (#0b1f3a) and hill snow (#3f6a94) for the forested foothills; near shore (#0a1e36), pine (#06152a) and cabin timber (#081829); dim star (#4a6f99) for the faint majority of stars and the arms of the rare crossed star; earthshine (#193858) for the moon's dark disc. Chimney smoke reuses shaded snow and haze; the moon's halo is two rings taken from the sky's own ramp, one and two steps up from the night behind them. These are rendering shades of the palette, not page tokens; do not use them in CSS.
 
 ### Named Rules
 **The One Warm Light Rule.** Lamplight amber and ember appear only in the cabin window and its reflection on the water. Every other color on the page, scene and text alike, is cold. A second warm element breaks the night.
 
-**The Ice Is Light Rule.** The ice-blue set (frost, ice, abyss) is light, never ground. It belongs to the sky (stars, moon, snow crests, glints, and the shore's snowfall) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.
+**The Ice Is Light Rule.** The ice-blue set (frost, ice) is light, never ground. It belongs to the sky (stars, moon, snow crests, glints, and the shore's snowfall) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.
 
 ## Typography
 
@@ -186,7 +184,7 @@ Flat. Nothing on the page is lifted, layered, or shadowed. Depth is atmospheric 
 
 **The Spruce Rule.** Every pine, in the hero and on the shore, is drawn from one tiered silhouette: a one-pixel tip, then tiers that flare a pixel a row and start each next tier a pixel narrower, never stepping back to the bare stem (which reads as a cross).
 
-**The Dithered Sky Rule.** Sky and haze tones change only in flat steps joined by a narrow ordered dither seam, at whole art pixels; never a smooth CSS or canvas gradient, and never dither spread across a whole field as texture. The sky is five flat bands (space, two in-between blends, night, ridge) whose seams are exactly two rows of 50% checker, falling clear of the name; lit snow is one clean plane. The water is the one exception: it reads the mirror in pixel pairs, so a checker seam above reflects as one flat band rather than a dotted line, and blends the reflection into the fjord tint row by row, still on whole art pixels, broken by thin calm rows that drift down through it, and fades out into the night field.
+**The Dithered Sky Rule.** Sky and haze tones change only in flat steps joined by a narrow ordered dither seam, at whole art pixels; never a smooth CSS or canvas gradient, and never dither spread across a whole field as texture. The sky is nine close flat bands from space through night to ridge, each a quarter step from its neighbour, whose seams are exactly two rows of 50% checker, so each join reads as a soft change rather than a drawn line; lit snow is one clean plane. The water is the one exception: it reads the mirror in pixel pairs, so a checker seam above reflects as one flat band rather than a dotted line, and blends the reflection into the fjord tint row by row, still on whole art pixels, broken by thin calm rows that drift down through it, and fades out into the night field.
 
 ## Shapes
 
@@ -197,9 +195,9 @@ Square and hard-edged throughout (`rounded.none`). Both canvases render with `im
 The page has no buttons, inputs, navigation, or cards, by product decision (no links). The recurring pieces are scene, type, the ledger, and pixel marks.
 
 ### Pixel Night Scene (signature)
-- **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills edged with small distant spruce (tapering spires, close-set where the forest is dense, so the crest is a serrated forest edge), valley mist where the range's foot meets the foothills (a solid haze band with a thin dithered edge, so the planes part), a pine shore with a faint broken snow rim along the waterline, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord: a mirror of the whole range, its rows folded tighter on wide screens (where the fjord is shallow) so the peaks and their snow still reach the water, fading into the page colour by the hero's foot. The sky is clear: no snow falls in the hero, so nothing crosses the name.
+- **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon (its dark disc faintly visible by earthshine, inside a two-ring halo), a hazy back range with a clean one-pixel snow edge on its highest peaks, an alpine range with one tall horn (lit on its west faces, toward the moon), shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills edged with small distant spruce (tapering spires, close-set where the forest is dense, so the crest is a serrated forest edge), valley mist where the range's foot meets the foothills (a clean solid haze band, so the planes part), a pine shore with a faint broken snow rim along the waterline, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord: a mirror of the whole range, its rows folded tighter on wide screens (where the fjord is shallow) so the peaks and their snow still reach the water, fading into the page colour by the hero's foot. The sky is clear: no snow falls in the hero, so nothing crosses the name.
 - **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled by an exact whole number (the canvas element is sized to W x scale, overhanging its box by under one art pixel), so every art pixel is the same size; the art scale is published to CSS as `--scene-px` (and as `--ui-px`, capped at 4px, for the icons, meter, band markers and row rules so they stay in proportion to the text), and the nameplate's padding is rounded to it so the name's pixels sit on the art's. Per frame, the sky's colours are precomputed per row, so each frame is little more than copying rows and the water.
-- **Stars:** scattered over open sky only: never on the terrain, around the moon, or in or right beside the name's letters, where a lone pixel would read as a flaw in the type.
+- **Stars:** three tiers: mostly dim, some ice, a few frost, and a rare frost star with a cross of dim light. They gather in a soft diagonal drift and thin toward the horizon, never touch each other, and keep two pixels clear of the terrain and the moon's halo; never in or right beside the name's letters, where a lone pixel would read as a flaw in the type. A twinkle dims a star one step; it never blinks out.
 - **Motion:** star twinkle, chimney smoke, water ripple, a short flickering lamp reflection, a cabin lamp that gutters one pane to ember for about a fifth of a second, roughly once every eight seconds, and the moon's glade (thin dashes that pale from lit to shaded snow with depth, broken across the water beneath the moon, never a solid column), stepped at 10 frames a second. The water fades fully into the page colour before the hero's edge, with no dither stripe. The shore canvas at the page foot keeps the snow falling at two depths, far flakes passing behind the pines, and runs only while it is on screen. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
 - **Arrival:** when motion is welcome, scene.js adds `.reveal` to the root: the name wipes in left to right in 6 whole steps and the cue follows. The ledger is never held back, so previews, print and full-page captures always show it. Without the class nothing is hidden.
 - **Share preview:** `og.png`, a 1200x630 capture of the hero at rest, is the Open Graph and large Twitter card image. It is captured at a 1280px viewport (the 4px grid, so the name is large and every pixel even), at the reduced-motion still frame, without the scroll cue. After every visual change run `node tools/og.js`: it rewrites og.png and sets the `?v=` query on `og:image` to the image's hash, so platforms that cache previews by URL fetch the new one.
@@ -208,7 +206,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
 ### Shore
-- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank rolling in low drifts (a frost edge, then lit, mid, and shaded snow in clean bands that follow the drift's own contour, with no dithered seams, and the lit lip and shaded fall of a lower drift crest here and there), dark pines standing in it with their skirts reaching the drift beneath and a short shaded-snow moon shadow to their right, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
+- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank rolling in low drifts (a frost edge, then lit, mid, and shaded snow in clean bands that follow the drift's own contour, with no dithered seams), dark pines standing in it with their skirts reaching the drift beneath, a short ledge of snow on each tier's moon-side tip and a short shaded-snow moon shadow to their right, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
 
 ### Nameplate
 - Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water, clamp(1.5rem, 5vh, 3rem) above it, so the name stays close to the first ledger row.
@@ -241,6 +239,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Do** keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.
 - **Do** keep motion slow and stepped (10fps for the scene, `steps()` timing for CSS), pause it offscreen, and hold it still for reduced-motion users.
 - **Do** draw rules as rows of square pixel dots in ridge blue.
+- **Do** light the terrain from the moon's side: lit faces, snow ledges on the pines and shadows all agree with where the moon hangs.
 
 ### Don't:
 - **Don't** use lamplight amber or ember anywhere beyond the cabin window and its reflection.

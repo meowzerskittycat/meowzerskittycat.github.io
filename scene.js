@@ -17,7 +17,8 @@
     fjord: hex("#1e5568"),
     frost: hex("#e3f2fd"),
     ice: hex("#90caf9"),
-    abyss: hex("#0d47a1"),
+    starDim: hex("#4a6f99"), // the faint majority of stars
+    earthshine: hex("#193858"), // the moon's dark disc, just visible
     haze: hex("#24496f"),
     hazeSnow: hex("#4a76a0"),
     snowLit: hex("#a4c5e2"),
@@ -113,7 +114,7 @@
     buf = new Uint32Array(img.data.buffer);
     skyRows = new Array(horizon);
     // flat bands of night; where one band meets the next, two rows of checker and nothing more
-    const lvl = (y) => Math.max(0, Math.min(4, Math.floor(skyV(y) * 4 + 0.5)));
+    const lvl = skyLvl;
     for (let y = 0; y < horizon; y++) {
       const L = lvl(y), row = new Uint32Array(4);
       const seam = y + 1 < horizon && lvl(y + 1) > L ? L + 1 : y > 0 && lvl(y - 1) < L ? L - 1 : -1;
@@ -217,7 +218,7 @@
           c = C.hill;
         } else if (y >= far.top[x]) {
           const p = far.owner[Math.max(0, Math.min(W - 1, Math.round(x - (y - far.top[x]) * 0.6)))];
-          const lit = x >= p.x - (y - p.y) * 0.4 + jag; // east faces are lit
+          const lit = x <= p.x + (y - p.y) * 0.4 + jag; // west faces catch the moon, which hangs to the west of the range
           const side = x >= p.x ? 1 : -1;
           // rock ribs run down the fall line; couloirs carry snow below the snowline
           const along = (x - p.x) - side * (y - p.y) * 0.75;
@@ -232,9 +233,9 @@
           } else c = lit ? C.farRock : C.farShade;
           // valley mist: the range's foot thins into haze above the foothills, so the planes part
           const md = hillTop[x] - y;
-          if (md < 3 || (md < 5 && dither(x, y) < (5 - md) * 0.25)) c = C.haze;
+          if (md < 4) c = C.haze;
         } else if (y >= haze.top[x]) {
-          c = y < hz * 0.6 && y - haze.top[x] < 3 && dither(x, y) > 0.3 ? C.hazeSnow : C.haze;
+          c = y < hz * 0.62 && y - haze.top[x] < 1 ? C.hazeSnow : C.haze; // a clean snow edge on the highest back peaks
         }
         if (c) base[y * W + x] = pack(c);
       }
@@ -275,8 +276,8 @@
 
     // a thin rim of snow along the waterline, broken where the shore runs dark
     for (let x = 0; x < W; x++) {
-      const v = fbm(nSnow, x * 0.15 + 70, 2);
-      if (v > 0.5) set(x, horizon - 1, v > 0.62 ? C.hazeSnow : C.haze);
+      const v = fbm(nSnow, x * 0.32 + 70, 2);
+      if (v > 0.53) set(x, horizon - 1, v > 0.62 ? C.hazeSnow : C.haze);
     }
 
     // the cabin: dark timber, snow on the roof, one lit window
@@ -297,40 +298,68 @@
     set(cabin.wx, cabin.wy, C.lamp); set(cabin.wx + 1, cabin.wy, C.lamp);
     set(cabin.wx, cabin.wy + 1, C.lamp); set(cabin.wx + 1, cabin.wy + 1, C.ember);
 
-    // a crescent moon, in the open sky past the name, never crowding it
+    // a crescent moon, in the open sky past the name, never crowding it: a lit crescent, the
+    // rest of the disc faintly visible by earthshine, and a halo of two rings, each a step or
+    // two up the sky's own ramp, so the glow is made of the night's colours
     const mr = Math.max(3, Math.round(Math.min(W, H) * 0.028));
-    const mx = W > H ? Math.max(Math.round(W * 0.45), Math.round(nameEnd * W + 8 + mr)) : Math.round(W * 0.22), my = Math.round(H * (W > H ? 0.12 : 0.08));
+    const mx = W > H ? Math.max(Math.round(W * 0.45), Math.round(nameEnd * W + 10 + mr)) : Math.round(W * 0.22), my = Math.round(H * (W > H ? 0.12 : 0.08));
     moon = { x: mx, y: my, r: mr };
-    for (let y = -mr - 1; y <= mr + 1; y++) for (let x = -mr - 1; x <= mr + 1; x++) {
-      const inA = x * x + y * y <= mr * mr + mr * 0.4;
+    const hr = mr + Math.max(3, Math.round(mr * 0.8)), hr1 = mr + Math.max(1, Math.round(mr * 0.35));
+    for (let y = -hr; y <= hr; y++) for (let x = -hr; x <= hr; x++) {
+      const d2 = x * x + y * y;
+      const inA = d2 <= mr * mr + mr * 0.4;
       const bx2 = x - mr * 0.6, by2 = y + mr * 0.3;
       const inB = bx2 * bx2 + by2 * by2 <= mr * mr;
       if (inA && !inB) {
         const rim = (x - 1) * (x - 1) + y * y > mr * mr - mr; // softer limb
         set(mx + x, my + y, rim ? C.ice : C.frost);
+      } else if (inA) set(mx + x, my + y, C.earthshine);
+      else if (d2 <= hr * hr + hr * 0.4) {
+        const L = skyLvl(my + y), up = d2 <= hr1 * hr1 + hr1 * 0.4 ? 2 : 1;
+        set(mx + x, my + y, SKY[Math.min(SKY.length - 1, L + up)]);
       }
     }
 
-    // stars, only over open sky
+    // stars, only over open sky: mostly faint, fewer bright, a rare few with a cross of light;
+    // thicker in a soft diagonal drift and thinning toward the horizon, never touching each
+    // other, a ridge, the moon's halo or the name
     const rs = rng(99);
     stars = [];
-    const count = Math.round((W * H) / 300);
+    const taken = new Uint8Array(W * H);
+    const count = Math.round((W * H) / 230);
+    const clear = (x, y, r) => {
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+        const xx = x + dx, yy = y + dy;
+        if (xx < 0 || xx >= W || yy < 0) continue;
+        if (yy >= horizon || base[yy * W + xx] || taken[yy * W + xx]) return false;
+      }
+      return true;
+    };
     for (let i = 0; i < count; i++) {
-      const x = Math.floor(rs() * W), y = Math.floor(rs() * H * 0.6);
-      if (base[y * W + x]) continue;
-      if (moon && Math.hypot(x - moon.x, y - moon.y) < moon.r + 3) continue;
+      const x = Math.floor(rs() * W), y = Math.floor(rs() * H * 0.62);
+      const drift = smooth(0.35, 0.75, fbm(nSnow, (x + y * 0.8) * 0.05 + 11, 3));
+      const fall = 1 - smooth(0.25, 1, y / horizon) * 0.75;
+      const roll = rs(), tier = rs(), tw = rs(), ph = rs() * 6.28, big = rs();
+      if (roll > (0.25 + 0.75 * drift) * fall) continue;
+      if (!clear(x, y, 2)) continue;
       if (nameBox && x >= nameBox.x0 && x <= nameBox.x1 && y >= nameBox.y0 && y <= nameBox.y1) continue;
-      stars.push({ x, y, c: rs() > 0.8 ? C.frost : C.ice, tw: rs() > 0.7, ph: rs() * 6.28, big: rs() > 0.96 });
+      const lvl = tier < 0.62 ? 0 : tier < 0.92 ? 1 : 2;
+      const cross = lvl === 2 && big > 0.6 && clear(x, y, 3);
+      stars.push({ x, y, lvl, tw: tw > 0.65 && lvl > 0, ph, big: cross });
+      taken[y * W + x] = 1;
+      if (cross) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) taken[(y + dy) * W + x + dx] = 1;
     }
   }
 
   // ---------------------------------------------------------------- sky
 
-  // five flat steps of night, each pair of neighbours blended only in a narrow dithered seam
-  const mid = (a, b) => a.map((v, i) => Math.round((v + b[i]) / 2));
-  const SKY = [C.space, mid(C.space, C.night), C.night, mid(C.night, C.ridge), C.ridge];
+  // nine close steps of night from space down to the ridge glow, each so near its neighbour
+  // that the two-row checker seam between them reads as a soft join, not a drawn line
+  const lerp = (a, b, f) => a.map((v, i) => Math.round(v + (b[i] - v) * f));
+  const SKY = [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((f) => (f <= 1 ? lerp(C.space, C.night, f) : lerp(C.night, C.ridge, f - 1)));
 
   const skyV = (y) => 0.05 + 0.95 * Math.pow(y / horizon, 1.3);
+  const skyLvl = (y) => Math.max(0, Math.min(SKY.length - 1, Math.floor(skyV(y) * (SKY.length - 1) + 0.5)));
 
   function draw(t) {
     for (let y = 0; y < horizon; y++) {
@@ -340,15 +369,14 @@
         buf[i] = base[i] || sky[x & 3];
       }
     }
+    const STAR = [pack(C.starDim), pack(C.ice), pack(C.frost)];
     for (const s of stars) {
-      const i = s.y * W + s.x;
-      if (s.tw && Math.sin(t * 2.2 + s.ph) < -0.55) continue;
-      buf[i] = pack(s.c);
-      if (s.big && Math.sin(t * 1.3 + s.ph) > 0.2) {
-        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-          const j = (s.y + dy) * W + s.x + dx;
-          if (s.x + dx >= 0 && s.x + dx < W && s.y + dy >= 0 && !base[j]) buf[j] = pack(C.abyss);
-        }
+      // a twinkle dims a star one step for a moment; it never blinks out
+      const dim = s.tw && Math.sin(t * 2.2 + s.ph) < -0.6 ? 1 : 0;
+      if (s.lvl - dim < 0) continue;
+      buf[s.y * W + s.x] = STAR[s.lvl - dim];
+      if (s.big && Math.sin(t * 1.3 + s.ph) > -0.3) {
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) buf[(s.y + dy) * W + s.x + dx] = STAR[0];
       }
     }
 
@@ -428,13 +456,10 @@
     const sctx = shoreCanvas.getContext("2d", { alpha: false });
     const im = sctx.createImageData(sw, sh);
     const b = new Uint32Array(im.data.buffer);
-    // the bank rolls in low drifts; a second, lower crest catches the light here and there
-    const ground = [], crest = [];
+    // the bank rolls in low drifts
+    const ground = [];
     for (let x = 0; x < sw; x++) {
       ground[x] = Math.round(sh * 0.7 - fbm(nNear, x * 0.045 + 200, 3) * sh * 0.16 - Math.sin(x * 0.11) * 1.2);
-      crest[x] = ground[x] + 4 + Math.round(fbm(nSnow, x * 0.07 + 30, 2) * (sh - ground[x]) * 0.5);
-      // a crest climbs or falls one pixel a column at most, so its line never breaks into a stub
-      if (x > 0) crest[x] = Math.max(crest[x - 1] - 1, Math.min(crest[x - 1] + 1, crest[x]));
     }
     const SNOW = [C.snowLit, C.snowMid, C.snowShade];
     // page field above, a ridge-blue back hill, the snowbank
@@ -448,12 +473,6 @@
         // the drift's own contour, so the layers read as packed snow, with no dotted seams
         const v = Math.pow((g - 1) / Math.max(1, sh - ground[x] - 1), 0.8) * 3.2;
         c = g === 0 ? C.frost : SNOW[Math.max(0, Math.min(2, Math.floor(v)))];
-        // the drift crest: a lit lip, a shaded fall below it
-        const cr = y - crest[x];
-        if (crest[x] < sh - 2 && fbm(nSnow, x * 0.09 + 5, 2) > 0.48) {
-          if (cr === 0) c = C.snowLit;
-          else if (cr === 1) c = C.snowShade;
-        }
       }
       b[y * sw + x] = pack(c);
     }
@@ -476,6 +495,12 @@
           // the skirt reaches down to the drift under it, so no tree floats over a hollow
           const y1 = k === h ? Math.max(top + k, ground[px]) : top + k;
           for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = pack(C.pine);
+        }
+        // snow lies along each tier's lower edge on the moon's side: a short ledge where the tier ends
+        if (k > 1 && k < h && rows[k + 1] < rows[k] && top + k >= 0 && x - hw >= 0 && hw >= 2) {
+          const c = pack(k < h * 0.5 ? C.snowMid : C.snowShade);
+          b[(top + k) * sw + x - hw] = c;
+          b[(top + k) * sw + x - hw + 1] = c;
         }
       }
     }
