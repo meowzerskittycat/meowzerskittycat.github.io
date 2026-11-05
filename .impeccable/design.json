@@ -325,7 +325,7 @@
       },
       {
         "name": "The Ice Is Light Rule",
-        "body": "The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (stars, moon, snowfall, snow crests, glints) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.",
+        "body": "The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (stars, moon, snowfall, snow crests) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.",
         "section": "colors"
       },
       {
