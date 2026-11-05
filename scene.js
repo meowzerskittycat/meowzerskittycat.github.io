@@ -73,13 +73,15 @@
 
   let W = 0, H = 0, horizon = 0, scale = 4;
   let img, buf, base; // base: static scene above the waterline (0 = sky)
-  let stars = [], flakes = [];
+  let stars = [];
+  let aurStart = 0.28; // where the curtain may begin, kept clear of the name
+  let skyRows = null; // per sky row: the four dithered colours of the 4x4 cell, packed
   const start = performance.now();
   let cabin = null, moon = null;
   let shore = null; // { w, h, ctx, im, b, base, flakes }
 
   function layout() {
-    const rect = canvas.getBoundingClientRect();
+    const rect = canvas.parentElement.getBoundingClientRect();
     // 3 or 4 screen px per art pixel; the name in CSS is set on a 2-art-pixel grid from this
     scale = Math.min(4, Math.max(3, Math.floor(rect.width / 320)));
     document.documentElement.style.setProperty("--scene-px", scale + "px");
@@ -87,12 +89,29 @@
     H = Math.max(80, Math.ceil(rect.height / scale));
     canvas.width = W;
     canvas.height = H;
+    // whole screen pixels per art pixel: the canvas overhangs the hero by under one art pixel
+    canvas.style.width = W * scale + "px";
+    canvas.style.height = H * scale + "px";
     // portrait screens get a taller fjord so the name can sit on dark water
     const portrait = H > W * 1.15;
     canvas.parentElement.toggleAttribute("data-portrait", portrait);
     horizon = Math.round(H * (portrait ? 0.6 : 0.8));
+    const name = document.querySelector(".nameplate h1");
+    aurStart = 0.28;
+    if (name && !portrait) {
+      const ink = document.createRange();
+      ink.selectNodeContents(name); // the word itself, not the block it sits in
+      aurStart = Math.max(0.28, (ink.getBoundingClientRect().right + 6 * scale - rect.left) / rect.width);
+    }
     img = ctx.createImageData(W, H);
     buf = new Uint32Array(img.data.buffer);
+    skyRows = new Array(horizon);
+    for (let y = 0; y < horizon; y++) {
+      const v = skyV(y), row = new Uint32Array(4);
+      for (let x = 0; x < 4; x++) row[x] = pack(ramp(SKY, v, x, y));
+      skyRows[y] = row;
+    }
+    aurCols = { env: [new Float32Array(W), new Float32Array(W)], bottom: [new Float32Array(W), new Float32Array(W)], len: [new Float32Array(W), new Float32Array(W)], rays: [new Float32Array(W), new Float32Array(W)] };
     buildStatic();
   }
 
@@ -244,7 +263,7 @@
     // a crescent moon
     const mr = Math.max(3, Math.round(Math.min(W, H) * 0.028));
     const mx = Math.round(W * (W > H ? 0.45 : 0.22)), my = Math.round(H * (W > H ? 0.12 : 0.08));
-    moon = { x: mx, r: mr };
+    moon = { x: mx, y: my, r: mr };
     for (let y = -mr - 1; y <= mr + 1; y++) for (let x = -mr - 1; x <= mr + 1; x++) {
       const inA = x * x + y * y <= mr * mr + mr * 0.4;
       const bx2 = x - mr * 0.6, by2 = y + mr * 0.3;
@@ -258,20 +277,12 @@
     // stars, only over open sky
     const rs = rng(99);
     stars = [];
-    const count = Math.round((W * H) / 220);
+    const count = Math.round((W * H) / 300);
     for (let i = 0; i < count; i++) {
       const x = Math.floor(rs() * W), y = Math.floor(rs() * H * 0.6);
       if (base[y * W + x]) continue;
+      if (moon && Math.hypot(x - moon.x, y - moon.y) < moon.r + 3) continue;
       stars.push({ x, y, c: rs() > 0.8 ? C.frost : C.ice, tw: rs() > 0.7, ph: rs() * 6.28, big: rs() > 0.96 });
-    }
-
-    // snow, falling at two depths
-    const rf = rng(512);
-    flakes = [];
-    const fc = Math.round((W * H) / 520);
-    for (let i = 0; i < fc; i++) {
-      const nearFlake = rf() > 0.7;
-      flakes.push({ x: rf() * W, y: rf() * H, sp: nearFlake ? 7 + rf() * 5 : 2.5 + rf() * 3, sw: 0.6 + rf() * 1.6, ph: rf() * 6.28, c: nearFlake ? C.frost : C.ice });
     }
   }
 
@@ -287,40 +298,63 @@
     return p - i > dither(x, y) ? steps[i + 1] : steps[i];
   }
 
-  function aurora(x, y, t) {
-    const u = x / W;
+  const skyV = (y) => 0.05 + 0.95 * Math.pow(y / horizon, 1.3);
+  let aurCols = null, aurTop = 0, aurBot = 0;
+
+  // everything about the curtain that depends only on the column, worked out once a frame
+  function auroraPrep(t) {
+    aurTop = Infinity; aurBot = -Infinity;
+    for (let k = 0; k < 2; k++) {
+      const env = aurCols.env[k], bottom = aurCols.bottom[k], len = aurCols.len[k], rays = aurCols.rays[k];
+      for (let x = 0; x < W; x++) {
+        const u = x / W;
+        const e = k === 0
+          ? smooth(aurStart, aurStart + 0.14, u) * (1 - smooth(0.92, 1.08, u))
+          : smooth(aurStart + 0.18, aurStart + 0.36, u) * (1 - smooth(0.98, 1.2, u)) * 0.6;
+        env[x] = e;
+        if (e <= 0) continue;
+        const bt = horizon * (k === 0 ? 0.44 : 0.32)
+          + Math.sin(u * 6.0 + t * 0.3 + k * 2) * horizon * 0.08
+          + Math.sin(u * 17.0 - t * 0.6) * horizon * 0.02;
+        bottom[x] = bt;
+        len[x] = horizon * (0.2 + 0.14 * nRay(u * 9 + k * 40 + t * 0.15));
+        rays[x] = 0.3 + 0.7 * Math.pow(nRay(x * 0.25 + t * 0.5 + k * 90), 1.4);
+        if (bt - horizon * 0.4 < aurTop) aurTop = bt - horizon * 0.4;
+        if (bt + 1 > aurBot) aurBot = bt + 1;
+      }
+    }
+  }
+
+  function aurora(x, y) {
     let best = 0;
     for (let k = 0; k < 2; k++) {
-      const env = k === 0 ? smooth(0.28, 0.5, u) * (1 - smooth(0.92, 1.08, u)) : smooth(0.5, 0.7, u) * (1 - smooth(0.98, 1.2, u)) * 0.6;
+      const env = aurCols.env[k][x];
       if (env <= 0) continue;
-      const bottom = horizon * (k === 0 ? 0.44 : 0.32)
-        + Math.sin(u * 6.0 + t * 0.3 + k * 2) * horizon * 0.08
-        + Math.sin(u * 17.0 - t * 0.6) * horizon * 0.02;
-      const d = bottom - y;
+      const d = aurCols.bottom[k][x] - y;
       if (d < -1 || d > horizon * 0.4) continue;
-      const len = horizon * (0.2 + 0.14 * nRay(u * 9 + k * 40 + t * 0.15));
-      const rays = 0.3 + 0.7 * Math.pow(nRay(x * 0.45 + t * 1.1 + k * 90), 1.4);
+      const len = aurCols.len[k][x];
       const prof = d < 0 ? 0.5 : d < 2 ? 1 : Math.max(0, 1 - d / len);
       const hem = d >= 0 && d < 2 ? 0.35 : 0;
-      const v = env * (rays * prof * prof + hem) * (k === 0 ? 0.8 : 0.55);
+      const v = env * (aurCols.rays[k][x] * prof * prof + hem) * (k === 0 ? 0.72 : 0.5);
       if (v > best) best = v;
     }
     return best;
   }
 
   function draw(t) {
+    auroraPrep(t);
     for (let y = 0; y < horizon; y++) {
-      const skyV = Math.pow(y / horizon, 1.3);
+      const sky = skyRows[y], inAur = y >= aurTop && y <= aurBot;
       for (let x = 0; x < W; x++) {
         const i = y * W + x;
         if (base[i]) { buf[i] = base[i]; continue; }
-        const a = aurora(x, y, t);
-        buf[i] = pack(a > 0.12 && a > dither(x + 1, y) * 0.3 ? ramp(AUR, (a - 0.12) / 0.8, x, y) : ramp(SKY, skyV, x, y));
+        const a = inAur ? aurora(x, y) : 0;
+        buf[i] = a > 0.12 && a > dither(x + 1, y) * 0.3 ? pack(ramp(AUR, (a - 0.12) / 0.8, x, y)) : sky[x & 3];
       }
     }
     for (const s of stars) {
       const i = s.y * W + s.x;
-      if (buf[i] !== pack(ramp(SKY, Math.pow(s.y / horizon, 1.3), s.x, s.y))) continue; // hidden by aurora
+      if (buf[i] !== skyRows[s.y][s.x & 3]) continue; // hidden by aurora
       if (s.tw && Math.sin(t * 2.2 + s.ph) < -0.55) continue;
       buf[i] = pack(s.c);
       if (s.big && Math.sin(t * 1.3 + s.ph) > 0.2) {
@@ -331,8 +365,8 @@
       }
     }
 
-    // a shooting star every eleven seconds or so
-    const cyc = Math.floor(t / 11), lt = t - cyc * 11;
+    // a rare shooting star: first after ~6s, then about every half minute
+    const SP = 29, cyc = Math.floor((t + SP - 6) / SP), lt = t + SP - 6 - cyc * SP;
     if (lt < 0.8) {
       const rr = rng(cyc * 7 + 3);
       const x0 = W * (0.15 + rr() * 0.6), y0 = H * (0.04 + rr() * 0.16);
@@ -351,15 +385,17 @@
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
       const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * 1.15));
       const fade = (horizon < H * 0.7 ? 0.3 : 0.4) * Math.pow(1 - d, 1.5);
-      const tint = Math.pow(1 - d, 0.6);
-      const water = [0, 1, 2].map((k) => C.deep[k] + (C.fjord[k] - C.deep[k]) * tint);
+      const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
+      const f1 = 1 - fade;
+      const wr = (C.deep[0] + (C.fjord[0] - C.deep[0]) * tint) * f1;
+      const wg = (C.deep[1] + (C.fjord[1] - C.deep[1]) * tint) * f1;
+      const wb = (C.deep[2] + (C.fjord[2] - C.deep[2]) * tint) * f1;
+      const row = y * W, src = sy * W;
       for (let x = 0; x < W; x++) {
-        const sx = Math.min(W - 1, Math.max(0, x + wob));
-        const s = buf[sy * W + sx];
-        const r = s & 255, g = (s >> 8) & 255, b = (s >> 16) & 255;
-        let c = [r * fade + water[0] * (1 - fade), g * fade + water[1] * (1 - fade), b * fade + water[2] * (1 - fade)];
-        if (d > 0.82 && (d - 0.82) / 0.18 > dither(x, y)) c = C.deep;
-        buf[y * W + x] = pack(c.map(Math.round));
+        const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
+        const s = buf[src + sx];
+        const r = Math.round((s & 255) * fade + wr), g = Math.round(((s >> 8) & 255) * fade + wg), b = Math.round(((s >> 16) & 255) * fade + wb);
+        buf[row + x] = (255 << 24) | (b << 16) | (g << 8) | r;
       }
       const g = Math.floor(nRay(y * 3.1 + t * 0.8) * W * 1.3);
       if (g < W && d < 0.55) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
@@ -373,14 +409,14 @@
         if (nRay(y * 2.3 + t * 0.9) < 0.3 + d * 0.45) continue;
         const len = 1 + Math.round(nRay(y * 5.7 - t * 0.6) * (2 + moon.r * 0.5) * (1 - d * 0.5));
         const x0 = moon.x + Math.round(Math.sin(y * 0.9 + t * 1.8) * (0.6 + d * 2.2) + (nRay(y * 1.3 + 40) - 0.5) * moon.r) - (len >> 1);
-        const c = d < 0.2 ? C.ice : d < 0.55 ? C.glacier : C.abyss;
+        const c = d < 0.25 ? C.snowLit : d < 0.6 ? C.snowMid : C.snowShade;
         for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = pack(c);
       }
     }
 
     // lamplight reflected beneath the cabin, and a thread of chimney smoke
     if (cabin) {
-      for (let y = horizon + 1; y < Math.min(H, horizon + Math.round(depthRows * 0.6)); y += 2) {
+      for (let y = horizon + 1; y < Math.min(H, horizon + Math.round(depthRows * 0.3)); y += 2) {
         if (Math.sin(y * 1.7 + t * 3) <= -0.2) continue;
         const x = cabin.wx + Math.round(Math.sin(y * 0.9 + t * 1.8) * 1.2);
         const c = (y - horizon) < depthRows * 0.25 ? C.lamp : C.ember;
@@ -396,14 +432,6 @@
       }
     }
 
-    // snowfall over everything above the deep water
-    for (const f of flakes) {
-      const y = Math.floor((f.y + t * f.sp) % H);
-      const x = Math.floor(((f.x + Math.sin(t * 0.7 + f.ph) * f.sw * 2) % W + W) % W);
-      if (y > H * 0.9) continue;
-      buf[y * W + x] = pack(f.c);
-    }
-
     ctx.putImageData(img, 0, 0);
   }
 
@@ -411,9 +439,11 @@
 
   function drawShore() {
     if (!shoreCanvas) return;
-    const rect = shoreCanvas.getBoundingClientRect();
+    const rect = shoreCanvas.parentElement.getBoundingClientRect();
     const sw = Math.max(40, Math.ceil(rect.width / scale)), sh = Math.max(20, Math.ceil(rect.height / scale));
     shoreCanvas.width = sw; shoreCanvas.height = sh;
+    shoreCanvas.style.width = sw * scale + "px";
+    shoreCanvas.style.height = sh * scale + "px";
     const sctx = shoreCanvas.getContext("2d", { alpha: false });
     const im = sctx.createImageData(sw, sh);
     const b = new Uint32Array(im.data.buffer);
@@ -422,8 +452,6 @@
     // page field above, a low snowbank, pines standing in it
     for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) {
       let c = C.deep;
-      const v = y / sh;
-      if (v > 0.25 && (v - 0.25) * 1.6 > dither(x, y) + 0.3) c = C.night; // stays the page colour
       const hill = Math.round(sh * 0.5 - fbm(nMid, x * 0.02 + 90, 3) * sh * 0.22);
       if (y >= hill) c = C.ridge;
       if (y >= ground[x]) c = y - ground[x] < 1 ? C.frost : C.snowLit;
@@ -514,15 +542,10 @@
 
   document.addEventListener("visibilitychange", kick);
   reduceMotion.addEventListener?.("change", render);
+  document.fonts?.ready.then(render);
 
   render();
 
-  // the ledger rows wipe in once each as they surface; nothing is hidden without motion
-  if (!reduceMotion.matches) {
-    document.documentElement.classList.add("reveal");
-    const rows = new IntersectionObserver((entries) => {
-      for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); rows.unobserve(e.target); }
-    }, { rootMargin: "0px 0px -8% 0px" });
-    document.querySelectorAll(".row").forEach((r) => rows.observe(r));
-  }
+  // the name wipes in on arrival when motion is welcome; nothing else is held back
+  if (!reduceMotion.matches) document.documentElement.classList.add("reveal");
 })();

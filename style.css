@@ -63,14 +63,16 @@ body {
   position: relative;
   height: 92vh;
   height: 92svh;
-  min-height: 30rem;
+  min-height: min(30rem, 100svh);
   overflow: hidden;
   background: var(--night);
 }
 
 .scene {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  /* scene.js sets an exact multiple of the art pixel; these are the no-JS fallback */
   width: 100%;
   height: 100%;
   display: block;
@@ -81,6 +83,8 @@ body {
 .nameplate {
   position: relative;
   padding: clamp(5rem, 16vh, 10rem) var(--gutter) 0;
+  /* snapped to the scene grid so the name's pixels sit on the art's pixels */
+  padding: round(clamp(5rem, 16vh, 10rem), var(--scene-px, 4px)) round(var(--gutter), var(--scene-px, 4px)) 0;
   max-width: 44rem;
 }
 
@@ -259,12 +263,16 @@ dd {
 
 /* ---------- the shore ---------- */
 
-footer { line-height: 0; }
+.foot {
+  height: clamp(7rem, 20vh, 12rem);
+  line-height: 0;
+  overflow: hidden;
+}
 
 .shore {
   display: block;
   width: 100%;
-  height: clamp(7rem, 20vh, 12rem);
+  height: 100%;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
@@ -278,14 +286,10 @@ footer { line-height: 0; }
   padding: 0 var(--gutter) clamp(2.5rem, 8vh, 4.5rem);
 }
 
-/* arrival: the name and each ledger row wipe in left to right in whole steps.
+/* arrival: the name wipes in left to right in whole steps, then the cue.
    scene.js adds .reveal only when motion is welcome; without it, everything just shows. */
 .reveal h1 { animation: wipe 0.7s steps(6, end) 0.2s both; }
 .reveal .cue { animation: wipe 0.4s steps(4, end) 1s both, nudge 1.4s steps(1, end) 1.4s infinite; }
-.reveal .row { clip-path: inset(0 100% 0 0); }
-.reveal .row.in { animation: wipe 0.6s steps(8, end) both; }
-.reveal .row.in:nth-child(2) { animation-delay: 0.12s; }
-.reveal .row.in:nth-child(3) { animation-delay: 0.24s; }
 
 @keyframes wipe {
   from { clip-path: inset(0 100% 0 0); }
@@ -294,5 +298,7 @@ footer { line-height: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .eq i,
-  .cue { animation: none; }
+  .cue,
+  .reveal .cue,
+  .reveal h1 { animation: none; }
 }

@@ -13,7 +13,7 @@ Mode: Experience. Audience: visitors from Vivien's GitHub profile. Job: know who
 
 THESIS: The page is one polar night. A pixel-art Nordic scene is the first viewport: the place itself, not a banner over a bio card. It refuses the centred-avatar + bio + social-icons template.
 
-OWN-WORLD: Ground is the dark fjord set (#0F2B4C night, #1C3B5E ridge, #1E5568 fjord water, #F3F3F3 snow/ink). Ice-blue set (#E3F2FD..#0D47A1) lives only in the aurora and frost. One warm accent: the cabin window's lamplight amber, used nowhere else except a single text mark. Sky tones are ordered-dither bands at integer pixel scale, never smooth gradients (raise from one-bit desktop). Hard pixel edges, no rounded corners, no shadows, no cards.
+OWN-WORLD: Ground is the dark fjord set (#0F2B4C night, #1C3B5E ridge, #1E5568 fjord water, #F3F3F3 snow/ink). Ice-blue set (#E3F2FD..#0D47A1) is light only: the aurora, stars, moon and frost in the scene, and small pixel marks in the text layer (glyphs, band markers, level meter, scroll cue), never words or surfaces (amended to match DESIGN.md). One warm accent: the cabin window's lamplight amber, used nowhere else except a single text mark. Sky tones are ordered-dither bands at integer pixel scale, never smooth gradients (raise from one-bit desktop). Hard pixel edges, no rounded corners, no shadows, no cards.
 
 STORY: Visitor sees mountains, fjord, aurora, one lit cabin; reads "Vivien"; scrolls down into the dark water where a plain ledger of three rows introduces Vivien: Now (mechanical engineering), Before (music, programming), and Listening (Nordic metal, five bands, with a pixel level meter under the label); a snowy pine shore closes the page.
 

@@ -98,7 +98,7 @@ components:
 
 **Creative North Star: "One Polar Night"**
 
-The whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, a crescent moon, falling snow, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.
+The whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora under a clear starry sky, a crescent moon, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.
 
 Below the waterline the introduction is one ledger: a few rows, each a small label beside its content, separated by rows of square pixel dots. One label column and one content edge hold every row, so the eye runs straight down. Small pixel marks drawn on the scene's grid (9x9 glyphs, square markers, a stepped level meter) give the text a little of the night's life. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light, which lives only in the scene. Hierarchy comes from size in one pixel face at one weight. There are no links, controls, borders, shadows-as-depth, or containers; the system is made of a field, two scenes, type, and a few pixel marks.
 
@@ -126,8 +126,8 @@ A cold, low-light palette of fjord blues on deep navy, lit by ice-blue aurora an
 - **Banked Ember** (ember): the dimmed lamplight; the window's shaded pixel and the far end of the lamp's reflection. Scene-only.
 
 ### Tertiary
-- **Ice** (ice): in the scene, starlight, distant snowflakes, the crescent moon's limb, the lit edge under the cabin's roof snow, and the aurora's upper-bright step. In the text layer, the fill of the 9x9 pixel glyphs, the square marker before each band name, and the bars of the level meter.
-- **Frost** (frost): the brightest snow crests, roof snow, the moon's face, near snowflakes, the brightest stars, the shooting star's head, the aurora's peak step, the top cap pixel of each meter bar, the shore's snow edge, and the text selection background.
+- **Ice** (ice): in the scene, starlight, distant snowflakes on the shore, the crescent moon's limb, the lit edge under the cabin's roof snow, and the aurora's upper-bright step. In the text layer, the fill of the 9x9 pixel glyphs, the square marker before each band name, and the bars of the level meter.
+- **Frost** (frost): the brightest snow crests, roof snow, the moon's face, near snowflakes on the shore, the brightest stars, the shooting star's head, the aurora's peak step, the top cap pixel of each meter bar, the shore's snow edge, and the text selection background.
 
 ### Neutral
 - **Polar Night** (night): the page field and hero background, and the middle step of the sky ramp. The CSS also carries it as `--deep` (same value) for the field below the waterline; treat them as one color.
@@ -142,7 +142,7 @@ The scenes shade their terrain with in-between blues defined in `scene.js` and n
 ### Named Rules
 **The One Warm Light Rule.** Lamplight amber and ember appear only in the cabin window and its reflection on the water. Every other color on the page, scene and text alike, is cold. A second warm element breaks the night.
 
-**The Ice Is Light Rule.** The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (aurora, stars, moon, snowfall, shooting star, snow crests, glints) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.
+**The Ice Is Light Rule.** The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (aurora, stars, moon, shooting star, snow crests, glints, and the shore's snowfall) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.
 
 ## Typography
 
@@ -197,16 +197,18 @@ Square and hard-edged throughout (`rounded.none`). Both canvases render with `im
 The page has no buttons, inputs, navigation, or cards, by product decision (no links). The recurring pieces are scene, type, the ledger, and pixel marks.
 
 ### Pixel Night Scene (signature)
-- **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, two drifting aurora curtains, a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills with a comb of small pines, a pine shore, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord.
-- **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled with crisp pixels; the art scale is published to CSS as `--scene-px`.
-- **Motion:** aurora drift, star twinkle, snowfall at two depths, a shooting star of about 0.8s roughly every 11s, chimney smoke, water ripple, a flickering lamp reflection, and the moon's glade (thin ice-to-abyss dashes broken across the water beneath the moon, never a solid column), stepped at 10 frames a second. The shore canvas at the page foot keeps the snow falling at two depths, far flakes passing behind the pines, and runs only while it is on screen. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
-- **Arrival:** when motion is welcome, scene.js adds `.reveal` to the root: the name wipes in left to right in 6 whole steps, the cue follows, and each ledger row wipes in with 8 steps the first time it surfaces (rows entering together stagger by 0.12s). Without the class nothing is hidden, so no-JS and reduced-motion visitors see the page as is.
+- **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, two drifting aurora curtains, a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills with a comb of small pines, a pine shore, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord. The sky is clear: no snow falls in the hero, so nothing crosses the name.
+- **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled by an exact whole number (the canvas element is sized to W x scale, overhanging its box by under one art pixel), so every art pixel is the same size; the art scale is published to CSS as `--scene-px`, and the nameplate's padding is rounded to it so the name's pixels sit on the art's. Per frame, the aurora's column terms are computed once and only its band of rows is evaluated; the sky's dither colours are precomputed per row (about 2ms a frame on desktop).
+- **Aurora placement:** on landscape screens the curtain begins a few art pixels to the right of the name's ink, measured after the font loads, so the two never touch.
+- **Motion:** slow aurora drift, star twinkle, a rare shooting star (about 0.8s, first after ~6s, then every ~29s), chimney smoke, water ripple, a short flickering lamp reflection, and the moon's glade (thin dashes that pale from lit to shaded snow with depth, broken across the water beneath the moon, never a solid column), stepped at 10 frames a second. The water fades fully into the page colour before the hero's edge, with no dither stripe. The shore canvas at the page foot keeps the snow falling at two depths, far flakes passing behind the pines, and runs only while it is on screen. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
+- **Arrival:** when motion is welcome, scene.js adds `.reveal` to the root: the name wipes in left to right in 6 whole steps and the cue follows. The ledger is never held back, so previews, print and full-page captures always show it. Without the class nothing is hidden.
 - **Share preview:** `og.png`, a 1200x630 capture of the hero at rest, is the Open Graph and large Twitter card image.
-- **Favicon:** `favicon.svg`, a 16x16 pixel peak with a snow cap under an aurora band, on night, in the page palette.
+- **Favicon:** `favicon.svg`, a 16x16 pixel peak (lit left flank in shaded snow, right flank in ridge, a stepped asymmetric snow cap) under an aurora band, on night; `apple-touch-icon.png` is the same art at 11x on 180px.
+- **Browser chrome:** `theme-color` is the sky's top tone, #071a31, so a mobile browser bar meets the sky without a step.
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
 ### Shore
-- A full-bleed canvas closing the page: the night field dithering down onto a ridge-blue back hill, a snowbank stepped from frost through lit, mid, and shaded snow, and dark pines standing in it. Drawn once at the scene's art scale, decorative and hidden from assistive tech.
+- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank stepped from frost through lit, mid, and shaded snow, and dark pines standing in it, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
 
 ### Nameplate
 - Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water.
