@@ -28,7 +28,9 @@
 
   --ink: var(--snow);
   --ink-soft: #c4d3e0;
-  --px: 4px;
+  /* Pixelify draws on a grid of ~0.092em: at this size one glyph pixel is one CSS pixel.
+     Every text size is a multiple of it in halves, so letters land on whole pixels. */
+  --g: 10.88px;
   --gutter: clamp(1rem, 6vw, 6rem);
   color-scheme: dark;
 }
@@ -47,7 +49,7 @@ body {
   background: var(--deep);
   color: var(--ink);
   font-family: "Pixelify Sans", ui-sans-serif, sans-serif;
-  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  font-size: calc(var(--g) * 2);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -124,7 +126,7 @@ h1 {
 
 /* one ledger: a fixed label column, one content edge, pixel-dot rules between rows */
 main {
-  padding: clamp(2.5rem, 7vh, 4.5rem) var(--gutter) clamp(3rem, 8vh, 5rem);
+  padding: clamp(2.5rem, 7vh, 4.5rem) var(--gutter) clamp(1.5rem, 4vh, 2.5rem);
 }
 
 .ledger {
@@ -148,12 +150,15 @@ main {
     gap: 0 clamp(2rem, 5vw, 4rem);
     align-items: baseline;
   }
+  .row dt { font-size: calc(var(--g) * 2); }
+  .row dd { font-size: calc(var(--g) * 3); }
+  .note { font-size: calc(var(--g) * 2); }
 }
 
 dt {
   color: var(--ink-soft);
-  font-size: 1rem;
-  letter-spacing: 0.06em;
+  font-size: calc(var(--g) * 1.5);
+  letter-spacing: 0.092em; /* one glyph pixel */
   text-transform: uppercase;
 }
 
@@ -162,7 +167,7 @@ dd {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem clamp(1.5rem, 4vw, 3rem);
-  font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.25rem);
+  font-size: calc(var(--g) * 2);
   line-height: 1.2;
   color: var(--snow);
 }
@@ -176,7 +181,7 @@ dd {
 .note {
   flex-basis: 100%;
   margin: 0 0 0.5rem;
-  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  font-size: calc(var(--g) * 1.5);
   line-height: 1.5;
   color: var(--ink-soft);
 }
@@ -225,11 +230,11 @@ dd {
   gap: 0.35em clamp(1.5rem, 4vw, 3rem);
 }
 
-@media (max-width: 23rem) {
+@media (max-width: 24rem) {
   .bands { grid-template-columns: 1fr; }
 }
 
-@media (min-width: 46rem) {
+@media (min-width: 64rem) {
   .bands { grid-template-columns: repeat(3, max-content); }
 }
 

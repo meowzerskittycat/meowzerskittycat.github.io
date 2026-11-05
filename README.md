@@ -7,6 +7,7 @@ Plain static files, no build step:
 - `index.html` – the page
 - `style.css` – type, colour and layout
 - `scene.js` – draws the pixel-art polar night (mountains, fjord, aurora, moonlit water, cabin) and the snowy shore at the page foot; animates at 10 fps, wipes the name and introduction rows in on arrival, and stays still for visitors who prefer reduced motion
+- `og.png` – the link preview image (a capture of the hero)
 - `favicon.svg` – a 16×16 pixel peak under the aurora
 - `fonts/` – Pixelify Sans, self-hosted (SIL Open Font License, see `fonts/OFL.txt`)
 

@@ -22,20 +22,20 @@ typography:
     lineHeight: 0.9
   item:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
-    fontSize: "clamp(1.5rem, 1.15rem + 1.2vw, 2.25rem)"
+    fontSize: "32.64px"
     fontWeight: 400
     lineHeight: 1.2
   body:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
-    fontSize: "clamp(1.125rem, 1rem + 0.4vw, 1.375rem)"
+    fontSize: "21.76px"
     fontWeight: 400
     lineHeight: 1.5
   label:
     fontFamily: "Pixelify Sans, ui-sans-serif, sans-serif"
-    fontSize: "1rem"
+    fontSize: "21.76px"
     fontWeight: 400
     lineHeight: 1.5
-    letterSpacing: "0.06em"
+    letterSpacing: "0.092em"
 rounded:
   none: "0px"
 spacing:
@@ -153,9 +153,11 @@ The scenes shade their terrain with in-between blues defined in `scene.js` and n
 
 ### Hierarchy
 - **Display** (400, display size, 0.9): the name only. Sized from the scene scale, not a fluid clamp: `calc(var(--scene-px) * 32.64)`, so each glyph pixel lands on exactly three art pixels. That is the listed 131px at a 4px scene scale and about 98px at 3px. The name stands alone in the hero; what Vivien does is said once, in the ledger.
-- **Item** (400, item size, 1.2): the content of each ledger row (the trades and the band names). The largest type below the hero; every row's content shares it so the rows read as equals.
-- **Body** (400, body size, 1.5): the note above the bands and default text.
-- **Label** (400, 1rem, 0.06em tracking, uppercase): the ledger's row labels only, in ink-soft.
+- **Item** (400, item size, 1.2): the content of each ledger row (the trades and the band names). The largest type below the hero; every row's content shares it so the rows read as equals. 32.64px from 46rem wide, 21.76px below.
+- **Body** (400, body size, 1.5): default text and the note above the bands (the note drops to 16.32px below 46rem so it stays under the items).
+- **Label** (400, label size, one glyph pixel of tracking, uppercase): the ledger's row labels only, in ink-soft. 21.76px from 46rem wide, 16.32px below.
+
+**The Glyph Grid Rule.** Pixelify draws on a grid of about 0.092em, so `--g: 10.88px` is the size at which one glyph pixel is one CSS pixel. Every text size is a half-step multiple of it (1.5, 2, 3 for text; the name is locked to the scene instead), and tracking is whole glyph pixels, so letters land on whole device pixels and never smear. No fluid clamp sizes for text.
 
 ### Named Rules
 **The One Face, One Weight Rule.** Every role is Pixelify Sans at 400. Hierarchy is made by size (and ink-soft versus snow), never by bold, italics, or a second family. Uppercase and tracking belong to the ledger label alone.
@@ -199,6 +201,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled with crisp pixels; the art scale is published to CSS as `--scene-px`.
 - **Motion:** aurora drift, star twinkle, snowfall at two depths, a shooting star of about 0.8s roughly every 11s, chimney smoke, water ripple, a flickering lamp reflection, and the moon's glade (thin ice-to-abyss dashes broken across the water beneath the moon, never a solid column), stepped at 10 frames a second. The shore canvas at the page foot keeps the snow falling at two depths, far flakes passing behind the pines, and runs only while it is on screen. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
 - **Arrival:** when motion is welcome, scene.js adds `.reveal` to the root: the name wipes in left to right in 6 whole steps, the cue follows, and each ledger row wipes in with 8 steps the first time it surfaces (rows entering together stagger by 0.12s). Without the class nothing is hidden, so no-JS and reduced-motion visitors see the page as is.
+- **Share preview:** `og.png`, a 1200x630 capture of the hero at rest, is the Open Graph and large Twitter card image.
 - **Favicon:** `favicon.svg`, a 16x16 pixel peak with a snow cap under an aurora band, on night, in the page palette.
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
@@ -218,7 +221,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - A 9x9 grid of unit squares in ice (gear, note, prompt), nine scene pixels square so each grid cell is one scene pixel, decorative and hidden from assistive tech. One glyph leads each ledger item; it names the word, it does not decorate the line.
 
 ### Band Grid
-- An unstyled list of names at item size in snow, set as an even grid (three, two, or one column by width), each name led by a two-scene-pixel ice square and never wrapping.
+- An unstyled list of names at item size in snow, set as an even grid (three columns from 64rem, two below, one under 24rem), each name led by a two-scene-pixel ice square and never wrapping.
 
 ### Level Meter
 - Seven ice bars under the Listening label, each two scene pixels wide with one scene pixel between, standing in a box ten scene pixels tall, each capped with a frost pixel. Each bar jumps between whole-pixel heights on its own 1.1 to 1.9s cycle with `steps()` timing, never easing. Under reduced motion the bars stand still at their resting heights. Decorative and hidden from assistive tech.
