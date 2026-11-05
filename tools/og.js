@@ -23,9 +23,13 @@ server.listen(0, async () => {
   // 1280 wide gives the scene its 4-screen-pixel grid; 686 tall makes the hero (92vh) fill 630.
   // Reduced motion renders the scene's fixed still frame, so the image is the same every run.
   const page = await browser.newPage({ viewport: { width: 1280, height: 686 }, reducedMotion: "reduce" });
+  // Mark the session as seen so the first-visit loading hold is skipped, then wait for the
+  // page to lift .wait anyway: the capture must be the scene, never the loader.
+  await page.addInitScript(() => { try { sessionStorage.setItem("seen", "1"); } catch (x) {} });
   await page.goto(`http://localhost:${server.address().port}/`);
   await page.addStyleTag({ content: ".cue { display: none !important; }" });
   await page.evaluate(() => document.fonts.ready);
+  await page.waitForFunction(() => !document.documentElement.classList.contains("wait"), null, { timeout: 10000 });
   await page.waitForTimeout(500);
   const out = path.join(root, "og.png");
   await page.screenshot({ path: out, clip: { x: 0, y: 0, width: 1200, height: 630 } });
