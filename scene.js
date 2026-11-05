@@ -393,7 +393,10 @@
     const SP = 29, cyc = Math.floor((t + SP - 6) / SP), lt = t + SP - 6 - cyc * SP;
     if (lt < 0.8) {
       const rr = rng(cyc * 7 + 3);
-      meteor(W * (0.15 + rr() * 0.6), H * (0.04 + rr() * 0.16), lt / 0.8, 1);
+      let x0 = W * (0.15 + rr() * 0.6);
+      const y0 = H * (0.03 + rr() * 0.05); // high, in open sky above the aurora
+      if (moon && x0 > moon.x - moon.r - 4 && x0 < moon.x + moon.r + 14) x0 = moon.x + moon.r + 14; // and never out of the moon
+      meteor(x0, y0, lt / 0.8, 1);
     }
     // and one wherever the sky is tapped, falling toward the middle of the scene
     for (let k = wishes.length - 1; k >= 0; k--) {
