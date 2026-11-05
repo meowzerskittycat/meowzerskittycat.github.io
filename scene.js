@@ -354,16 +354,6 @@
     return best;
   }
 
-  // an eight-pixel streak: a bright head, an ice body, a glacier tail
-  function meteor(x0, y0, p) {
-    for (let k = 0; k < 8; k++) {
-      const run = p * W * 0.12 - k;
-      const x = Math.round(x0 + run), y = Math.round(y0 + run * 0.4);
-      if (x < 0 || x >= W || y < 0 || y >= horizon || base[y * W + x]) continue;
-      buf[y * W + x] = pack(k < 2 ? C.frost : k < 5 ? C.ice : C.glacier);
-    }
-  }
-
   function draw(t) {
     auroraPrep(t);
     for (let y = 0; y < horizon; y++) {
@@ -386,16 +376,6 @@
           if (s.x + dx >= 0 && s.x + dx < W && s.y + dy >= 0 && !base[j]) buf[j] = pack(C.abyss);
         }
       }
-    }
-
-    // a rare shooting star: first after ~6s, then about every half minute
-    const SP = 29, cyc = Math.floor((t + SP - 6) / SP), lt = t + SP - 6 - cyc * SP;
-    if (lt < 0.8) {
-      const rr = rng(cyc * 7 + 3);
-      let x0 = W * (0.15 + rr() * 0.6);
-      const y0 = H * (0.03 + rr() * 0.05); // high, in open sky above the aurora
-      if (moon && x0 > moon.x - moon.r - 4 && x0 < moon.x + moon.r + 14) x0 = moon.x + moon.r + 14; // and never out of the moon
-      meteor(x0, y0, lt / 0.8);
     }
 
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
