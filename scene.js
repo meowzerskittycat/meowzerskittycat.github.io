@@ -220,18 +220,21 @@
       }
     }
 
-    // a comb of small pines along the foothill crests
+    // distant spruce along the foothill crests: small tapering spires, close-set in the
+    // dense stretches so the crest reads as a serrated forest edge, never as posts
     const rh = rng(4321);
     for (let x = 1; x < W - 1; x++) {
-      if (rh() > 0.15 + 0.5 * smooth(0.4, 0.65, fbm(nMid, x * 0.08 + 30, 2))) continue;
-      const h = 2 + Math.floor(rh() * 3);
+      const dense = smooth(0.38, 0.62, fbm(nMid, x * 0.08 + 30, 2));
+      if (rh() > 0.12 + 0.6 * dense) continue;
+      const h = 3 + Math.floor(rh() * (2 + 3 * dense));
       for (let k = 0; k <= h; k++) {
-        const hw = k >= h - 0 ? 1 : 0;
+        const hw = Math.floor(k * 0.5 + 0.25);
         for (let dx = -hw; dx <= hw; dx++) {
-          const y = hillTop[x] - h + k;
+          const y = hillTop[x] - h + k + 1;
           if (y >= 0 && y < nearTop[x]) set(x + dx, y, C.hillTree);
         }
       }
+      x += 1; // spires stand at least two pixels apart, so their tips stay distinct
     }
 
     // pines on the near shore, in stands and clearings
