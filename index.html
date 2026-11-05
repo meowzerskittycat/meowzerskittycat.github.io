@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My First Website</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vivien</title>
+  <meta name="description" content="Vivien: mechanical engineer, former musician and programmer.">
+  <meta name="theme-color" content="#0f2b4c">
+  <link rel="preload" href="fonts/pixelify-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>Welcome to my GitHub Pages website.</p>
+  <header class="night">
+    <canvas class="scene" id="scene" role="img"
+      aria-label="Pixel-art night: snowy mountains above a still fjord under a blue aurora, with one lit cabin window on the shore."></canvas>
+    <div class="nameplate">
+      <h1>Vivien</h1>
+      <p class="role">Mechanical engineer.</p>
+      <p class="past">Used to be a musician and a programmer.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="metal" aria-labelledby="metal-title">
+      <h2 id="metal-title">Nordic metal</h2>
+      <p class="aside">A few bands I really like:</p>
+      <ul class="bands">
+        <li>Moonsorrow</li>
+        <li>Korpiklaani</li>
+        <li>Darkthrone</li>
+        <li>Enslaved</li>
+        <li>Taake</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p class="nod"><span class="lamp" aria-hidden="true"></span>Anarcho-communist.</p>
+  </footer>
+
+  <script src="scene.js" defer></script>
 </body>
 </html>
