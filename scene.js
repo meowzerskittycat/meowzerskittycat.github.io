@@ -129,16 +129,18 @@
   }
 
   // the fjord keeps a fixed, small palette like the rest of the scene: a few depth bands, and in
-  // each band one colour per kind of thing reflected (dark shore, shaded rock, sky and lit rock,
+  // each band one colour per kind of thing reflected (pines and shore, foothills and shaded rock, sky and lit rock,
   // haze, shaded snow, lit snow). A continuous blend would mint a new in-between colour for every pixel.
   let waterBand = null, waterPal = null, waterK = null, waterWave = null, waterAmp = null, waterWob = null, waterCalm = 0.88;
   const NK = 6; // reflection classes, darkest first
   function buildWater() {
     const depthRows = H - horizon;
-    const REP = [C.hill, C.farShade, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
+    // the shore's pines reflect darker than the foothills behind them, so the treeline shows in the
+    // water as an inverted row of spires against the reflected hills, as it stands on the shore
+    const REP = [C.near, C.farShade, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
     const cls = new Map([[0, 2]]);
-    for (const c of [C.near, C.pine, C.pineLit, C.hill, C.hillTree, C.cabin, C.lamp, C.ember]) cls.set(pack(c), 0);
-    for (const c of [C.farShade, C.earthshine]) cls.set(pack(c), 1);
+    for (const c of [C.near, C.pine, C.pineLit, C.cabin, C.lamp, C.ember]) cls.set(pack(c), 0);
+    for (const c of [C.hill, C.hillTree, C.farShade, C.earthshine]) cls.set(pack(c), 1);
     for (const c of [C.farRock, C.ice, ...SKY]) cls.set(pack(c), 2);
     cls.set(pack(C.haze), 3);
     for (const c of [C.hazeSnow, C.snowShade, C.snowMid]) cls.set(pack(c), 4);
@@ -190,7 +192,7 @@
     // fainter than the last, so it fades out rather than stopping on a hard edge; the fjord tint
     // fades with it, so the water only ever darkens toward the viewer, and from the calm line on
     // it is the page colour itself
-    const edges = [0, 0.16, 0.36, 0.58, 0.8, 1].map((e) => e * calm), fades = [0.5, 0.42, 0.32, 0.21, 0.1];
+    const edges = [0, 0.16, 0.36, 0.58, 0.8, 1].map((e) => e * calm), fades = [0.5, 0.42, 0.32, 0.2, 0.07];
     waterBand = new Uint8Array(depthRows);
     for (let k = 0; k < depthRows; k++) {
       const d = k / depthRows;
@@ -203,7 +205,7 @@
       const last = b === edges.length - 1;
       const d = last ? 1 : (edges[b] + edges[b + 1]) / 2;
       const fade = last ? 0 : fades[b];
-      const tint = Math.pow(Math.max(0, 1 - d / (calm * 0.95)), 0.6);
+      const tint = Math.max(0, 1 - d / calm); // even steps down, the last one barely above the page colour
       REP.forEach((s, k) => {
         // the dark shore reflects darker than the sky does, so the water under the pines reads as
         // their reflection, not as open water
