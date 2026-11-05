@@ -317,8 +317,11 @@
           + Math.sin(u * 6.0 + t * 0.3 + k * 2) * horizon * 0.08
           + Math.sin(u * 17.0 - t * 0.6) * horizon * 0.02;
         bottom[x] = bt;
-        len[x] = horizon * (0.2 + 0.14 * nRay(u * 9 + k * 40 + t * 0.15));
-        rays[x] = 0.3 + 0.7 * Math.pow(nRay(x * 0.25 + t * 0.5 + k * 90), 1.4);
+        // broad folds that sway slowly, with a faint fine shimmer; brighter folds reach higher
+        const fold = nRay(u * 7 + t * 0.12 + k * 90);
+        const streak = 0.45 + 0.55 * Math.pow(nRay(x * 0.38 + t * 0.25 + k * 30), 1.5);
+        rays[x] = (0.4 + 0.6 * fold) * streak;
+        len[x] = horizon * (0.1 + 0.2 * fold);
         if (bt - horizon * 0.4 < aurTop) aurTop = bt - horizon * 0.4;
         if (bt + 1 > aurBot) aurBot = bt + 1;
       }
@@ -333,9 +336,10 @@
       const d = aurCols.bottom[k][x] - y;
       if (d < -1 || d > horizon * 0.4) continue;
       const len = aurCols.len[k][x];
-      const prof = d < 0 ? 0.5 : d < 2 ? 1 : Math.max(0, 1 - d / len);
-      const hem = d >= 0 && d < 2 ? 0.35 : 0;
-      const v = env * (aurCols.rays[k][x] * prof * prof + hem) * (k === 0 ? 0.72 : 0.5);
+      // light pools at the hem and thins upward, so the top dissolves into the sky
+      const prof = d < 0 ? 0.45 : Math.max(0, 1 - d / len);
+      const hem = d >= 0 && d < 2 ? 0.3 : 0;
+      const v = env * (aurCols.rays[k][x] * Math.pow(prof, 1.6) + hem) * (k === 0 ? 0.9 : 0.55);
       if (v > best) best = v;
     }
     return best;
@@ -349,7 +353,7 @@
         const i = y * W + x;
         if (base[i]) { buf[i] = base[i]; continue; }
         const a = inAur ? aurora(x, y) : 0;
-        buf[i] = a > 0.12 && a > dither(x + 1, y) * 0.3 ? pack(ramp(AUR, (a - 0.12) / 0.8, x, y)) : sky[x & 3];
+        buf[i] = a > 0.05 + dither(x + 1, y) * 0.22 ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y)) : sky[x & 3];
       }
     }
     for (const s of stars) {
