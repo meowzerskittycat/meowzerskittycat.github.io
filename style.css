@@ -88,11 +88,17 @@ body {
 
 h1 {
   margin: 0;
+  width: fit-content; /* the box is the word, so the wipe's steps fall across the letters */
   /* Pixelify's glyph pixel is ~0.092em: each letter pixel = 3 scene pixels (98px or 131px) */
   font-weight: 400;
   font-size: calc(var(--scene-px, 4px) * 32.64);
   line-height: 0.9;
   color: var(--snow);
+}
+
+/* the narrowest phones (a folded Fold is 280px): two scene pixels a letter pixel, so the name fits */
+@media (max-width: 18.74rem) {
+  h1 { font-size: calc(var(--scene-px, 4px) * 21.76); }
 }
 
 /* a pixel chevron at the foot of the night, nudging one scene pixel at a time */
@@ -295,14 +301,15 @@ dd {
   padding: 0 var(--gutter) clamp(1.5rem, 5vh, 3rem);
 }
 
-/* arrival: the name wipes in left to right in whole steps, then the cue.
-   scene.js adds .reveal only when motion is welcome; without it, everything just shows. */
-.reveal h1 { animation: wipe 0.7s steps(6, end) 0.2s both; }
-.reveal .cue { animation: wipe 0.4s steps(4, end) 1s both, nudge 1.4s steps(1, end) 1.4s infinite; }
+/* arrival: the name wipes in left to right, about a letter a step, then the cue.
+   A line in the page head adds .reveal before first paint, only when motion is welcome;
+   without it, everything just shows. The clip lifts once the wipe ends (fill: backwards). */
+.reveal h1 { animation: wipe 0.7s steps(6, end) 0.2s backwards; }
+.reveal .cue { animation: wipe 0.4s steps(4, end) 1s backwards, nudge 1.4s steps(1, end) 1.4s infinite; }
 
 @keyframes wipe {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(-1rem -100vw -1rem -1rem); }
+  from { clip-path: inset(-1rem 100% -1rem -1rem); }
+  to   { clip-path: inset(-1rem 0 -1rem -1rem); }
 }
 
 /* scene.js marks a loop that is out of view; it holds its frame until it comes back */

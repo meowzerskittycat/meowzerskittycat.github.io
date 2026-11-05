@@ -67,6 +67,8 @@
   const nRib = valueNoise(88), nCouloir = valueNoise(131), nSnow = valueNoise(57);
   function smooth(a, b, x) { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
   const pack = (c) => ((255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]) >>> 0; // unsigned, to match the Uint32Array buffers it is compared against
+  // every colour the frame loops write, packed once rather than on every pixel of every frame
+  const P = Object.fromEntries(Object.entries(C).map(([k, v]) => [k, pack(v)]));
 
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -480,7 +482,7 @@
         buf[i] = base[i] || sky[x & 3];
       }
     }
-    const STAR = [pack(C.starDim), pack(C.ice), pack(C.frost)];
+    const STAR = [P.starDim, P.ice, P.frost];
     for (const s of stars) {
       // a twinkle dims a star one step for a moment; it never blinks out
       const dim = s.tw && Math.sin(t * 2.2 + s.ph) < -0.6 ? 1 : 0;
@@ -515,7 +517,7 @@
       }
       // a glint: each row has its own fixed spot that brightens and fades slowly, never jumping about
       const g = Math.floor(nRay(y * 3.1 + 500) * W * 1.3);
-      if (g < W && d < 0.55 && nRay(y * 1.9 + t * 0.5) > 0.62) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
+      if (g < W && d < 0.55 && nRay(y * 1.9 + t * 0.5) > 0.62) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = P.fjord;
     }
 
     // the moon's glade: thin broken dashes of cool light on the water below it
@@ -526,15 +528,15 @@
         if (nRay(y * 2.3 + t * 0.9) < 0.3 + d * 0.45) continue;
         const len = 1 + Math.round(nRay(y * 5.7 - t * 0.6) * (2 + moon.r * 0.5) * (1 - d * 0.5));
         const x0 = moon.x + Math.round(Math.sin(y * 0.9 + t * 1.8) * (0.6 + d * 2.2) + (nRay(y * 1.3 + 40) - 0.5) * moon.r) - (len >> 1);
-        const c = d < 0.25 ? C.snowLit : d < 0.6 ? C.snowMid : C.snowShade;
-        for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = pack(c);
+        const c = d < 0.25 ? P.snowLit : d < 0.6 ? P.snowMid : P.snowShade;
+        for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = c;
       }
     }
 
     // lamplight reflected beneath the cabin, and a thread of chimney smoke
     if (cabin) {
       // the lamp gutters now and then: one pane dips to ember for a frame or two
-      if (nRay(t * 1.9 + 400) > 0.93) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = pack(C.ember);
+      if (nRay(t * 1.9 + 400) > 0.93) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = P.ember;
       // a column of short warm dashes under the window, rippling with the water rows they sit on;
       // two pixels wide like the window near the shore, narrowing and cooling to ember with depth
       const rows = Math.round(depthRows * 0.3);
@@ -542,16 +544,18 @@
         const d = (y - horizon) / rows;
         if (nRay(y * 2.1 + t * 0.7 + 60) < 0.2 + d * 0.5) continue;
         const x = cabin.wx + Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + ((y - horizon) / depthRows) * 2.2));
-        const c = pack(d < 0.5 ? C.lamp : C.ember);
+        const c = d < 0.5 ? P.lamp : P.ember;
         if (x >= 0 && x + 1 < W) { buf[y * W + x] = c; if (d < 0.4) buf[y * W + x + 1] = c; }
       }
       const [cx, cy] = cabin.chimney;
+      // the gaps between puffs climb with the smoke, four rows a second
+      const lift = Math.floor(t * 4);
       for (let k = 1; k < 14; k++) {
         const y = cy - k;
         const x = cx + Math.round(Math.sin(k * 0.5 - t * 1.2) * (k * 0.18) + k * 0.25);
-        if (y < 0 || x < 0 || x >= W || (k + Math.floor(t * 4)) % 5 === 0) continue;
+        if (y < 0 || x < 0 || x >= W || (((k - lift) % 5) + 5) % 5 === 0) continue;
         if (k > 9 && dither(x, y) > 0.5) continue;
-        buf[y * W + x] = pack(k < 6 ? C.snowShade : C.haze);
+        buf[y * W + x] = k < 6 ? P.snowShade : P.haze;
       }
     }
 
@@ -598,7 +602,7 @@
       const top = ground[x] + 1 - h;
       for (let dx = 2; dx < 2 + Math.round(h * 0.35); dx++) {
         const px = x + dx;
-        if (px < sw && b[ground[px] * sw + px] === pack(C.frost)) b[ground[px] * sw + px] = pack(C.snowShade);
+        if (px < sw && b[ground[px] * sw + px] === P.frost) b[ground[px] * sw + px] = P.snowShade;
       }
       const rows = spruce(h);
       for (let k = 0; k <= h; k++) {
@@ -608,14 +612,14 @@
           if (px < 0 || px >= sw) continue;
           // the skirt reaches down to the drift under it, so no tree floats over a hollow
           const y1 = k === h ? Math.max(top + k, ground[px]) : top + k;
-          for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = pack(C.pine);
+          for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = P.pine;
         }
       }
     }
     const rf = rng(808), fl = [];
     for (let i = 0, n = Math.round((sw * sh) / 260); i < n; i++) {
       const near = rf() > 0.7;
-      fl.push({ x: rf() * sw, y: rf() * sh, sp: near ? 6 + rf() * 4 : 2 + rf() * 2.5, sw: 0.6 + rf() * 1.4, ph: rf() * 6.28, c: near ? C.frost : C.ice });
+      fl.push({ x: rf() * sw, y: rf() * sh, sp: near ? 6 + rf() * 4 : 2 + rf() * 2.5, sw: 0.6 + rf() * 1.4, ph: rf() * 6.28, near, c: near ? P.frost : P.ice });
     }
     shore = { w: sw, h: sh, ctx: sctx, im, b, base: b.slice(), ground, flakes: fl };
     shoreFrame(reduceMotion.matches ? 4 : (performance.now() - start) / 1000);
@@ -630,8 +634,8 @@
       const y = Math.floor((f.y + t * f.sp) % h);
       const x = Math.floor(((f.x + Math.sin(t * 0.7 + f.ph) * f.sw * 2) % w + w) % w);
       if (y >= ground[x]) continue;
-      if (b[y * w + x] === pack(C.pine) && f.c !== C.frost) continue; // far flakes pass behind the pines
-      b[y * w + x] = pack(f.c);
+      if (!f.near && b[y * w + x] === P.pine) continue; // far flakes pass behind the pines
+      b[y * w + x] = f.c;
     }
     shore.ctx.putImageData(shore.im, 0, 0);
   }
@@ -657,16 +661,21 @@
   }
 
   function render() {
+    sizeKey = currentKey();
     layout();
     draw(reduceMotion.matches ? 4 : (performance.now() - start) / 1000);
     drawShore();
     kick();
   }
 
-  let resizeTimer = 0;
+  // redraw only when a drawn box really changes size (not on the observer's first report, nor on
+  // reflows that leave both canvases' boxes as they were)
+  let resizeTimer = 0, sizeKey = "";
+  const boxes = [canvas.parentElement, shoreCanvas?.parentElement].filter(Boolean);
+  const currentKey = () => boxes.map((el) => el.clientWidth + "x" + el.clientHeight).join(",");
   new ResizeObserver(() => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(render, 120);
+    resizeTimer = setTimeout(() => { if (currentKey() !== sizeKey) render(); }, 120);
   }).observe(document.body);
 
   new IntersectionObserver((entries) => {
@@ -690,7 +699,4 @@
   document.fonts?.ready.then(render);
 
   render();
-
-  // the name wipes in on arrival when motion is welcome; nothing else is held back
-  if (!reduceMotion.matches) document.documentElement.classList.add("reveal");
 })();

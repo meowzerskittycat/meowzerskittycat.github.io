@@ -126,7 +126,7 @@
       },
       "glacier": {
         "role": "primary",
-        "displayName": "Aurora Glacier",
+        "displayName": "Glacier",
         "canonical": "oklch(65.8% 0.169 249)",
         "tonalRamp": [
           "#020c18",
@@ -141,7 +141,7 @@
       },
       "abyss": {
         "role": "primary",
-        "displayName": "Deep Aurora Abyss",
+        "displayName": "Abyss",
         "canonical": "oklch(42.2% 0.157 260)",
         "tonalRamp": [
           "#00052f",
@@ -214,7 +214,7 @@
       {
         "name": "scene-frame",
         "value": "100ms (10fps), requestAnimationFrame-stepped",
-        "purpose": "Aurora drift, star twinkle, snowfall, chimney smoke, water ripple, lamp-reflection flicker. Paused offscreen and when the tab is hidden."
+        "purpose": "Star twinkle, chimney smoke, water ripple, moon glade, lamp reflection and gutter, snowfall over the shore. Paused offscreen and when the tab is hidden."
       },
       {
         "name": "level-meter",
@@ -229,7 +229,7 @@
       {
         "name": "resize-debounce",
         "value": "120ms",
-        "purpose": "Scene and shore re-layout after resize."
+        "purpose": "Scene and shore re-layout after a resize that changes either canvas box."
       }
     ],
     "breakpoints": [
@@ -239,15 +239,15 @@
       },
       {
         "name": "bands-one-column",
-        "value": "max-width 23rem: band grid drops to one column (two otherwise)"
+        "value": "max-width 24rem: band grid drops to one column (two otherwise, three from 72rem)"
       },
       {
         "name": "scene-scale-3",
-        "value": "hero width < 1280px: 3px per art pixel"
+        "value": "hero width < 1280px: 3px per art pixel; below 300px the name drops to 2 scene px per letter pixel"
       },
       {
         "name": "scene-scale-4",
-        "value": "hero width >= 1280px: 4px per art pixel"
+        "value": "hero width >= 1280px: 4px per art pixel (5px from 1760px, 6px from 2400px)"
       },
       {
         "name": "portrait",
@@ -307,7 +307,7 @@
   ],
   "narrative": {
     "northStar": "One Polar Night",
-    "overview": "**Creative North Star: \"One Polar Night\"**\n\nThe whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of aurora, a crescent moon, falling snow, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.\n\nBelow the waterline the introduction is one ledger: a few rows, each a small label beside its content, separated by rows of square pixel dots. One label column and one content edge hold every row, so the eye runs straight down. Small pixel marks drawn on the scene's grid (9x9 glyphs, square markers, a stepped level meter) give the text a little of the night's life. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light, which lives only in the scene. Hierarchy comes from size in one pixel face at one weight. There are no links, controls, borders, shadows-as-depth, or containers; the system is made of a field, two scenes, type, and a few pixel marks.\n\nThe direction contract still names a lamplight text mark; it was removed from the build at the user's request, and the build is the record here.",
+    "overview": "**Creative North Star: \"One Polar Night\"**\n\nThe whole page is a single night by a fjord. The first viewport is the place itself: a procedural pixel-art canvas of stars, a crescent moon, a layered alpine range anchored by one tall horn peak, forested foothills, a pine shore with one lit cabin, and still water that reflects all of it. Nothing sits on top of the scene as a banner or card; the name is set straight into the sky (or, on portrait screens, onto the dark water at the scene's foot). Scrolling continues down into the water, which settles into the page field so the introduction reads as text under the waterline, and the page closes on a second, smaller canvas: a snowy pine bank, the far shore.\n\nBelow the waterline the introduction is one ledger: a few rows, each a small label beside its content, separated by rows of square pixel dots. One label column and one content edge hold every row, so the eye runs straight down. Small pixel marks drawn on the scene's grid (9x9 glyphs, square markers, a stepped level meter) give the text a little of the night's life. The atmosphere carries the personality: cold blues, hard pixel edges, ordered-dither tones, and exactly one warm light, which lives only in the scene. Hierarchy comes from size in one pixel face at one weight. There are no links, controls, borders, shadows-as-depth, or containers; the system is made of a field, two scenes, type, and a few pixel marks.\n\nThe direction contract still names a lamplight text mark; it was removed from the build at the user's request, and the build is the record here.",
     "keyCharacteristics": [
       "Canvas scenes drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel, 5 from 1760px wide and 6 from 2400px so wide screens keep the same composition) and upscaled with crisp, pixelated edges; the hero scene opens the page and a shore canvas closes it.",
       "Dark fjord set as ground; the ice-blue set is light: the sky, plus a few small pixel marks in the text.",
@@ -325,7 +325,7 @@
       },
       {
         "name": "The Ice Is Light Rule",
-        "body": "The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (aurora, stars, moon, snowfall, snow crests, glints) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.",
+        "body": "The ice-blue set (frost, ice, glacier, abyss) is light, never ground. It belongs to the sky (stars, moon, snowfall, snow crests, glints) and, in the text layer, only to small pixel marks: the 9x9 glyphs, the band markers, and the level meter, with frost as the meter's cap pixel and the selection highlight. Words, labels, and surfaces stay in snow, ink-soft, and night.",
         "section": "colors"
       },
       {
@@ -350,14 +350,14 @@
       },
       {
         "name": "The Dithered Sky Rule",
-        "body": "Sky, aurora, and haze tones change only through a 4x4 ordered (Bayer) dither between palette steps, at whole art pixels; never a smooth CSS or canvas gradient. The water is the one exception: its mirror blends the reflection into the fjord tint row by row, still on whole art pixels, and its last fifth dithers out into the night field.",
+        "body": "Sky and haze tones change only in flat steps joined by a narrow ordered-dither seam (two rows of 50% checker), at whole art pixels; never a smooth CSS or canvas gradient, and never dither spread over a whole field as texture. The water keeps a fixed palette: a few depth bands, the last exactly the page colour, with one colour per band for each kind of thing reflected.",
         "section": "elevation"
       }
     ],
     "dos": [
       "Do keep the page field night and every surface flat; the canvases are the only images.",
       "Do draw any new pixel art on the same whole-number art-pixel grid (3 to 6 screen px) with `image-rendering: pixelated`, and size small text-layer marks in multiples of `--ui-px` (the scene pixel, capped at 4px).",
-      "Do step sky, aurora, and haze tones with ordered dither between palette colors.",
+      "Do step sky and haze tones in flat bands, with ordered dither only in the narrow seam between two of them.",
       "Do set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.",
       "Do keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.",
       "Do keep motion slow and stepped (10fps for the scene, `steps()` timing for CSS), pause it offscreen, and hold it still for reduced-motion users.",
@@ -367,7 +367,7 @@
       "Don't use lamplight amber or ember anywhere beyond the cabin window and its reflection.",
       "Don't use the ice-blue set for words, labels, or surfaces; in the text layer it is only for small pixel marks.",
       "Don't round corners, add drop shadows, or put content in cards, panels, or bordered boxes.",
-      "Don't use smooth gradients for sky, aurora, or haze tones.",
+      "Don't use smooth gradients for sky or haze tones, or spread dither over a whole surface as texture.",
       "Don't draw rules with `border` or the browser's round dotted style.",
       "Don't add bold weights, italics, or a second typeface, or use uppercase tracking anywhere but the ledger label.",
       "Don't center the name over the scene or place it on a scrim; it sits on the sky (or, on portrait screens, on the water)."
