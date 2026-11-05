@@ -17,7 +17,7 @@ OWN-WORLD: Ground is the dark fjord set (#0F2B4C night, #1C3B5E ridge, #1E5568 f
 
 STORY: Visitor sees mountains, fjord, aurora, one lit cabin; reads "Vivien"; scrolls down into the dark water where a short plain introduction states: mechanical engineer; formerly musician and programmer; Nordic metal (five bands); a quiet anarcho-communist nod at the very end.
 
-FIRST VIEWPORT: Full-bleed canvas scene, aurora upper third, layered ridges middle, fjord reflection bottom fifth, cabin with lit window lower-right third. "Vivien" set large over the sky at left, one line beneath: "Mechanical engineer." No nav.
+FIRST VIEWPORT: Full-bleed canvas scene, aurora upper third, layered ridges middle, fjord reflection bottom fifth, cabin with lit window lower-right third. "Vivien" set large over the sky at left, one line beneath: "Mechanical engineer." No nav. Portrait screens: the narrow sky belongs to the aurora and peaks, so scene.js draws a taller fjord (horizon at 60%) and the nameplate rests on the dark water at the hero's foot (finish-review amendment).
 
 FORM: candidate 7 of 7 (polar night, cabin under aurora). seed:3bae3593b498ab91. Raises: from festival lineup poster, hierarchy by size alone in one face; from nixie counter, the lit window is the single warm accent; from one-bit desktop, dithered tones at whole-pixel scale; from moon-shadow bazaar, one cool white edges the active/focus state.
 

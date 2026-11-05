@@ -10,7 +10,7 @@
   const hex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
   const C = {
     space: hex("#071a31"),
-    deep: hex("#0a2240"),
+    deep: hex("#0f2b4c"), // the page field below the waterline
     night: hex("#0f2b4c"),
     ridge: hex("#1c3b5e"),
     fjord: hex("#1e5568"),
@@ -129,8 +129,8 @@
 
     for (let x = 0; x < W; x++) {
       const pf = far.owner[x], pm = mid.owner[x];
-      const litFar = x >= pf.x; // east faces catch the aurora
-      const litMid = x >= pm.x;
+      // east faces catch the aurora; the light/shadow line runs diagonally down each spur
+      const jag = (fbm(nMid, x * 0.4 + 7, 2) - 0.5) * 4;
       const farH = hz * 0.84 - pf.y;
       const snowDepth = Math.max(0, (farH - hz * 0.08) * 0.75) + (fbm(nNear, x * 0.37, 2) - 0.5) * 7;
       const midH = hz * 0.94 - pm.y;
@@ -140,9 +140,11 @@
         if (y >= nearTop[x]) c = C.near;
         else if (y >= mid.top[x]) {
           const depth = y - pm.y - Math.abs(x - pm.x) * 0.15;
+          const litMid = x >= pm.x - (y - pm.y) * 0.35 + jag;
           c = depth < midCap ? (litMid ? C.midSnow : C.midShade) : C.midRock;
         } else if (y >= far.top[x]) {
           const depth = y - pf.y - Math.abs(x - pf.x) * 0.25;
+          const litFar = x >= pf.x - (y - pf.y) * 0.4 + jag;
           if (depth < snowDepth) c = litFar ? (y - far.top[x] < 1 ? C.frost : C.snowLit) : C.snowShade;
           else c = litFar ? C.farRock : C.farShade;
         }
@@ -155,7 +157,7 @@
     const cabinX = Math.round(W * 0.74);
     for (let x = 2; x < W - 2; x++) {
       if (Math.abs(x - cabinX) < 9) continue;
-      if (r() > 0.36) continue;
+      if (r() > 0.08 + 0.55 * smooth(0.35, 0.7, fbm(nNear, x * 0.06 + 50, 2))) continue; // stands and clearings
       const h = 4 + Math.floor(r() * (H > 160 ? 11 : 7));
       const top = nearTop[x] - h;
       for (let k = 0; k <= h; k++) {
@@ -260,23 +262,25 @@
       const d = (y - horizon) / depthRows;
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
       const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * 1.15));
-      const fade = (horizon < H * 0.7 ? 0.45 : 0.6) - d * 0.35;
+      // reflection fades out with depth; the water itself shades from fjord into the page field
+      const fade = (horizon < H * 0.7 ? 0.45 : 0.6) * Math.pow(1 - d, 1.5);
+      const tint = 0.45 * (1 - d);
+      const water = [0, 1, 2].map((k) => C.deep[k] + (C.fjord[k] - C.deep[k]) * tint);
       for (let x = 0; x < W; x++) {
         const sx = Math.min(W - 1, Math.max(0, x + wob));
         const s = buf[sy * W + sx];
         const r = s & 255, g = (s >> 8) & 255, b = (s >> 16) & 255;
         let c = [
-          r * fade + C.deep[0] * (1 - fade) * 0.9 + C.fjord[0] * 0.08,
-          g * fade + C.deep[1] * (1 - fade) * 0.9 + C.fjord[1] * 0.08,
-          b * fade + C.deep[2] * (1 - fade) * 0.9 + C.fjord[2] * 0.08,
+          r * fade + water[0] * (1 - fade),
+          g * fade + water[1] * (1 - fade),
+          b * fade + water[2] * (1 - fade),
         ];
-        // bottom rows dissolve into the page colour so the night flows into the text
-        if (d > 0.75 && (d - 0.75) / 0.25 > dither(x, y)) c = C.deep;
+        if (d > 0.82 && (d - 0.82) / 0.18 > dither(x, y)) c = C.deep;
         buf[y * W + x] = pack(c.map(Math.round));
       }
       // a few ice glints on the water
       const g = Math.floor(nRay(y * 3.1 + t * 0.8) * W * 1.3);
-      if (g < W && d < 0.7) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.ridge);
+      if (g < W && d < 0.55) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
     }
 
     // lamplight reflected beneath the cabin
