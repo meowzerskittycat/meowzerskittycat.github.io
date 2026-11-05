@@ -64,7 +64,7 @@ components:
     padding: "clamp(1.5rem, 4vh, 2.25rem) 0"
   ledger-rule:
     backgroundColor: "{colors.ridge}"
-    height: "var(--scene-px)"
+    height: "var(--ui-px)"
   ledger-label:
     textColor: "{colors.ink-soft}"
     typography: "{typography.label}"
@@ -78,18 +78,18 @@ components:
   pixel-icon:
     backgroundColor: "{colors.ice}"
     rounded: "{rounded.none}"
-    size: "calc(var(--scene-px) * 9)"
+    size: "calc(var(--ui-px) * 9)"
   band-name:
     textColor: "{colors.snow}"
     typography: "{typography.item}"
   band-marker:
     backgroundColor: "{colors.ice}"
     rounded: "{rounded.none}"
-    size: "calc(var(--scene-px) * 2)"
+    size: "calc(var(--ui-px) * 2)"
   level-meter-bar:
     backgroundColor: "{colors.ice}"
     rounded: "{rounded.none}"
-    width: "calc(var(--scene-px) * 2)"
+    width: "calc(var(--ui-px) * 2)"
 ---
 
 # Design System: Vivien
@@ -105,7 +105,7 @@ Below the waterline the introduction is one ledger: a few rows, each a small lab
 The direction contract still names a lamplight text mark; it was removed from the build at the user's request, and the build is the record here.
 
 **Key Characteristics:**
-- Canvas scenes drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel) and upscaled with crisp, pixelated edges; the hero scene opens the page and a shore canvas closes it.
+- Canvas scenes drawn at a whole-number art-pixel scale (3 or 4 screen px per art pixel, 5 from 1760px wide and 6 from 2400px so wide screens keep the same composition) and upscaled with crisp, pixelated edges; the hero scene opens the page and a shore canvas closes it.
 - Dark fjord set as ground; the ice-blue set is light: the sky, plus a few small pixel marks in the text.
 - One warm accent, the cabin's lamplight, and only inside the scene.
 - One face (Pixelify Sans, 400) across every role; size is the main hierarchy lever.
@@ -152,7 +152,7 @@ The scenes shade their terrain with in-between blues defined in `scene.js` and n
 **Character:** A single pixel face that shares the scene's grid, so the name looks drawn in the same night as the mountains. It stays at regular weight everywhere; the pixel grid already gives it all the weight it needs.
 
 ### Hierarchy
-- **Display** (400, display size, 0.9): the name only. Sized from the scene scale, not a fluid clamp: `calc(var(--scene-px) * 32.64)`, so each glyph pixel lands on exactly three art pixels. That is the listed 131px at a 4px scene scale and about 98px at 3px. The name stands alone in the hero; what Vivien does is said once, in the ledger.
+- **Display** (400, display size, 0.9): the name only. Sized from the scene scale, not a fluid clamp: `calc(var(--scene-px) * 32.64)`, so each glyph pixel lands on exactly three art pixels. That is the listed 131px at a 4px scene scale, about 98px at 3px, and up to 196px on very wide screens. The name stands alone in the hero; what Vivien does is said once, in the ledger.
 - **Item** (400, item size, 1.2): the content of each ledger row (the trades and the band names). The largest type below the hero; every row's content shares it so the rows read as equals. 32.64px from 46rem wide, 21.76px below.
 - **Body** (400, body size, 1.5): default text and the note above the bands (the note drops to 16.32px below 46rem so it stays under the items).
 - **Label** (400, label size, one glyph pixel of tracking, uppercase): the ledger's row labels only, in ink-soft. 21.76px from 46rem wide, 16.32px below.
@@ -198,11 +198,11 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 
 ### Pixel Night Scene (signature)
 - **What:** a full-bleed canvas in the hero, drawn procedurally from fixed seeds so every visit shows the same place: stars, a crescent moon, two drifting aurora curtains (broad slow folds with faint vertical streaks, brightest at a lit hem, dissolving upward into the sky through dither so the top never forms a hard spiky edge), a hazy back range, an alpine range with one tall horn, shouldered peaks, an uneven snowline, rock ribs and snow couloirs, forested foothills with a comb of small pines, a pine shore, one cabin with roof snow, a lit window and a chimney, and the reflecting fjord. The sky is clear: no snow falls in the hero, so nothing crosses the name.
-- **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled by an exact whole number (the canvas element is sized to W x scale, overhanging its box by under one art pixel), so every art pixel is the same size; the art scale is published to CSS as `--scene-px`, and the nameplate's padding is rounded to it so the name's pixels sit on the art's. Per frame, the aurora's column terms are computed once and only its band of rows is evaluated; the sky's dither colours are precomputed per row (about 2ms a frame on desktop).
+- **Rendering:** low-resolution buffer (about 320 art pixels across on desktop) upscaled by an exact whole number (the canvas element is sized to W x scale, overhanging its box by under one art pixel), so every art pixel is the same size; the art scale is published to CSS as `--scene-px` (and as `--ui-px`, capped at 4px, for the icons, meter, band markers and row rules so they stay in proportion to the text), and the nameplate's padding is rounded to it so the name's pixels sit on the art's. Per frame, the aurora's column terms are computed once and only its band of rows is evaluated; the sky's dither colours are precomputed per row (about 2ms a frame on desktop).
 - **Aurora placement:** on landscape screens the curtain begins a few art pixels to the right of the name's ink, measured after the font loads, so the two never touch.
 - **Motion:** slow aurora drift, star twinkle, a rare shooting star (about 0.8s, first after ~6s, then every ~29s), chimney smoke, water ripple, a short flickering lamp reflection, a cabin lamp that now and then gutters one pane to ember for a moment, the aurora's light lying on the near water as broken ripple lines (two sunk glacier tones, every other row, only in the top third of the fjord, rippling with the reflection), and the moon's glade (thin dashes that pale from lit to shaded snow with depth, broken across the water beneath the moon, never a solid column), stepped at 10 frames a second. Tapping the sky sends a shooting star from that point toward the middle of the scene (at most three at once); it is a quiet extra, never needed, and ignored under reduced motion. The water fades fully into the page colour before the hero's edge, with no dither stripe. The shore canvas at the page foot keeps the snow falling at two depths, far flakes passing behind the pines, and runs only while it is on screen. It pauses when offscreen or the tab is hidden; with reduced motion it renders one still frame.
 - **Arrival:** when motion is welcome, scene.js adds `.reveal` to the root: the name wipes in left to right in 6 whole steps and the cue follows. The ledger is never held back, so previews, print and full-page captures always show it. Without the class nothing is hidden.
-- **Share preview:** `og.png`, a 1200x630 capture of the hero at rest, is the Open Graph and large Twitter card image. Regenerate it after every visual change and bump the `?v=` query on `og:image` to the first 8 hex digits of its SHA-256, so platforms that cache previews by URL fetch the new one.
+- **Share preview:** `og.png`, a 1200x630 capture of the hero at rest, is the Open Graph and large Twitter card image. It is captured at a 1280px viewport (the 4px grid, so the name is large and every pixel even), at the reduced-motion still frame, without the scroll cue. After every visual change run `node tools/og.js`: it rewrites og.png and sets the `?v=` query on `og:image` to the image's hash, so platforms that cache previews by URL fetch the new one.
 - **Favicon:** `favicon.svg`, a 16x16 pixel peak (lit left flank in shaded snow, right flank in ridge, a stepped asymmetric snow cap) under an aurora band, on night; `apple-touch-icon.png` is the same art at 11x on 180px.
 - **Browser chrome:** `theme-color` is the sky's top tone, #071a31, so a mobile browser bar meets the sky without a step.
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
@@ -235,7 +235,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 
 ### Do:
 - **Do** keep the page field night and every surface flat; the canvases are the only images.
-- **Do** draw any new pixel art on the same whole-number art-pixel grid (3 or 4 screen px) with `image-rendering: pixelated`, and size small marks in multiples of the scene pixel.
+- **Do** draw any new pixel art on the same whole-number art-pixel grid (3 to 6 screen px) with `image-rendering: pixelated`, and size small text-layer marks in multiples of `--ui-px` (the scene pixel, capped at 4px).
 - **Do** step sky, aurora, and haze tones with ordered dither between palette colors.
 - **Do** set every text role in Pixelify Sans 400 and build hierarchy by size, using snow for primary text and ink-soft for secondary.
 - **Do** keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.

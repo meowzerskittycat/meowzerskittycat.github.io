@@ -28,7 +28,6 @@
     farShade: hex("#132e4e"),
     hill: hex("#0f2745"),
     hillTree: hex("#0b1f3a"),
-    hillSnow: hex("#3f6a94"),
     near: hex("#0a1e36"),
     pine: hex("#06152a"),
     cabin: hex("#081829"),
@@ -85,9 +84,11 @@
 
   function layout() {
     const rect = canvas.parentElement.getBoundingClientRect();
-    // 3 or 4 screen px per art pixel; the name in CSS is set on a 2-art-pixel grid from this
-    scale = Math.min(4, Math.max(3, Math.floor(rect.width / 320)));
+    // 3 to 6 screen px per art pixel, so the scene keeps its composition on wide screens;
+    // the name in CSS is set on this grid, the small text-layer marks stop growing at 4
+    scale = rect.width >= 2400 ? 6 : rect.width >= 1760 ? 5 : Math.min(4, Math.max(3, Math.floor(rect.width / 320)));
     document.documentElement.style.setProperty("--scene-px", scale + "px");
+    document.documentElement.style.setProperty("--ui-px", Math.min(4, scale) + "px");
     W = Math.max(80, Math.ceil(rect.width / scale));
     H = Math.max(80, Math.ceil(rect.height / scale));
     canvas.width = W;
