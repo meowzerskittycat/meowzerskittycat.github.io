@@ -170,7 +170,7 @@ Everything is left-aligned inside a generous fluid gutter (`spacing.gutter`) on 
 
 The introduction is one ledger, at most 64rem wide. Each row has `spacing.row` above and below its content and a pixel-dot rule along its top edge; the first row has neither rule nor top padding, so the ledger starts flush under the descent. From 46rem wide each row is two columns: an 11rem label column and the content, with `spacing.label-gap` between, aligned on the baseline. Below 46rem the label stacks above its content with `spacing.stack` between.
 
-Inside a row, items wrap side by side with 0.5rem between lines and `spacing.item-gap` between items. A glyph or marker sits `spacing.glyph-gap` before its word. A note above a list takes the full row width with 0.5rem under it. The band names form an even grid, three columns from 46rem, two below, and one under 23rem, at the same item gap with 0.35em between lines; a name never wraps. The level meter sits 0.9rem under its label.
+Inside a row, items wrap side by side with 0.5rem between lines and `spacing.item-gap` between items. A glyph or marker sits `spacing.glyph-gap` before its word. A note above a list takes the full row width with 0.5rem under it. The band names form an even grid, three columns from 72rem, two below, and one under 24rem, at the same item gap with 0.35em between lines; a name never wraps. The level meter sits 0.9rem under its label when rows are two columns; when they stack (phones) it stands beside the label on its baseline, so it doesn't take a line of its own.
 
 The nameplate tops out at 44rem.
 
@@ -212,7 +212,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank stepped from frost through lit, mid, and shaded snow, and dark pines standing in it, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
 
 ### Nameplate
-- Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water.
+- Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water, clamp(1.5rem, 5vh, 3rem) above it, so the name stays close to the first ledger row.
 
 **Scroll Cue**
 - A 7x4 ice pixel chevron centred at the foot of the hero, drawn at scene-pixel size, nudging down one scene pixel on a 1.4s `steps()` loop. Hidden in portrait (the name occupies the hero's foot there), still under reduced motion, decorative and hidden from assistive tech.
@@ -227,7 +227,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - An unstyled list of names at item size in snow, set as an even grid (three columns from 72rem, where they still end inside the row rule; two below, one under 24rem), each name led by a two-scene-pixel ice square and never wrapping.
 
 ### Level Meter
-- Seven ice bars under the Listening label, each two scene pixels wide with one scene pixel between, standing in a box ten scene pixels tall, each capped with a frost pixel. Each bar jumps between whole-pixel heights on its own 1.1 to 1.9s cycle with `steps()` timing, never easing. Under reduced motion the bars stand still at their resting heights. Decorative and hidden from assistive tech.
+- Seven ice bars under the Listening label (beside it when rows stack), each two scene pixels wide with one scene pixel between, standing in a box ten scene pixels tall, each capped with a frost pixel. Each bar jumps between whole-pixel heights on its own 1.1 to 1.9s cycle with `steps()` timing, never easing. Under reduced motion the bars stand still at their resting heights. Decorative and hidden from assistive tech.
 
 ### Selection
 - Frost background with night text: the single cool-white highlight state the page has.

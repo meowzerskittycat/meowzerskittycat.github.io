@@ -203,6 +203,12 @@ dd {
   margin-top: 0.9rem;
 }
 
+/* stacked rows (phones): the meter rides beside its label instead of taking a line of its own */
+@media (max-width: 45.99rem) {
+  .row dt { display: flex; align-items: flex-end; gap: 0.75em; }
+  .row dt .eq { margin-top: 0; }
+}
+
 .eq i {
   width: calc(var(--b) * 2);
   height: calc(var(--b) * var(--h, 3));
@@ -283,7 +289,7 @@ dd {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 0 var(--gutter) clamp(2.5rem, 8vh, 4.5rem);
+  padding: 0 var(--gutter) clamp(1.5rem, 5vh, 3rem);
 }
 
 /* arrival: the name wipes in left to right in whole steps, then the cue.
