@@ -191,9 +191,10 @@
         const y = p.y + (dx < 0 ? -dx * p.sl : dx * p.sr);
         if (y < best) { best = y; who = p; }
       }
-      // ragged crest: mostly small steps, occasional notches
-      const j = fbm(nFar, x * 0.23 + jagSeed, 3) - 0.5;
-      top[x] = Math.round(best + j * jagAmp + (nRib(x * 0.9 + jagSeed) > 0.85 ? 1 : 0));
+      // a rugged crest at the scale of shoulders and dips, never a column-by-column stutter:
+      // each stretch of slope keeps an even stair-step (runs of one or two that change gradually)
+      const j = fbm(nFar, x * 0.07 + jagSeed, 2) - 0.5;
+      top[x] = Math.round(best + j * jagAmp);
       owner[x] = who;
     }
     // no one-column notches: a single pixel dipping out of a line reads as a jaggy, not as rock
