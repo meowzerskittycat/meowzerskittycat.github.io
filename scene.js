@@ -167,7 +167,7 @@
       }
     }
     // ripples come in bands that thicken with depth, as nearer swell looks larger; each band slides
-    // as one, by a pixel near the shore and two at most out front, so edges stay clean
+    // as one, and never more than a pixel either way: this is still water, not a chop
     waterWave = new Uint16Array(depthRows);
     waterAmp = new Float32Array(depthRows);
     waterWob = new Int8Array(depthRows);
@@ -176,7 +176,7 @@
       if (left <= 0) { band++; left = 1 + Math.floor(d * 3.2); }
       left--;
       waterWave[k] = band;
-      waterAmp[k] = k < 2 ? 0 : 0.75 + d * 1.1;
+      waterAmp[k] = k < 2 ? 0 : 1;
     }
     // on portrait screens the name rests on the water: the mirror settles to calm water just
     // above it, so the letters never sit on reflected snow
@@ -558,14 +558,15 @@
       if (g < W && d < 0.55 && nRay(y * 1.9 + t * 0.5) > 0.62) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = P.fjord;
     }
 
-    // the moon's glade: thin broken dashes of cool light on the water below it
+    // the moon's glade: a straight column of broken dashes under the moon, narrow at the far shore
+    // and widening toward the viewer as a glitter path does, paling with depth
     if (moon) {
       const rows = Math.round(depthRows * 0.65);
       for (let y = horizon + 1; y < horizon + rows; y += 2) {
         const d = (y - horizon) / rows;
-        if (nRay(y * 2.3 + t * 0.9) < 0.3 + d * 0.45) continue;
-        const len = 1 + Math.round(nRay(y * 5.7 - t * 0.6) * (2 + moon.r * 0.5) * (1 - d * 0.5));
-        const x0 = moon.x + waterWob[y - horizon] + Math.round((nRay(y * 1.3 + 40) - 0.5) * moon.r) - (len >> 1);
+        if (nRay(y * 2.3 + t * 0.9) < 0.3 + d * 0.4) continue;
+        const len = 1 + Math.round(nRay(y * 5.7 - t * 0.6) * (1 + d * (1 + moon.r)));
+        const x0 = moon.x + waterWob[y - horizon] + Math.round((nRay(y * 1.3 + 40) - 0.5) * 2) - (len >> 1);
         const c = d < 0.25 ? P.snowLit : d < 0.6 ? P.snowMid : P.snowShade;
         for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = c;
       }
