@@ -206,7 +206,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Accessibility:** the canvas is `role="img"` with a one-sentence description of the scene.
 
 ### Shore
-- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank rolling in low drifts (a frost edge, then lit, mid, and shaded snow in clean bands that follow the drift's own contour, with no dithered seams), dark pines standing in it with their skirts reaching the drift beneath, a short ledge of snow on each tier's moon-side tip and a short shaded-snow moon shadow to their right, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
+- A full-bleed canvas closing the page, in a plain `div` (not an empty footer landmark): the night field over a ridge-blue back hill, a snowbank rolling in low drifts (a frost edge, then lit, mid, and shaded snow in clean bands that follow the drift's own contour, with no dithered seams), dark pines standing in it with their skirts reaching the drift beneath and a short shaded-snow moon shadow to their right, with snow still falling over it at two depths (far flakes behind the pines). Animated only while on screen, decorative and hidden from assistive tech.
 
 ### Nameplate
 - Display-size snow text, the name alone, set directly over the sky at the left. No role line, glyph, backing panel, or scrim. In portrait it moves to the hero's foot, over the dark water, clamp(1.5rem, 5vh, 3rem) above it, so the name stays close to the first ledger row.
@@ -239,7 +239,7 @@ The page has no buttons, inputs, navigation, or cards, by product decision (no l
 - **Do** keep layout left-aligned inside the fluid gutter, with generous viewport-scaled vertical space; add new facts as ledger rows on the shared label column.
 - **Do** keep motion slow and stepped (10fps for the scene, `steps()` timing for CSS), pause it offscreen, and hold it still for reduced-motion users.
 - **Do** draw rules as rows of square pixel dots in ridge blue.
-- **Do** light the terrain from the moon's side: lit faces, snow ledges on the pines and shadows all agree with where the moon hangs.
+- **Do** light the terrain from the moon's side: lit faces and the pines' shadows agree with where the moon hangs. The pines stay clean dark silhouettes, with no snow or rim pixels on their tiers, which read as speckle in dense stands.
 
 ### Don't:
 - **Don't** use lamplight amber or ember anywhere beyond the cabin window and its reflection.

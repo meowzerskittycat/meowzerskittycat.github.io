@@ -496,12 +496,6 @@
           const y1 = k === h ? Math.max(top + k, ground[px]) : top + k;
           for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = pack(C.pine);
         }
-        // snow lies along each tier's lower edge on the moon's side: a short ledge where the tier ends
-        if (k > 1 && k < h && rows[k + 1] < rows[k] && top + k >= 0 && x - hw >= 0 && hw >= 2) {
-          const c = pack(k < h * 0.5 ? C.snowMid : C.snowShade);
-          b[(top + k) * sw + x - hw] = c;
-          b[(top + k) * sw + x - hw + 1] = c;
-        }
       }
     }
     const rf = rng(808), fl = [];
