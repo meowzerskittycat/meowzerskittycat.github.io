@@ -112,54 +112,62 @@ h1 {
 
 /* ---------- below the waterline ---------- */
 
+/* one ledger: a fixed label column, one content edge, pixel-dot rules between rows */
 main {
-  padding: clamp(3.5rem, 9vh, 6rem) var(--gutter) clamp(4rem, 10vh, 6.5rem);
-  display: grid;
-  gap: clamp(4rem, 11vh, 7rem);
+  padding: clamp(2.5rem, 7vh, 4.5rem) var(--gutter) clamp(3rem, 8vh, 5rem);
 }
 
-.before {
+.ledger {
   margin: 0;
-  max-width: 38rem;
-  font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.75rem);
-  line-height: 1.35;
-  text-wrap: balance;
-  color: var(--ink-soft);
-}
-
-.trade {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.3em;
-  color: var(--snow);
-  white-space: nowrap;
-}
-
-.trade .px-icon {
-  align-self: center;
-}
-
-.metal {
-  display: grid;
-  gap: clamp(2rem, 5vh, 3rem) clamp(3rem, 8vw, 8rem);
-  align-items: start;
   max-width: 64rem;
 }
 
-@media (min-width: 52rem) {
-  .metal { grid-template-columns: minmax(14rem, 20rem) 1fr; }
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: clamp(1.5rem, 4vh, 2.25rem) 0;
+  background: linear-gradient(90deg, var(--ridge) 50%, transparent 0) left top / calc(var(--scene-px, 4px) * 2) var(--scene-px, 4px) repeat-x;
 }
 
-h2 {
+.row:first-child { background: none; padding-top: 0; }
+
+@media (min-width: 46rem) {
+  .row {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 0 clamp(2rem, 5vw, 4rem);
+    align-items: baseline;
+  }
+}
+
+dt {
+  color: var(--ink-soft);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+dd {
   margin: 0;
-  font-weight: 400;
-  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
-  line-height: 1.1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem clamp(1.5rem, 4vw, 3rem);
+  font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.25rem);
+  line-height: 1.2;
   color: var(--snow);
 }
 
-.aside {
-  margin: 0.6rem 0 0;
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.note {
+  flex-basis: 100%;
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  line-height: 1.5;
   color: var(--ink-soft);
 }
 
@@ -169,12 +177,12 @@ h2 {
   display: flex;
   align-items: flex-end;
   gap: var(--b);
-  height: calc(var(--b) * 12);
-  margin-top: 1.75rem;
+  height: calc(var(--b) * 10);
+  margin-top: 0.9rem;
 }
 
 .eq i {
-  width: calc(var(--b) * 3);
+  width: calc(var(--b) * 2);
   height: calc(var(--b) * var(--h, 3));
   background: var(--ice);
   box-shadow: inset 0 var(--b) 0 var(--frost);
@@ -188,36 +196,48 @@ h2 {
 .eq i:nth-child(5) { --h: 6; animation-duration: 1.4s; animation-delay: -1.1s; }
 .eq i:nth-child(6) { --h: 8; animation-duration: 1.2s; animation-delay: -0.6s; }
 .eq i:nth-child(7) { --h: 3; animation-duration: 1.8s; animation-delay: -1.3s; }
-.eq i:nth-child(8) { --h: 6; animation-duration: 1.5s; animation-delay: -0.3s; }
-.eq i:nth-child(9) { --h: 4; animation-duration: 1.25s; animation-delay: -0.8s; }
 
 @keyframes level {
   0%   { height: calc(var(--b) * var(--h)); }
   25%  { height: calc(var(--b) * 2); }
-  50%  { height: calc(var(--b) * 12); }
+  50%  { height: calc(var(--b) * 10); }
   75%  { height: calc(var(--b) * 5); }
 }
 
+/* the lineup: an even grid, names never wrap */
 .bands {
+  flex-basis: 100%;
   list-style: none;
   margin: 0;
   padding: 0;
-  /* set as a lineup: one name per line, never left to wrap */
-  font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem);
-  line-height: 1.2;
-  color: var(--snow);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35em clamp(1.5rem, 4vw, 3rem);
+}
+
+@media (max-width: 23rem) {
+  .bands { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 46rem) {
+  .bands { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 .bands li {
   display: flex;
-  align-items: baseline;
-  gap: 0.6em;
-  padding: 0.2em 0;
-  /* square pixel dots, not the browser's round dotted border */
-  background: linear-gradient(90deg, var(--ridge) 50%, transparent 0) left bottom / calc(var(--scene-px, 4px) * 2) var(--scene-px, 4px) repeat-x;
+  align-items: center;
+  gap: 0.45em;
+  white-space: nowrap;
 }
 
-.bands li:last-child { background: none; }
+/* a single ice pixel marks each name, sized to the scene grid */
+.bands li::before {
+  content: "";
+  flex: none;
+  width: calc(var(--scene-px, 4px) * 2);
+  height: calc(var(--scene-px, 4px) * 2);
+  background: var(--ice);
+}
 
 /* ---------- the shore ---------- */
 
