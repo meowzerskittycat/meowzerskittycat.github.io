@@ -76,6 +76,7 @@
   let img, buf, base; // base: static scene above the waterline (0 = sky)
   let stars = [];
   let aurStart = 0.28; // where the curtain may begin, kept clear of the name
+  let nameBox = null; // the name's ink in art pixels, kept clear of stars
   let skyRows = null; // per sky row: the four dithered colours of the 4x4 cell, packed
   const start = performance.now();
   let cabin = null, moon = null;
@@ -102,10 +103,14 @@
     horizon = Math.round(H * (portrait ? 0.6 : 0.8));
     const name = document.querySelector(".nameplate h1");
     aurStart = 0.28;
-    if (name && !portrait) {
+    nameBox = null;
+    if (name) {
       const ink = document.createRange();
       ink.selectNodeContents(name); // the word itself, not the block it sits in
-      aurStart = Math.max(0.28, (ink.getBoundingClientRect().right + 6 * scale - rect.left) / rect.width);
+      const r = ink.getBoundingClientRect();
+      // no star may land in or right beside a letter, where it would read as a stray pixel of the name
+      nameBox = { x0: (r.left - rect.left) / scale - 3, x1: (r.right - rect.left) / scale + 3, y0: (r.top - rect.top) / scale - 2, y1: (r.bottom - rect.top) / scale + 2 };
+      if (!portrait) aurStart = Math.max(0.28, (r.right + 6 * scale - rect.left) / rect.width);
     }
     img = ctx.createImageData(W, H);
     buf = new Uint32Array(img.data.buffer);
@@ -286,6 +291,7 @@
       const x = Math.floor(rs() * W), y = Math.floor(rs() * H * 0.6);
       if (base[y * W + x]) continue;
       if (moon && Math.hypot(x - moon.x, y - moon.y) < moon.r + 3) continue;
+      if (nameBox && x >= nameBox.x0 && x <= nameBox.x1 && y >= nameBox.y0 && y <= nameBox.y1) continue;
       stars.push({ x, y, c: rs() > 0.8 ? C.frost : C.ice, tw: rs() > 0.7, ph: rs() * 6.28, big: rs() > 0.96 });
     }
   }
