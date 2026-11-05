@@ -186,11 +186,10 @@
     const calm = horizon < H * 0.7 && nameBox ? Math.max(0.3, Math.min(0.88, (nameBox.y0 - horizon) / depthRows)) : 0.88;
     waterCalm = calm;
     // the mirror steps down in five even bands that end exactly at the calm line, each a little
-    // fainter than the last, so it fades out rather than stopping on a hard edge; below the calm
-    // line plain water steps on into the page colour, the last band
-    const edges = [0, 0.16, 0.36, 0.58, 0.8].map((e) => e * calm), fades = [0.5, 0.42, 0.32, 0.21, 0.1];
-    if (calm < 0.8) { edges.push(calm, (calm + 0.86) / 2); fades.push(0, 0); }
-    edges.push(Math.max(calm, 0.86));
+    // fainter than the last, so it fades out rather than stopping on a hard edge; the fjord tint
+    // fades with it, so the water only ever darkens toward the viewer, and from the calm line on
+    // it is the page colour itself
+    const edges = [0, 0.16, 0.36, 0.58, 0.8, 1].map((e) => e * calm), fades = [0.5, 0.42, 0.32, 0.21, 0.1];
     waterBand = new Uint8Array(depthRows);
     for (let k = 0; k < depthRows; k++) {
       const d = k / depthRows;
@@ -203,7 +202,7 @@
       const last = b === edges.length - 1;
       const d = last ? 1 : (edges[b] + edges[b + 1]) / 2;
       const fade = last ? 0 : fades[b];
-      const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
+      const tint = Math.pow(Math.max(0, 1 - d / (calm * 0.95)), 0.6);
       REP.forEach((s, k) => {
         // the dark shore reflects darker than the sky does, so the water under the pines reads as
         // their reflection, not as open water
