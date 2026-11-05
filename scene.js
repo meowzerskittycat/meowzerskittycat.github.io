@@ -132,7 +132,7 @@
   // haze, shaded snow, lit snow). A continuous blend would mint a new in-between colour for every pixel.
   let waterBand = null, waterPal = null, waterK = null, waterWave = null, waterAmp = null, waterWob = null;
   const NK = 6; // reflection classes, darkest first
-  const WATER_EDGES = [0, 0.09, 0.2, 0.32, 0.44, 0.56, 0.67, 0.77, 0.86]; // the last band is the page colour itself
+  const WATER_EDGES = [0, 0.14, 0.32, 0.5, 0.68, 0.86]; // the last band is the page colour itself
   function buildWater() {
     const depthRows = H - horizon;
     const REP = [C.hill, C.farShade, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
@@ -538,34 +538,27 @@
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
     const depthRows = H - horizon;
     for (let y = horizon; y < H; y++) {
-      const k0 = y - horizon, d = k0 / depthRows, band = waterWave[k0];
+      const k0 = y - horizon, band = waterWave[k0];
       // the swell rolls slowly toward the viewer, one band after the next
       const wob = Math.round(Math.sin(band * 1.25 - t * 1.1) * waterAmp[k0]);
       waterWob[k0] = wob;
-      // calm-water breaks drift down through the mirror a band at a time: there the haze and snow
-      // step one class quieter, so the reflection gives way to the water without a hard gap
-      const brk = nRay(band * 0.9 - t * 0.45 + 300) > 0.72 ? 1 : 0;
       const pal = waterBand[k0] * NK;
       const row = y * W, src = k0 * W;
       for (let x = 0; x < W; x++) {
         const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
-        let k = waterK[src + sx];
-        if (brk && k > 2) k--;
-        buf[row + x] = waterPal[pal + k];
+        buf[row + x] = waterPal[pal + waterK[src + sx]];
       }
-      // a glint: each row has its own fixed spot that brightens and fades slowly, never jumping about
-      const g = Math.floor(nRay(y * 3.1 + 500) * W * 1.3);
-      if (g < W && d < 0.55 && nRay(y * 1.9 + t * 0.5) > 0.62) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = P.fjord;
     }
 
-    // the moon's glade: a straight column of broken dashes under the moon, narrow at the far shore
-    // and widening toward the viewer as a glitter path does, paling with depth
+    // the moon's glade: a straight column of fixed broken dashes under the moon, narrow at the far
+    // shore and widening toward the viewer as a glitter path does, paling with depth; the dashes
+    // never blink, they only ride the swell of the row they sit on
     if (moon) {
       const rows = Math.round(depthRows * 0.65);
       for (let y = horizon + 1; y < horizon + rows; y += 2) {
         const d = (y - horizon) / rows;
-        if (nRay(y * 2.3 + t * 0.9) < 0.3 + d * 0.4) continue;
-        const len = 1 + Math.round(nRay(y * 5.7 - t * 0.6) * (1 + d * (1 + moon.r)));
+        if (nRay(y * 2.3) < 0.3 + d * 0.4) continue;
+        const len = 1 + Math.round(nRay(y * 5.7) * (1 + d * (1 + moon.r)));
         const x0 = moon.x + waterWob[y - horizon] + Math.round((nRay(y * 1.3 + 40) - 0.5) * 2) - (len >> 1);
         const c = d < 0.25 ? P.snowLit : d < 0.6 ? P.snowMid : P.snowShade;
         for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = c;
@@ -576,12 +569,12 @@
     if (cabin) {
       // the lamp gutters now and then: one pane dips to ember for a frame or two
       if (nRay(t * 1.9 + 400) > 0.93) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = P.ember;
-      // a column of short warm dashes under the window, rippling with the water rows they sit on;
+      // a column of fixed short warm dashes under the window, riding the swell of the rows they sit on;
       // two pixels wide like the window near the shore, narrowing and cooling to ember with depth
       const rows = Math.round(depthRows * 0.3);
       for (let y = horizon + 1; y < Math.min(H, horizon + rows); y += 2) {
         const d = (y - horizon) / rows;
-        if (nRay(y * 2.1 + t * 0.7 + 60) < 0.2 + d * 0.5) continue;
+        if (nRay(y * 2.1 + 60) < 0.2 + d * 0.5) continue;
         const x = cabin.wx + waterWob[y - horizon];
         const c = d < 0.5 ? P.lamp : P.ember;
         if (x >= 0 && x + 1 < W) { buf[y * W + x] = c; if (d < 0.4) buf[y * W + x + 1] = c; }
