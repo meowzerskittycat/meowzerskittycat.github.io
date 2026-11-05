@@ -130,11 +130,10 @@
   // the fjord keeps a fixed, small palette like the rest of the scene: a few depth bands, and in
   // each band one colour per kind of thing reflected (dark shore, sky and rock, haze, shaded
   // snow, lit snow). A continuous blend would mint a new in-between colour for every pixel.
-  let waterBand = null, waterPal = null, waterCls = null;
+  let waterBand = null, waterPal = null, waterCls = null, waterSrc = null, waterSpan = null;
   const WATER_EDGES = [0, 0.09, 0.2, 0.32, 0.44, 0.56, 0.67, 0.77, 0.86]; // the last band is the page colour itself
   function buildWater() {
     const depthRows = H - horizon;
-    const portrait = horizon >= H * 0.7;
     const REP = [C.hill, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
     waterCls = new Map([[0, 1]]);
     for (const c of [C.near, C.pine, C.hill, C.hillTree, C.cabin, C.farShade, C.earthshine, C.lamp, C.ember]) waterCls.set(pack(c), 0);
@@ -142,6 +141,18 @@
     waterCls.set(pack(C.haze), 2);
     for (const c of [C.hazeSnow, C.snowShade, C.snowMid]) waterCls.set(pack(c), 3);
     for (const c of [C.snowLit, C.frost]) waterCls.set(pack(c), 4);
+    // the mirror is true to size at the shoreline, so the pines reflect as pines, and folds tighter
+    // with depth so the peaks still reach the water: source rows run u + a*u^2 above the horizon
+    const reach = Math.max(depthRows * 1.15, horizon * 0.6);
+    const a = (reach - depthRows) / (depthRows * depthRows);
+    const fold = (u) => u + a * u * u;
+    waterSrc = new Int16Array(depthRows);
+    waterSpan = new Uint8Array(depthRows);
+    for (let k = 0; k < depthRows; k++) {
+      const s0 = Math.round(fold(k)), s1 = Math.round(fold(k + 1));
+      waterSrc[k] = Math.max(0, horizon - 1 - s0);
+      waterSpan[k] = Math.max(1, Math.min(waterSrc[k] + 1, s1 - s0));
+    }
     waterBand = new Uint8Array(depthRows);
     for (let k = 0; k < depthRows; k++) {
       const d = k / depthRows;
@@ -153,10 +164,13 @@
     for (let b = 0; b < WATER_EDGES.length; b++) {
       const last = b === WATER_EDGES.length - 1;
       const d = last ? 1 : (WATER_EDGES[b] + WATER_EDGES[b + 1]) / 2;
-      const fade = portrait ? 0.5 * (1 - smooth(0.5, 0.88, d)) : 0.32 * Math.pow(1 - d, 1.1);
+      const fade = 0.5 * (1 - smooth(0.5, 0.88, d));
       const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
       REP.forEach((s, k) => {
-        const c = last ? C.deep : s.map((v, i) => Math.round(v * fade + (C.deep[i] + (C.fjord[i] - C.deep[i]) * tint) * (1 - fade)));
+        // the dark shore reflects darker than the sky does, so the water under the pines reads as
+        // their reflection, not as open water
+        const f = k === 0 ? Math.min(1, fade * 1.8) : fade;
+        const c = last ? C.deep : s.map((v, i) => Math.round(v * f + (C.deep[i] + (C.fjord[i] - C.deep[i]) * tint) * (1 - f)));
         waterPal[b * REP.length + k] = pack(c);
       });
     }
@@ -495,23 +509,27 @@
 
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
     const depthRows = H - horizon;
-    const mirror = Math.max(1.15, (horizon * 0.6) / (depthRows * 0.85));
     for (let y = horizon; y < H; y++) {
       const d = (y - horizon) / depthRows;
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
-      // a shallow fjord (wide screens) folds the mirror tighter so the peaks still reach it
-      const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * mirror));
+      const sy = waterSrc[y - horizon], span = waterSpan[y - horizon];
       // thin calm-water breaks drift down through the mirror: rows where the reflection steps one
       // class quieter, so it gives way to the water without a hard gap
       const brk = nRay((y - horizon) * 0.8 - t * 0.6 + 300) > 0.7 ? 1 : 0;
       const pal = waterBand[y - horizon] * 5;
-      const row = y * W, src = sy * W;
+      const row = y * W;
       for (let x = 0; x < W; x++) {
-        const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
+        const sx = (x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob) & ~1;
         // read the mirror in pixel pairs from the static scene (stars and the moon never
-        // reflect; the moon has its own glade), so a checker seam above reflects as one flat band
-        let k = waterCls.get(base[src + (sx & ~1)]);
-        if (k === undefined) k = 1;
+        // reflect; the moon has its own glade), so a checker seam above reflects as one flat band;
+        // where the mirror folds, the rows it folds together vote and the brightest wins, so ribs
+        // and snow tongues never alias into scattered specks
+        let k = 0;
+        for (let r = 0; r < span; r++) {
+          const v = waterCls.get(base[(sy - r) * W + sx]);
+          const kk = v === undefined ? 1 : v;
+          if (kk > k) k = kk;
+        }
         if (brk && k > 1) k--;
         buf[row + x] = waterPal[pal + k];
       }
