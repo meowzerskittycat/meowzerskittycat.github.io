@@ -73,7 +73,9 @@
   function layout() {
     const rect = canvas.getBoundingClientRect();
     // aim for roughly 320 art pixels across on desktop, never smaller than 3 screen px each
-    scale = Math.max(3, Math.round(rect.width / 320));
+    // 3 or 4 screen px per art pixel; the name in CSS is set on a 2-art-pixel grid from this
+    scale = Math.min(4, Math.max(3, Math.floor(rect.width / 320)));
+    document.documentElement.style.setProperty("--scene-px", scale + "px");
     W = Math.max(80, Math.ceil(rect.width / scale));
     H = Math.max(80, Math.ceil(rect.height / scale));
     canvas.width = W;
@@ -128,22 +130,25 @@
     for (let x = 0; x < W; x++) nearTop[x] = Math.round(hz - 2 - fbm(nNear, (x / W) * span * 2.2, 3) * hz * 0.07);
 
     for (let x = 0; x < W; x++) {
-      const pf = far.owner[x], pm = mid.owner[x];
+      const ownerAt = (rg, y) => rg.owner[Math.max(0, Math.min(W - 1, Math.round(x - (y - rg.top[x]) * 0.6)))];
       // east faces catch the aurora; the light/shadow line runs diagonally down each spur
       const jag = (fbm(nMid, x * 0.4 + 7, 2) - 0.5) * 4;
-      const farH = hz * 0.84 - pf.y;
+      const pf0 = far.owner[x], pm0 = mid.owner[x];
+      const farH = hz * 0.84 - pf0.y;
       const snowDepth = Math.max(0, (farH - hz * 0.08) * 0.75) + (fbm(nNear, x * 0.37, 2) - 0.5) * 7;
-      const midH = hz * 0.94 - pm.y;
+      const midH = hz * 0.94 - pm0.y;
       const midCap = Math.max(0, (midH - hz * 0.07) * 0.6) + (fbm(nMid, x * 0.5, 2) - 0.5) * 3;
       for (let y = 0; y < horizon; y++) {
         let c = null;
         if (y >= nearTop[x]) c = C.near;
         else if (y >= mid.top[x]) {
-          const depth = y - pm.y - Math.abs(x - pm.x) * 0.15;
+          const pm = ownerAt(mid, y);
+          const depth = y - pm0.y - Math.abs(x - pm0.x) * 0.15;
           const litMid = x >= pm.x - (y - pm.y) * 0.35 + jag;
           c = depth < midCap ? (litMid ? C.midSnow : C.midShade) : C.midRock;
         } else if (y >= far.top[x]) {
-          const depth = y - pf.y - Math.abs(x - pf.x) * 0.25;
+          const pf = ownerAt(far, y);
+          const depth = y - pf0.y - Math.abs(x - pf0.x) * 0.25;
           const litFar = x >= pf.x - (y - pf.y) * 0.4 + jag;
           if (depth < snowDepth) c = litFar ? (y - far.top[x] < 1 ? C.frost : C.snowLit) : C.snowShade;
           else c = litFar ? C.farRock : C.farShade;
@@ -263,8 +268,8 @@
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
       const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * 1.15));
       // reflection fades out with depth; the water itself shades from fjord into the page field
-      const fade = (horizon < H * 0.7 ? 0.45 : 0.6) * Math.pow(1 - d, 1.5);
-      const tint = 0.45 * (1 - d);
+      const fade = (horizon < H * 0.7 ? 0.3 : 0.4) * Math.pow(1 - d, 1.5);
+      const tint = Math.pow(1 - d, 0.6);
       const water = [0, 1, 2].map((k) => C.deep[k] + (C.fjord[k] - C.deep[k]) * tint);
       for (let x = 0; x < W; x++) {
         const sx = Math.min(W - 1, Math.max(0, x + wob));

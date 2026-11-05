@@ -86,10 +86,10 @@ body {
 
 h1 {
   margin: 0;
-  font-weight: 600;
-  font-size: clamp(4rem, 3rem + 5vw, 6rem);
+  /* Pixelify's glyph pixel is ~0.092em: each letter pixel = 2 scene pixels (65px or 87px) */
+  font-weight: 400;
+  font-size: calc(var(--scene-px, 4px) * 21.76);
   line-height: 0.9;
-  letter-spacing: -0.01em;
   color: var(--snow);
 }
 
@@ -100,8 +100,9 @@ h1 {
 }
 
 .past {
-  margin: 0 0 clamp(4rem, 12vh, 7rem);
-  max-width: 30ch;
+  margin: 0 0 clamp(2.5rem, 6vh, 3.5rem);
+  max-width: 34rem;
+  text-wrap: balance;
   font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem);
   line-height: 1.25;
   color: var(--ink-soft);
@@ -110,7 +111,7 @@ h1 {
 /* ---------- below the waterline ---------- */
 
 main {
-  padding: clamp(4rem, 12vh, 8rem) var(--gutter) clamp(5rem, 14vh, 9rem);
+  padding: clamp(5rem, 16vh, 10rem) var(--gutter) clamp(5rem, 14vh, 9rem);
 }
 
 .metal { max-width: 60rem; }
