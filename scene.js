@@ -820,6 +820,7 @@
       if (currentKey() !== sizeKey) render();
       // a first visit holds the loading screen for its one full step (set in the page head)
       setTimeout(() => {
+        if (currentKey() !== sizeKey) render(); // the screen may have settled during the hold
         document.documentElement.classList.remove("wait");
         try { sessionStorage.setItem("seen", "1"); } catch (x) {}
       }, Math.max(0, (window.bootUntil || 0) - performance.now()));
