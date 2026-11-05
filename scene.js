@@ -80,7 +80,6 @@
   let skyRows = null; // per sky row: the four dithered colours of the 4x4 cell, packed
   const start = performance.now();
   let cabin = null, moon = null;
-  const wishes = []; // shooting stars asked for by a tap: { x, y, t } in art pixels and seconds
   let shore = null; // { w, h, ctx, im, b, base, flakes }
 
   function layout() {
@@ -355,16 +354,6 @@
     return best;
   }
 
-  // an eight-pixel streak: a bright head, an ice body, a glacier tail
-  function meteor(x0, y0, p, dir) {
-    for (let k = 0; k < 8; k++) {
-      const run = p * W * 0.12 - k;
-      const x = Math.round(x0 + run * dir), y = Math.round(y0 + run * 0.4);
-      if (x < 0 || x >= W || y < 0 || y >= horizon || base[y * W + x]) continue;
-      buf[y * W + x] = pack(k < 2 ? C.frost : k < 5 ? C.ice : C.glacier);
-    }
-  }
-
   function draw(t) {
     auroraPrep(t);
     for (let y = 0; y < horizon; y++) {
@@ -387,22 +376,6 @@
           if (s.x + dx >= 0 && s.x + dx < W && s.y + dy >= 0 && !base[j]) buf[j] = pack(C.abyss);
         }
       }
-    }
-
-    // a rare shooting star: first after ~6s, then about every half minute
-    const SP = 29, cyc = Math.floor((t + SP - 6) / SP), lt = t + SP - 6 - cyc * SP;
-    if (lt < 0.8) {
-      const rr = rng(cyc * 7 + 3);
-      let x0 = W * (0.15 + rr() * 0.6);
-      const y0 = H * (0.03 + rr() * 0.05); // high, in open sky above the aurora
-      if (moon && x0 > moon.x - moon.r - 4 && x0 < moon.x + moon.r + 14) x0 = moon.x + moon.r + 14; // and never out of the moon
-      meteor(x0, y0, lt / 0.8, 1);
-    }
-    // and one wherever the sky is tapped, falling toward the middle of the scene
-    for (let k = wishes.length - 1; k >= 0; k--) {
-      const w = wishes[k], p = (t - w.t) / 0.8;
-      if (p >= 1 || p < 0) { wishes.splice(k, 1); continue; }
-      meteor(w.x, w.y, p, w.x > W / 2 ? -1 : 1);
     }
 
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
@@ -576,16 +549,6 @@
     shoreVisible = entries[0].isIntersecting;
     kick();
   }).observe(shoreCanvas);
-
-  // tap the sky for a shooting star (only when motion is welcome; it is never the only way to see one)
-  canvas.parentElement.addEventListener("pointerdown", (e) => {
-    if (reduceMotion.matches || !e.isPrimary) return;
-    const r = canvas.getBoundingClientRect();
-    const x = (e.clientX - r.left) / scale, y = (e.clientY - r.top) / scale;
-    if (y < 0 || y >= horizon * 0.85 || x < 0 || x >= W) return;
-    if (wishes.length < 3) wishes.push({ x, y, t: (performance.now() - start) / 1000 });
-    kick();
-  });
 
   document.addEventListener("visibilitychange", kick);
   reduceMotion.addEventListener?.("change", render);
