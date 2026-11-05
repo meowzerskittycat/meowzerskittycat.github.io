@@ -20,11 +20,9 @@
   --ridge: #1c3b5e;
   --fjord: #1e5568;
   --snow: #f3f3f3;
-  /* ice: the aurora */
+  /* ice: starlight, the moon, snow light and the small pixel marks */
   --frost: #e3f2fd;
   --ice: #90caf9;
-  --glacier: #2196f3;
-  --abyss: #0d47a1;
 
   --ink: var(--snow);
   --ink-soft: #c4d3e0;
@@ -90,11 +88,17 @@ body {
 
 h1 {
   margin: 0;
+  width: fit-content; /* the box is the word, so the wipe's steps fall across the letters */
   /* Pixelify's glyph pixel is ~0.092em: each letter pixel = 3 scene pixels (98px or 131px) */
   font-weight: 400;
   font-size: calc(var(--scene-px, 4px) * 32.64);
   line-height: 0.9;
   color: var(--snow);
+}
+
+/* the narrowest phones (a folded Fold is 280px): two scene pixels a letter pixel, so the name fits */
+@media (max-width: 18.74rem) {
+  h1 { font-size: calc(var(--scene-px, 4px) * 21.76); }
 }
 
 /* a pixel chevron at the foot of the night, nudging one scene pixel at a time */
@@ -191,6 +195,7 @@ dd {
   font-size: calc(var(--g) * 1.5);
   line-height: 1.5;
   color: var(--ink-soft);
+  text-wrap: pretty; /* no lone word on the last line */
 }
 
 /* a pixel level meter: whole-pixel steps, never smooth */
@@ -201,6 +206,7 @@ dd {
   gap: var(--b);
   height: calc(var(--b) * 10);
   margin-top: 0.9rem;
+  overflow: hidden; /* each bar is full height and slides down out of this box */
 }
 
 /* stacked rows (phones): the meter rides beside its label instead of taking a line of its own */
@@ -209,11 +215,14 @@ dd {
   .row dt .eq { margin-top: 0; }
 }
 
+/* bars move by transform, never height, so the meter costs no layout while it plays */
 .eq i {
+  flex: none;
   width: calc(var(--b) * 2);
-  height: calc(var(--b) * var(--h, 3));
+  height: calc(var(--b) * 10);
   background: var(--ice);
   box-shadow: inset 0 var(--b) 0 var(--frost);
+  transform: translateY(calc(var(--b) * (10 - var(--h, 3))));
   animation: level 1.6s steps(1, end) infinite;
 }
 
@@ -226,10 +235,10 @@ dd {
 .eq i:nth-child(7) { --h: 3; animation-duration: 1.8s; animation-delay: -1.3s; }
 
 @keyframes level {
-  0%   { height: calc(var(--b) * var(--h)); }
-  25%  { height: calc(var(--b) * 2); }
-  50%  { height: calc(var(--b) * 10); }
-  75%  { height: calc(var(--b) * 5); }
+  0%   { transform: translateY(calc(var(--b) * (10 - var(--h)))); }
+  25%  { transform: translateY(calc(var(--b) * 8)); }
+  50%  { transform: translateY(0); }
+  75%  { transform: translateY(calc(var(--b) * 5)); }
 }
 
 /* the lineup: an even grid, names never wrap */
@@ -292,19 +301,39 @@ dd {
   padding: 0 var(--gutter) clamp(1.5rem, 5vh, 3rem);
 }
 
-/* arrival: the name wipes in left to right in whole steps, then the cue.
-   scene.js adds .reveal only when motion is welcome; without it, everything just shows. */
-.reveal h1 { animation: wipe 0.7s steps(6, end) 0.2s both; }
-.reveal .cue { animation: wipe 0.4s steps(4, end) 1s both, nudge 1.4s steps(1, end) 1.4s infinite; }
+/* arrival: the name wipes in left to right, about a letter a step, then the cue.
+   A line in the page head adds .reveal before first paint, only when motion is welcome;
+   without it, everything just shows. The clip lifts once the wipe ends (fill: backwards). */
+.reveal h1 { animation: wipe 0.7s steps(6, end) 0.2s backwards; }
+.reveal .cue { animation: wipe 0.4s steps(4, end) 1s backwards, nudge 1.4s steps(1, end) 1.4s infinite; }
 
 @keyframes wipe {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(-1rem -100vw -1rem -1rem); }
+  from { clip-path: inset(-1rem 100% -1rem -1rem); }
+  to   { clip-path: inset(-1rem 0 -1rem -1rem); }
 }
+
+/* scene.js marks a loop that is out of view; it holds its frame until it comes back */
+.cue[data-rest],
+.eq[data-rest] i { animation-play-state: paused; }
 
 @media (prefers-reduced-motion: reduce) {
   .eq i,
   .cue,
   .reveal .cue,
   .reveal h1 { animation: none; }
+}
+
+/* on paper: the words only, dark on white, no night to spend a cartridge on */
+@media print {
+  html, body, .night { background: #fff; color: #000; }
+  .night { height: auto; min-height: 0; }
+  .scene, .cue, .foot, .eq { display: none; }
+  .nameplate, .night[data-portrait] .nameplate { position: static; padding: 0 0 1.5rem; }
+  h1, dd, dt, .note { color: #000; }
+  h1 { font-size: 4rem; }
+  .px-icon { fill: #000; }
+  .bands li::before { background: #000; }
+  main { padding: 0; }
+  .row { break-inside: avoid; background: none; border-top: 1px dotted #000; }
+  .row:first-child { border-top: 0; }
 }

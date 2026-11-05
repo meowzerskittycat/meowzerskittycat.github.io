@@ -17,15 +17,15 @@
     fjord: hex("#1e5568"),
     frost: hex("#e3f2fd"),
     ice: hex("#90caf9"),
-    glacier: hex("#2196f3"),
-    abyss: hex("#0d47a1"),
+    starDim: hex("#4a6f99"), // the faint majority of stars
+    earthshine: hex("#193858"), // the moon's dark disc, just visible
     haze: hex("#24496f"),
     hazeSnow: hex("#4a76a0"),
     snowLit: hex("#a4c5e2"),
     snowMid: hex("#7fa7cc"),
     snowShade: hex("#46719c"),
     farRock: hex("#1b3c60"),
-    farShade: hex("#132e4e"),
+    farShade: hex("#0e2645"),
     hill: hex("#0f2745"),
     hillTree: hex("#0b1f3a"),
     near: hex("#0a1e36"),
@@ -66,16 +66,17 @@
   const nFar = valueNoise(7), nMid = valueNoise(19), nNear = valueNoise(41), nRay = valueNoise(73);
   const nRib = valueNoise(88), nCouloir = valueNoise(131), nSnow = valueNoise(57);
   function smooth(a, b, x) { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
-  const pack = (c) => (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0];
+  const pack = (c) => ((255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]) >>> 0; // unsigned, to match the Uint32Array buffers it is compared against
+  // every colour the frame loops write, packed once rather than on every pixel of every frame
+  const P = Object.fromEntries(Object.entries(C).map(([k, v]) => [k, pack(v)]));
 
-  const GLOW = pack([0x1f, 0x62, 0x8a]); // aurora on water: glacier sunk into the fjord, one quiet tone
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   let W = 0, H = 0, horizon = 0, scale = 4;
   let img, buf, base; // base: static scene above the waterline (0 = sky)
   let stars = [];
-  let aurStart = 0.28; // where the curtain may begin, kept clear of the name
+  let nameEnd = 0; // the right edge of the name's ink, as a fraction of the width (landscape)
   let nameBox = null; // the name's ink in art pixels, kept clear of stars
   let skyRows = null; // per sky row: the four dithered colours of the 4x4 cell, packed
   const start = performance.now();
@@ -101,7 +102,7 @@
     canvas.parentElement.toggleAttribute("data-portrait", portrait);
     horizon = Math.round(H * (portrait ? 0.6 : 0.8));
     const name = document.querySelector(".nameplate h1");
-    aurStart = 0.28;
+    nameEnd = 0;
     nameBox = null;
     if (name) {
       const ink = document.createRange();
@@ -109,22 +110,70 @@
       const r = ink.getBoundingClientRect();
       // no star may land in or right beside a letter, where it would read as a stray pixel of the name
       nameBox = { x0: (r.left - rect.left) / scale - 3, x1: (r.right - rect.left) / scale + 3, y0: (r.top - rect.top) / scale - 2, y1: (r.bottom - rect.top) / scale + 2 };
-      if (!portrait) aurStart = Math.max(0.28, (r.right + 6 * scale - rect.left) / rect.width);
+      if (!portrait) nameEnd = (r.right - rect.left) / rect.width;
     }
     img = ctx.createImageData(W, H);
     buf = new Uint32Array(img.data.buffer);
     skyRows = new Array(horizon);
     // flat bands of night; where one band meets the next, two rows of checker and nothing more
-    const lvl = (y) => Math.max(0, Math.min(4, Math.floor(skyV(y) * 4 + 0.5)));
+    const lvl = skyLvl;
     for (let y = 0; y < horizon; y++) {
       const L = lvl(y), row = new Uint32Array(4);
       const seam = y + 1 < horizon && lvl(y + 1) > L ? L + 1 : y > 0 && lvl(y - 1) < L ? L - 1 : -1;
       for (let x = 0; x < 4; x++) row[x] = pack(SKY[seam >= 0 && ((x + y) & 1) === (seam > L ? 1 : 0) ? seam : L]);
       skyRows[y] = row;
     }
-    aurMask = new Uint8Array(W * horizon);
-    aurCols = { env: [new Float32Array(W), new Float32Array(W)], bottom: [new Float32Array(W), new Float32Array(W)], len: [new Float32Array(W), new Float32Array(W)], rays: [new Float32Array(W), new Float32Array(W)] };
     buildStatic();
+    buildWater();
+  }
+
+  // the fjord keeps a fixed, small palette like the rest of the scene: a few depth bands, and in
+  // each band one colour per kind of thing reflected (dark shore, sky and rock, haze, shaded
+  // snow, lit snow). A continuous blend would mint a new in-between colour for every pixel.
+  let waterBand = null, waterPal = null, waterCls = null, waterSrc = null, waterSpan = null;
+  const WATER_EDGES = [0, 0.09, 0.2, 0.32, 0.44, 0.56, 0.67, 0.77, 0.86]; // the last band is the page colour itself
+  function buildWater() {
+    const depthRows = H - horizon;
+    const REP = [C.hill, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
+    waterCls = new Map([[0, 1]]);
+    for (const c of [C.near, C.pine, C.hill, C.hillTree, C.cabin, C.farShade, C.earthshine, C.lamp, C.ember]) waterCls.set(pack(c), 0);
+    for (const c of [C.farRock, C.ice, ...SKY]) waterCls.set(pack(c), 1);
+    waterCls.set(pack(C.haze), 2);
+    for (const c of [C.hazeSnow, C.snowShade, C.snowMid]) waterCls.set(pack(c), 3);
+    for (const c of [C.snowLit, C.frost]) waterCls.set(pack(c), 4);
+    // the mirror is true to size at the shoreline, so the pines reflect as pines, and folds tighter
+    // with depth so the peaks still reach the water: source rows run u + a*u^2 above the horizon
+    const reach = Math.max(depthRows * 1.15, horizon * 0.6);
+    const a = (reach - depthRows) / (depthRows * depthRows);
+    const fold = (u) => u + a * u * u;
+    waterSrc = new Int16Array(depthRows);
+    waterSpan = new Uint8Array(depthRows);
+    for (let k = 0; k < depthRows; k++) {
+      const s0 = Math.round(fold(k)), s1 = Math.round(fold(k + 1));
+      waterSrc[k] = Math.max(0, horizon - 1 - s0);
+      waterSpan[k] = Math.max(1, Math.min(waterSrc[k] + 1, s1 - s0));
+    }
+    waterBand = new Uint8Array(depthRows);
+    for (let k = 0; k < depthRows; k++) {
+      const d = k / depthRows;
+      let b = 0;
+      while (b + 1 < WATER_EDGES.length && d >= WATER_EDGES[b + 1]) b++;
+      waterBand[k] = b;
+    }
+    waterPal = new Uint32Array(WATER_EDGES.length * REP.length);
+    for (let b = 0; b < WATER_EDGES.length; b++) {
+      const last = b === WATER_EDGES.length - 1;
+      const d = last ? 1 : (WATER_EDGES[b] + WATER_EDGES[b + 1]) / 2;
+      const fade = 0.5 * (1 - smooth(0.5, 0.88, d));
+      const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
+      REP.forEach((s, k) => {
+        // the dark shore reflects darker than the sky does, so the water under the pines reads as
+        // their reflection, not as open water
+        const f = k === 0 ? Math.min(1, fade * 1.8) : fade;
+        const c = last ? C.deep : s.map((v, i) => Math.round(v * f + (C.deep[i] + (C.fjord[i] - C.deep[i]) * tint) * (1 - f)));
+        waterPal[b * REP.length + k] = pack(c);
+      });
+    }
   }
 
   // ---------------------------------------------------------------- terrain
@@ -158,10 +207,17 @@
         const y = p.y + (dx < 0 ? -dx * p.sl : dx * p.sr);
         if (y < best) { best = y; who = p; }
       }
-      // ragged crest: mostly small steps, occasional notches
-      const j = fbm(nFar, x * 0.23 + jagSeed, 3) - 0.5;
-      top[x] = Math.round(best + j * jagAmp + (nRib(x * 0.9 + jagSeed) > 0.85 ? 1 : 0));
+      // a rugged crest at the scale of shoulders and dips, never a column-by-column stutter:
+      // each stretch of slope keeps an even stair-step (runs of one or two that change gradually)
+      const j = fbm(nFar, x * 0.07 + jagSeed, 2) - 0.5;
+      top[x] = Math.round(best + j * jagAmp);
       owner[x] = who;
+    }
+    // no one-column notches: a single pixel dipping out of a line reads as a jaggy, not as rock
+    for (let x = 1; x < W - 1; x++) {
+      if (top[x] > top[x - 1] && top[x] > top[x + 1]) top[x] = Math.max(top[x - 1], top[x + 1]);
+      // and a summit ends in one tip pixel, not a needle
+      else if (top[x] < Math.min(top[x - 1], top[x + 1]) - 1) top[x] = Math.min(top[x - 1], top[x + 1]) - 1;
     }
     return { top, owner };
   }
@@ -212,8 +268,8 @@
     const snowline = (x) => hz * 0.67 + (fbm(nSnow, x * 0.06, 3) - 0.5) * hz * 0.1;
 
     for (let x = 0; x < W; x++) {
-      const jag = (fbm(nMid, x * 0.4 + 7, 2) - 0.5) * 4;
-      const sl = snowline(x);
+      const jag = Math.round((fbm(nMid, x * 0.12 + 7, 2) - 0.5) * 5); // the light/shadow split meanders, no per-column notches
+      const slx = snowline(x);
       for (let y = 0; y < horizon; y++) {
         let c = null;
         if (y >= nearTop[x]) c = C.near;
@@ -221,26 +277,92 @@
           c = C.hill;
         } else if (y >= far.top[x]) {
           const p = far.owner[Math.max(0, Math.min(W - 1, Math.round(x - (y - far.top[x]) * 0.6)))];
-          const lit = x >= p.x - (y - p.y) * 0.4 + jag; // east faces catch the aurora
+          // west faces catch the moon, which hangs to the west of the range; the split starts
+          // exactly at the summit and only meanders once it is a few rows down the face
+          const lit = x <= p.x + Math.floor((y - p.y) * 0.5) + Math.round(jag * Math.min(1, Math.max(0, (y - p.y) / 8)));
           const side = x >= p.x ? 1 : -1;
-          // rock ribs run down the fall line; couloirs carry snow below the snowline
-          const along = (x - p.x) - side * (y - p.y) * 0.75;
+          // rock ribs run down the fall line at a clean 1:2 step, two pixels wide, so they read as
+          // rock bands and never as a broken scratch; couloirs carry snow below the snowline
+          const along = Math.floor(((x - p.x) - side * Math.floor((y - p.y) * 0.5)) / 2) * 2;
+          // the cap's lower edge breaks into tongues down the fall line, never a flat cut
+          const sl = slx + (nCouloir(along * 0.21 + p.x * 0.5 + 31) - 0.5) * hz * 0.1;
           const rib = nRib(along * 0.3 + p.x) > 0.8 && y - far.top[x] > 3 && y > p.y + (sl - p.y) * 0.35;
-          const couloir = nCouloir(along * 0.35 + p.x * 0.3) > 0.78 && y < sl + hz * 0.07;
-          const snowy = (y < sl && !rib) || couloir || (y - far.top[x] < 1 && y < sl + hz * 0.05);
+          // couloirs only hang from a real snowcap: on a low ridge with no cap they read as stray light beams
+          const couloir = p.y < slx - hz * 0.08 && nCouloir(along * 0.35 + p.x * 0.3) > 0.78 && y < sl + hz * 0.06;
+          // the crest is every pixel the sky touches, from above or from the side, so where the
+          // slope drops two rows in one column the crest line still runs unbroken
+          const edgeW = y - far.top[x] < 1 || (x > 0 && y < far.top[x - 1]); // open to the moon's side
+          const edge = edgeW || (x < W - 1 && y < far.top[x + 1]);
+          const snowy = (y < sl && !rib) || couloir || (edge && y < sl + hz * 0.05);
           if (snowy) {
             if (!lit) c = C.snowShade;
             // a frost crest only above the snowline; lower ridges carry a quieter edge
-            else if (y - far.top[x] < 1) c = y < sl ? C.frost : C.snowMid;
+            else if (edgeW) c = y < sl ? C.frost : C.snowMid;
             else c = C.snowLit; // lit snow is one clean plane: no dotted texture
           } else c = lit ? C.farRock : C.farShade;
           // valley mist: the range's foot thins into haze above the foothills, so the planes part
           const md = hillTop[x] - y;
-          if (md < 3 || (md < 5 && dither(x, y) < (5 - md) * 0.25)) c = C.haze;
+          if (md < 4) c = C.haze;
         } else if (y >= haze.top[x]) {
-          c = y < hz * 0.6 && y - haze.top[x] < 3 && dither(x, y) > 0.3 ? C.hazeSnow : C.haze;
+          c = y < hz * 0.62 && y - haze.top[x] < 1 ? C.hazeSnow : C.haze; // a clean snow edge on the highest back peaks
         }
         if (c) base[y * W + x] = pack(c);
+      }
+    }
+
+    // no snow specks or floating shards: a patch of six pixels or fewer is noise, and a small
+    // patch that never reaches the ridge crest hangs in the rock face with nothing holding it,
+    // so either takes the rock colour beside it
+    {
+      const SNOWSET = new Set([C.frost, C.snowLit, C.snowMid, C.snowShade].map(pack));
+      const seen = new Uint8Array(W * horizon);
+      for (let i = 0; i < W * horizon; i++) {
+        if (seen[i] || !SNOWSET.has(base[i])) continue;
+        const comp = [i], stack = [i];
+        let crest = false;
+        seen[i] = 1;
+        while (stack.length) {
+          const j = stack.pop(), jx = j % W;
+          if (Math.floor(j / W) - far.top[jx] < 1) crest = true;
+          for (const n of [jx > 0 ? j - 1 : -1, jx < W - 1 ? j + 1 : -1, j - W, j + W]) {
+            if (n < 0 || n >= W * horizon || seen[n] || !SNOWSET.has(base[n])) continue;
+            seen[n] = 1; comp.push(n); stack.push(n);
+          }
+        }
+        if (comp.length > 6 && (crest || comp.length >= 40)) continue;
+        // each pixel takes the nearest rock along its own row, so a patch several pixels thick
+        // fills right through instead of keeping a core whose neighbours are all snow
+        const fill = comp.map((j) => {
+          const row = j - (j % W);
+          for (let d = 1; d < W; d++) {
+            for (const n of [j - d, j + d]) {
+              if (n >= row && n < row + W && base[n] && !SNOWSET.has(base[n])) return base[n];
+            }
+          }
+          return base[j];
+        });
+        comp.forEach((j, k) => { base[j] = fill[k]; });
+      }
+      // and the reverse: a rock speck of three pixels or fewer walled in by snow is a hole in the
+      // snowfield, not a rock; it takes the snow beside it
+      const ROCKSET = new Set([C.farRock, C.farShade].map(pack));
+      const seenR = new Uint8Array(W * horizon);
+      for (let i = 0; i < W * horizon; i++) {
+        if (seenR[i] || !ROCKSET.has(base[i])) continue;
+        const comp = [i], stack = [i];
+        let walled = true;
+        seenR[i] = 1;
+        while (stack.length) {
+          const j = stack.pop(), jx = j % W;
+          for (const n of [jx > 0 ? j - 1 : -1, jx < W - 1 ? j + 1 : -1, j - W, j + W]) {
+            if (n < 0 || n >= W * horizon) { walled = false; continue; }
+            if (ROCKSET.has(base[n])) { if (!seenR[n]) { seenR[n] = 1; comp.push(n); stack.push(n); } }
+            else if (!SNOWSET.has(base[n])) walled = false;
+          }
+        }
+        if (!walled || comp.length > 3) continue;
+        const fill = comp.map((j) => base[j - 1] && SNOWSET.has(base[j - 1]) ? base[j - 1] : base[j + 1] && SNOWSET.has(base[j + 1]) ? base[j + 1] : base[j - W]);
+        comp.forEach((j, k) => { base[j] = fill[k]; });
       }
     }
 
@@ -279,8 +401,8 @@
 
     // a thin rim of snow along the waterline, broken where the shore runs dark
     for (let x = 0; x < W; x++) {
-      const v = fbm(nSnow, x * 0.15 + 70, 2);
-      if (v > 0.5) set(x, horizon - 1, v > 0.62 ? C.hazeSnow : C.haze);
+      const v = fbm(nSnow, x * 0.32 + 70, 2);
+      if (v > 0.53) set(x, horizon - 1, v > 0.62 ? C.hazeSnow : C.haze);
     }
 
     // the cabin: dark timber, snow on the roof, one lit window
@@ -291,176 +413,129 @@
     for (let k = 0; k < 5; k++) {
       for (let x = bx - 1 + k; x < bx + 10 - k; x++) set(x, by - 1 - k, C.cabin);
       set(bx - 1 + k, by - 1 - k, C.frost);
-      set(bx + 9 - k, by - 1 - k, C.frost);
+      set(bx + 9 - k, by - 1 - k, C.snowMid); // the east slope turns from the moon
       set(bx - 2 + k, by - k, C.ice);
-      set(bx + 10 - k, by - k, C.ice);
+      set(bx + 10 - k, by - k, C.snowShade);
     }
     set(bx + 4, by - 5, C.frost);
-    for (let y = by - 6; y < by - 2; y++) set(bx + 6, y, C.cabin); // chimney
-    set(bx + 6, by - 7, C.frost);
+    // a stone chimney, a step lighter than the timber so it does not vanish into the pines,
+    // its snow cap sitting on it rather than floating above an unseen stack
+    for (let y = by - 6; y < by - 3; y++) set(bx + 6, y, C.farRock);
+    set(bx + 6, by - 7, C.snowMid);
     set(cabin.wx, cabin.wy, C.lamp); set(cabin.wx + 1, cabin.wy, C.lamp);
     set(cabin.wx, cabin.wy + 1, C.lamp); set(cabin.wx + 1, cabin.wy + 1, C.ember);
 
-    // a crescent moon, in the clear sky between the name and the curtain, never overlapping either
+    // a crescent moon, in the open sky past the name, never crowding it: a lit crescent, the
+    // rest of the disc faintly visible by earthshine, and a halo of two rings, each a step or
+    // two up the sky's own ramp, so the glow is made of the night's colours
     const mr = Math.max(3, Math.round(Math.min(W, H) * 0.028));
-    const mx = W > H ? Math.round(aurStart * W + mr + 2) : Math.round(W * 0.22), my = Math.round(H * (W > H ? 0.12 : 0.08));
+    const mx = W > H ? Math.max(Math.round(W * 0.45), Math.round(nameEnd * W + 10 + mr)) : Math.round(W * 0.22), my = Math.round(H * (W > H ? 0.12 : 0.08));
     moon = { x: mx, y: my, r: mr };
-    for (let y = -mr - 1; y <= mr + 1; y++) for (let x = -mr - 1; x <= mr + 1; x++) {
-      const inA = x * x + y * y <= mr * mr + mr * 0.4;
+    const hr = mr + Math.max(3, Math.round(mr * 0.8)), hr1 = mr + Math.max(1, Math.round(mr * 0.35));
+    for (let y = -hr; y <= hr; y++) for (let x = -hr; x <= hr; x++) {
+      const d2 = x * x + y * y;
+      const inA = d2 <= mr * mr + mr * 0.4;
       const bx2 = x - mr * 0.6, by2 = y + mr * 0.3;
       const inB = bx2 * bx2 + by2 * by2 <= mr * mr;
       if (inA && !inB) {
         const rim = (x - 1) * (x - 1) + y * y > mr * mr - mr; // softer limb
         set(mx + x, my + y, rim ? C.ice : C.frost);
+      } else if (inA) set(mx + x, my + y, C.earthshine);
+      else if (d2 <= hr * hr + hr * 0.4) {
+        const L = skyLvl(my + y), up = d2 <= hr1 * hr1 + hr1 * 0.4 ? 2 : 1;
+        set(mx + x, my + y, SKY[Math.min(SKY.length - 1, L + up)]);
       }
     }
 
-    // stars, only over open sky
+    // stars, only over open sky: mostly faint, fewer bright, a rare few with a cross of light;
+    // thicker in a soft diagonal drift and thinning toward the horizon, never touching each
+    // other, a ridge, the moon's halo or the name
     const rs = rng(99);
     stars = [];
-    const count = Math.round((W * H) / 300);
+    const taken = new Uint8Array(W * H);
+    const count = Math.round((W * H) / 230);
+    const clear = (x, y, r) => {
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+        const xx = x + dx, yy = y + dy;
+        if (xx < 0 || xx >= W || yy < 0) continue;
+        if (yy >= horizon || base[yy * W + xx] || taken[yy * W + xx]) return false;
+      }
+      return true;
+    };
     for (let i = 0; i < count; i++) {
-      const x = Math.floor(rs() * W), y = Math.floor(rs() * H * 0.6);
-      if (base[y * W + x]) continue;
-      if (moon && Math.hypot(x - moon.x, y - moon.y) < moon.r + 3) continue;
+      const x = Math.floor(rs() * W), y = Math.floor(rs() * H * 0.62);
+      const drift = smooth(0.35, 0.75, fbm(nSnow, (x + y * 0.8) * 0.05 + 11, 3));
+      const fall = 1 - smooth(0.25, 1, y / horizon) * 0.75;
+      const roll = rs(), tier = rs(), tw = rs(), ph = rs() * 6.28, big = rs();
+      if (roll > (0.25 + 0.75 * drift) * fall) continue;
+      if (!clear(x, y, 2)) continue;
       if (nameBox && x >= nameBox.x0 && x <= nameBox.x1 && y >= nameBox.y0 && y <= nameBox.y1) continue;
-      stars.push({ x, y, c: rs() > 0.8 ? C.frost : C.ice, tw: rs() > 0.7, ph: rs() * 6.28, big: rs() > 0.96 });
+      const lvl = tier < 0.62 ? 0 : tier < 0.92 ? 1 : 2;
+      const cross = lvl === 2 && big > 0.6 && clear(x, y, 3);
+      stars.push({ x, y, lvl, tw: tw > 0.65 && lvl > 0, ph, big: cross });
+      taken[y * W + x] = 1;
+      if (cross) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) taken[(y + dy) * W + x + dx] = 1;
     }
   }
 
   // ---------------------------------------------------------------- sky
 
-  // five flat steps of night, each pair of neighbours blended only in a narrow dithered seam
-  const mid = (a, b) => a.map((v, i) => Math.round((v + b[i]) / 2));
-  const SKY = [C.space, mid(C.space, C.night), C.night, mid(C.night, C.ridge), C.ridge];
-  const AUR = [C.abyss, C.glacier, C.ice, C.frost];
-
-  function ramp(steps, v, x, y) {
-    const n = steps.length - 1;
-    const p = Math.max(0, Math.min(n, v * n));
-    const i = Math.min(n - 1, Math.floor(p));
-    return p - i > dither(x, y) ? steps[i + 1] : steps[i];
-  }
+  // nine close steps of night from space down to the ridge glow, each so near its neighbour
+  // that the two-row checker seam between them reads as a soft join, not a drawn line
+  const lerp = (a, b, f) => a.map((v, i) => Math.round(v + (b[i] - v) * f));
+  const SKY = [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((f) => (f <= 1 ? lerp(C.space, C.night, f) : lerp(C.night, C.ridge, f - 1)));
 
   const skyV = (y) => 0.05 + 0.95 * Math.pow(y / horizon, 1.3);
-  let aurCols = null, aurMask = null, aurTop = 0, aurBot = 0;
-
-  // everything about the curtain that depends only on the column, worked out once a frame
-  function auroraPrep(t) {
-    aurTop = Infinity; aurBot = -Infinity;
-    for (let k = 0; k < 2; k++) {
-      const env = aurCols.env[k], bottom = aurCols.bottom[k], len = aurCols.len[k], rays = aurCols.rays[k];
-      for (let x = 0; x < W; x++) {
-        const u = x / W;
-        const e = k === 0
-          ? smooth(aurStart, aurStart + 0.14, u) * (1 - smooth(0.92, 1.08, u))
-          : smooth(aurStart + 0.18, aurStart + 0.36, u) * (1 - smooth(0.98, 1.2, u)) * 0.6;
-        env[x] = e;
-        if (e <= 0) continue;
-        const bt = horizon * (k === 0 ? 0.44 : 0.32)
-          + Math.sin(u * 6.0 + t * 0.3 + k * 2) * horizon * 0.08
-          + Math.sin(u * 17.0 - t * 0.6) * horizon * 0.02;
-        bottom[x] = bt;
-        // a curtain: broad folds that sway slowly, hung with fine vertical rays that drift along
-        // them; a bright ray reaches higher, so the top edge is a comb of streaks, not a haze
-        const fold = nRay(u * 7 + t * 0.12 + k * 90);
-        const ray = Math.pow(nRay(x * 0.55 + t * 0.35 + k * 30), 2.2);
-        rays[x] = (0.35 + 0.65 * fold) * (0.3 + 0.7 * ray);
-        len[x] = horizon * (0.05 + (0.1 + 0.17 * fold) * (0.25 + 0.75 * Math.sqrt(ray)));
-        if (bt - horizon * 0.4 < aurTop) aurTop = bt - horizon * 0.4;
-        if (bt + 1 > aurBot) aurBot = bt + 1;
-      }
-    }
-  }
-
-  function aurora(x, y) {
-    let best = 0;
-    for (let k = 0; k < 2; k++) {
-      const env = aurCols.env[k][x];
-      if (env <= 0) continue;
-      const d = aurCols.bottom[k][x] - y;
-      if (d < -1 || d > horizon * 0.4) continue;
-      const len = aurCols.len[k][x];
-      // light pools at the hem and thins upward, so the top dissolves into the sky
-      const prof = d < 0 ? 0.4 : Math.max(0, 1 - d / len);
-      // the lower hem is the brightest line of the curtain, one step brighter than its rays
-      const hem = d >= 0 && d < 2 ? 0.45 : d >= 2 && d < 4 ? 0.15 : 0;
-      const v = env * (aurCols.rays[k][x] * Math.pow(prof, 1.1) + hem) * (k === 0 ? 0.9 : 0.55);
-      if (v > best) best = v;
-    }
-    return best;
-  }
+  const skyLvl = (y) => Math.max(0, Math.min(SKY.length - 1, Math.floor(skyV(y) * (SKY.length - 1) + 0.5)));
 
   function draw(t) {
-    auroraPrep(t);
     for (let y = 0; y < horizon; y++) {
-      const sky = skyRows[y], inAur = y >= aurTop && y <= aurBot;
+      const sky = skyRows[y];
       for (let x = 0; x < W; x++) {
         const i = y * W + x;
-        if (base[i]) { buf[i] = base[i]; aurMask[i] = 0; continue; }
-        const a = inAur ? aurora(x, y) : 0;
-        // faint light breaks into short vertical dashes along the rays, never lone dots;
-        // each column's dashes are offset so they never line up into rows
-        const lit = a > 0.05 + dither(x + 1, (y + ((x * 7) % 5)) >> 2) * 0.22;
-        aurMask[i] = lit ? 1 : 0;
-        buf[i] = lit ? pack(ramp(AUR, (a - 0.05) / 0.85, x, y >> 1)) : sky[x & 3];
+        buf[i] = base[i] || sky[x & 3];
       }
     }
-    // a lit pixel with no lit neighbour above or below is a lone dot, not part of a ray: drop it
-    const y0 = Math.max(1, Math.floor(aurTop)), y1 = Math.min(horizon - 2, Math.ceil(aurBot));
-    for (let y = y0; y <= y1; y++) {
-      for (let x = 0; x < W; x++) {
-        const i = y * W + x;
-        if (aurMask[i] && !aurMask[i - W] && !aurMask[i + W]) buf[i] = skyRows[y][x & 3];
-      }
-    }
+    const STAR = [P.starDim, P.ice, P.frost];
     for (const s of stars) {
-      const i = s.y * W + s.x;
-      if (buf[i] !== skyRows[s.y][s.x & 3]) continue; // hidden by aurora
-      if (s.tw && Math.sin(t * 2.2 + s.ph) < -0.55) continue;
-      buf[i] = pack(s.c);
-      if (s.big && Math.sin(t * 1.3 + s.ph) > 0.2) {
-        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-          const j = (s.y + dy) * W + s.x + dx;
-          if (s.x + dx >= 0 && s.x + dx < W && s.y + dy >= 0 && !base[j]) buf[j] = pack(C.abyss);
-        }
+      // a twinkle dims a star one step for a moment; it never blinks out
+      const dim = s.tw && Math.sin(t * 2.2 + s.ph) < -0.6 ? 1 : 0;
+      if (s.lvl - dim < 0) continue;
+      buf[s.y * W + s.x] = STAR[s.lvl - dim];
+      if (s.big && Math.sin(t * 1.3 + s.ph) > -0.3) {
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) buf[(s.y + dy) * W + s.x + dx] = STAR[0];
       }
     }
 
     // the fjord: a rippling mirror, fjord-tinted, settling into the page colour
     const depthRows = H - horizon;
-    const mirror = Math.max(1.15, (horizon * 0.6) / (depthRows * 0.85));
     for (let y = horizon; y < H; y++) {
       const d = (y - horizon) / depthRows;
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
-      // a shallow fjord (wide screens) folds the mirror tighter so the peaks still reach it
-      const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * mirror));
-      // thin calm-water breaks drift down through the mirror: rows where the reflection gives way to the water
-      const brk = nRay((y - horizon) * 0.8 - t * 0.6 + 300) > 0.7 ? 0.4 : 1;
-      const fade = brk * (horizon < H * 0.7 ? 0.32 * Math.pow(1 - d, 1.1) : 0.5 * (1 - smooth(0.5, 0.88, d)));
-      const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
-      const f1 = 1 - fade;
-      const wr = (C.deep[0] + (C.fjord[0] - C.deep[0]) * tint) * f1;
-      const wg = (C.deep[1] + (C.fjord[1] - C.deep[1]) * tint) * f1;
-      const wb = (C.deep[2] + (C.fjord[2] - C.deep[2]) * tint) * f1;
-      const row = y * W, src = sy * W;
-      // the aurora's light keeps to a narrow band at the far shore, however deep the fjord is drawn
-      const gd = (y - horizon) / Math.min(depthRows * 0.25, 9);
-      const glowRow = gd < 1 && ((y - horizon) & 1) === 1 ? 1 - gd : 0;
+      const sy = waterSrc[y - horizon], span = waterSpan[y - horizon];
+      // thin calm-water breaks drift down through the mirror: rows where the reflection steps one
+      // class quieter, so it gives way to the water without a hard gap
+      const brk = nRay((y - horizon) * 0.8 - t * 0.6 + 300) > 0.7 ? 1 : 0;
+      const pal = waterBand[y - horizon] * 5;
+      const row = y * W;
       for (let x = 0; x < W; x++) {
-        const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
-        // read the mirror in pixel pairs: water carries no dither, so a checker seam above reflects as one flat band
-        const s = buf[src + (sx & ~1)];
-        const r = Math.round((s & 255) * fade + wr), g = Math.round(((s >> 8) & 255) * fade + wg), b = Math.round(((s >> 16) & 255) * fade + wb);
-        buf[row + x] = (255 << 24) | (b << 16) | (g << 8) | r;
-        // the aurora's light lies on the near water in broken ripple lines, rippling with it
-        if (glowRow > 0) {
-          const glow = (aurCols.env[0][sx] * aurCols.rays[0][sx] + 0.6 * aurCols.env[1][sx] * aurCols.rays[1][sx]) * glowRow * nRay(sx * 0.21 + y * 7.3 + t * 0.7);
-          if (glow > 0.3) buf[row + x] = GLOW;
+        const sx = (x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob) & ~1;
+        // read the mirror in pixel pairs from the static scene (stars and the moon never
+        // reflect; the moon has its own glade), so a checker seam above reflects as one flat band;
+        // where the mirror folds, the rows it folds together vote and the brightest wins, so ribs
+        // and snow tongues never alias into scattered specks
+        let k = 0;
+        for (let r = 0; r < span; r++) {
+          const v = waterCls.get(base[(sy - r) * W + sx]);
+          const kk = v === undefined ? 1 : v;
+          if (kk > k) k = kk;
         }
+        if (brk && k > 1) k--;
+        buf[row + x] = waterPal[pal + k];
       }
-      const g = Math.floor(nRay(y * 3.1 + t * 0.8) * W * 1.3);
-      if (g < W && d < 0.55) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
+      // a glint: each row has its own fixed spot that brightens and fades slowly, never jumping about
+      const g = Math.floor(nRay(y * 3.1 + 500) * W * 1.3);
+      if (g < W && d < 0.55 && nRay(y * 1.9 + t * 0.5) > 0.62) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = P.fjord;
     }
 
     // the moon's glade: thin broken dashes of cool light on the water below it
@@ -471,28 +546,34 @@
         if (nRay(y * 2.3 + t * 0.9) < 0.3 + d * 0.45) continue;
         const len = 1 + Math.round(nRay(y * 5.7 - t * 0.6) * (2 + moon.r * 0.5) * (1 - d * 0.5));
         const x0 = moon.x + Math.round(Math.sin(y * 0.9 + t * 1.8) * (0.6 + d * 2.2) + (nRay(y * 1.3 + 40) - 0.5) * moon.r) - (len >> 1);
-        const c = d < 0.25 ? C.snowLit : d < 0.6 ? C.snowMid : C.snowShade;
-        for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = pack(c);
+        const c = d < 0.25 ? P.snowLit : d < 0.6 ? P.snowMid : P.snowShade;
+        for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = c;
       }
     }
 
     // lamplight reflected beneath the cabin, and a thread of chimney smoke
     if (cabin) {
       // the lamp gutters now and then: one pane dips to ember for a frame or two
-      if (nRay(t * 1.9 + 400) > 0.93) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = pack(C.ember);
-      for (let y = horizon + 1; y < Math.min(H, horizon + Math.round(depthRows * 0.3)); y += 2) {
-        if (Math.sin(y * 1.7 + t * 3) <= -0.2) continue;
-        const x = cabin.wx + Math.round(Math.sin(y * 0.9 + t * 1.8) * 1.2);
-        const c = (y - horizon) < depthRows * 0.25 ? C.lamp : C.ember;
-        if (x >= 0 && x + 1 < W) { buf[y * W + x] = pack(c); if (y % 4 === 1) buf[y * W + x + 1] = pack(C.ember); }
+      if (nRay(t * 1.9 + 400) > 0.93) buf[cabin.wy * W + cabin.wx + (Math.floor(t * 3) & 1)] = P.ember;
+      // a column of short warm dashes under the window, rippling with the water rows they sit on;
+      // two pixels wide like the window near the shore, narrowing and cooling to ember with depth
+      const rows = Math.round(depthRows * 0.3);
+      for (let y = horizon + 1; y < Math.min(H, horizon + rows); y += 2) {
+        const d = (y - horizon) / rows;
+        if (nRay(y * 2.1 + t * 0.7 + 60) < 0.2 + d * 0.5) continue;
+        const x = cabin.wx + Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + ((y - horizon) / depthRows) * 2.2));
+        const c = d < 0.5 ? P.lamp : P.ember;
+        if (x >= 0 && x + 1 < W) { buf[y * W + x] = c; if (d < 0.4) buf[y * W + x + 1] = c; }
       }
       const [cx, cy] = cabin.chimney;
+      // the gaps between puffs climb with the smoke, four rows a second
+      const lift = Math.floor(t * 4);
       for (let k = 1; k < 14; k++) {
         const y = cy - k;
         const x = cx + Math.round(Math.sin(k * 0.5 - t * 1.2) * (k * 0.18) + k * 0.25);
-        if (y < 0 || x < 0 || x >= W || (k + Math.floor(t * 4)) % 5 === 0) continue;
+        if (y < 0 || x < 0 || x >= W || (((k - lift) % 5) + 5) % 5 === 0) continue;
         if (k > 9 && dither(x, y) > 0.5) continue;
-        buf[y * W + x] = pack(k < 6 ? C.snowShade : C.haze);
+        buf[y * W + x] = k < 6 ? P.snowShade : P.haze;
       }
     }
 
@@ -511,13 +592,10 @@
     const sctx = shoreCanvas.getContext("2d", { alpha: false });
     const im = sctx.createImageData(sw, sh);
     const b = new Uint32Array(im.data.buffer);
-    // the bank rolls in low drifts; a second, lower crest catches the light here and there
-    const ground = [], crest = [];
+    // the bank rolls in low drifts
+    const ground = [];
     for (let x = 0; x < sw; x++) {
       ground[x] = Math.round(sh * 0.7 - fbm(nNear, x * 0.045 + 200, 3) * sh * 0.16 - Math.sin(x * 0.11) * 1.2);
-      crest[x] = ground[x] + 4 + Math.round(fbm(nSnow, x * 0.07 + 30, 2) * (sh - ground[x]) * 0.5);
-      // a crest climbs or falls one pixel a column at most, so its line never breaks into a stub
-      if (x > 0) crest[x] = Math.max(crest[x - 1] - 1, Math.min(crest[x - 1] + 1, crest[x]));
     }
     const SNOW = [C.snowLit, C.snowMid, C.snowShade];
     // page field above, a ridge-blue back hill, the snowbank
@@ -531,12 +609,6 @@
         // the drift's own contour, so the layers read as packed snow, with no dotted seams
         const v = Math.pow((g - 1) / Math.max(1, sh - ground[x] - 1), 0.8) * 3.2;
         c = g === 0 ? C.frost : SNOW[Math.max(0, Math.min(2, Math.floor(v)))];
-        // the drift crest: a lit lip, a shaded fall below it
-        const cr = y - crest[x];
-        if (crest[x] < sh - 2 && fbm(nSnow, x * 0.09 + 5, 2) > 0.48) {
-          if (cr === 0) c = C.snowLit;
-          else if (cr === 1) c = C.snowShade;
-        }
       }
       b[y * sw + x] = pack(c);
     }
@@ -548,7 +620,7 @@
       const top = ground[x] + 1 - h;
       for (let dx = 2; dx < 2 + Math.round(h * 0.35); dx++) {
         const px = x + dx;
-        if (px < sw && b[ground[px] * sw + px] === pack(C.frost)) b[ground[px] * sw + px] = pack(C.snowShade);
+        if (px < sw && b[ground[px] * sw + px] === P.frost) b[ground[px] * sw + px] = P.snowShade;
       }
       const rows = spruce(h);
       for (let k = 0; k <= h; k++) {
@@ -558,14 +630,14 @@
           if (px < 0 || px >= sw) continue;
           // the skirt reaches down to the drift under it, so no tree floats over a hollow
           const y1 = k === h ? Math.max(top + k, ground[px]) : top + k;
-          for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = pack(C.pine);
+          for (let py = top + k; py <= y1 && py < sh; py++) if (py >= 0) b[py * sw + px] = P.pine;
         }
       }
     }
     const rf = rng(808), fl = [];
     for (let i = 0, n = Math.round((sw * sh) / 260); i < n; i++) {
       const near = rf() > 0.7;
-      fl.push({ x: rf() * sw, y: rf() * sh, sp: near ? 6 + rf() * 4 : 2 + rf() * 2.5, sw: 0.6 + rf() * 1.4, ph: rf() * 6.28, c: near ? C.frost : C.ice });
+      fl.push({ x: rf() * sw, y: rf() * sh, sp: near ? 6 + rf() * 4 : 2 + rf() * 2.5, sw: 0.6 + rf() * 1.4, ph: rf() * 6.28, near, c: near ? P.frost : P.ice });
     }
     shore = { w: sw, h: sh, ctx: sctx, im, b, base: b.slice(), ground, flakes: fl };
     shoreFrame(reduceMotion.matches ? 4 : (performance.now() - start) / 1000);
@@ -580,8 +652,8 @@
       const y = Math.floor((f.y + t * f.sp) % h);
       const x = Math.floor(((f.x + Math.sin(t * 0.7 + f.ph) * f.sw * 2) % w + w) % w);
       if (y >= ground[x]) continue;
-      if (b[y * w + x] === pack(C.pine) && f.c !== C.frost) continue; // far flakes pass behind the pines
-      b[y * w + x] = pack(f.c);
+      if (!f.near && b[y * w + x] === P.pine) continue; // far flakes pass behind the pines
+      b[y * w + x] = f.c;
     }
     shore.ctx.putImageData(shore.im, 0, 0);
   }
@@ -607,16 +679,21 @@
   }
 
   function render() {
+    sizeKey = currentKey();
     layout();
     draw(reduceMotion.matches ? 4 : (performance.now() - start) / 1000);
     drawShore();
     kick();
   }
 
-  let resizeTimer = 0;
+  // redraw only when a drawn box really changes size (not on the observer's first report, nor on
+  // reflows that leave both canvases' boxes as they were)
+  let resizeTimer = 0, sizeKey = "";
+  const boxes = [canvas.parentElement, shoreCanvas?.parentElement].filter(Boolean);
+  const currentKey = () => boxes.map((el) => el.clientWidth + "x" + el.clientHeight).join(",");
   new ResizeObserver(() => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(render, 120);
+    resizeTimer = setTimeout(() => { if (currentKey() !== sizeKey) render(); }, 120);
   }).observe(document.body);
 
   new IntersectionObserver((entries) => {
@@ -629,12 +706,15 @@
     kick();
   }).observe(shoreCanvas);
 
+  // the CSS loops (the level meter, the scroll cue) rest while they are out of view
+  const rest = new IntersectionObserver((entries) => {
+    for (const e of entries) e.target.toggleAttribute("data-rest", !e.isIntersecting);
+  });
+  document.querySelectorAll(".eq, .cue").forEach((el) => rest.observe(el));
+
   document.addEventListener("visibilitychange", kick);
   reduceMotion.addEventListener?.("change", render);
   document.fonts?.ready.then(render);
 
   render();
-
-  // the name wipes in on arrival when motion is welcome; nothing else is held back
-  if (!reduceMotion.matches) document.documentElement.classList.add("reveal");
 })();
