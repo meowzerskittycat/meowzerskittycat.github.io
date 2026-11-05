@@ -74,7 +74,9 @@
   let W = 0, H = 0, horizon = 0, scale = 4;
   let img, buf, base; // base: static scene above the waterline (0 = sky)
   let stars = [], flakes = [];
-  let cabin = null;
+  const start = performance.now();
+  let cabin = null, moon = null;
+  let shore = null; // { w, h, ctx, im, b, base, flakes }
 
   function layout() {
     const rect = canvas.getBoundingClientRect();
@@ -242,6 +244,7 @@
     // a crescent moon
     const mr = Math.max(3, Math.round(Math.min(W, H) * 0.028));
     const mx = Math.round(W * (W > H ? 0.45 : 0.22)), my = Math.round(H * (W > H ? 0.12 : 0.08));
+    moon = { x: mx, r: mr };
     for (let y = -mr - 1; y <= mr + 1; y++) for (let x = -mr - 1; x <= mr + 1; x++) {
       const inA = x * x + y * y <= mr * mr + mr * 0.4;
       const bx2 = x - mr * 0.6, by2 = y + mr * 0.3;
@@ -362,6 +365,19 @@
       if (g < W && d < 0.55) for (let k = 0; k < 2 + (y % 3); k++) if (g + k < W) buf[y * W + g + k] = pack(C.fjord);
     }
 
+    // the moon's glade: thin broken dashes of cool light on the water below it
+    if (moon) {
+      const rows = Math.round(depthRows * 0.65);
+      for (let y = horizon + 1; y < horizon + rows; y += 2) {
+        const d = (y - horizon) / rows;
+        if (nRay(y * 2.3 + t * 0.9) < 0.3 + d * 0.45) continue;
+        const len = 1 + Math.round(nRay(y * 5.7 - t * 0.6) * (2 + moon.r * 0.5) * (1 - d * 0.5));
+        const x0 = moon.x + Math.round(Math.sin(y * 0.9 + t * 1.8) * (0.6 + d * 2.2) + (nRay(y * 1.3 + 40) - 0.5) * moon.r) - (len >> 1);
+        const c = d < 0.2 ? C.ice : d < 0.55 ? C.glacier : C.abyss;
+        for (let k = 0; k < len; k++) if (x0 + k >= 0 && x0 + k < W) buf[y * W + x0 + k] = pack(c);
+      }
+    }
+
     // lamplight reflected beneath the cabin, and a thread of chimney smoke
     if (cabin) {
       for (let y = horizon + 1; y < Math.min(H, horizon + Math.round(depthRows * 0.6)); y += 2) {
@@ -429,23 +445,48 @@
         }
       }
     }
-    sctx.putImageData(im, 0, 0);
+    const rf = rng(808), fl = [];
+    for (let i = 0, n = Math.round((sw * sh) / 260); i < n; i++) {
+      const near = rf() > 0.7;
+      fl.push({ x: rf() * sw, y: rf() * sh, sp: near ? 6 + rf() * 4 : 2 + rf() * 2.5, sw: 0.6 + rf() * 1.4, ph: rf() * 6.28, c: near ? C.frost : C.ice });
+    }
+    shore = { w: sw, h: sh, ctx: sctx, im, b, base: b.slice(), ground, flakes: fl };
+    shoreFrame(reduceMotion.matches ? 4 : (performance.now() - start) / 1000);
+  }
+
+  // snow keeps falling over the shore, settling into the bank
+  function shoreFrame(t) {
+    if (!shore) return;
+    const { w, h, b, base, ground, flakes: fl } = shore;
+    b.set(base);
+    for (const f of fl) {
+      const y = Math.floor((f.y + t * f.sp) % h);
+      const x = Math.floor(((f.x + Math.sin(t * 0.7 + f.ph) * f.sw * 2) % w + w) % w);
+      if (y >= ground[x]) continue;
+      if (b[y * w + x] === pack(C.pine) && f.c !== C.frost) continue; // far flakes pass behind the pines
+      b[y * w + x] = pack(f.c);
+    }
+    shore.ctx.putImageData(shore.im, 0, 0);
   }
 
   // ---------------------------------------------------------------- loop: 10 fps, only while visible
 
-  let visible = true, raf = 0, last = 0;
-  const start = performance.now();
+  let visible = true, shoreVisible = false, raf = 0, last = 0;
   const FRAME = 100;
 
   function tick(now) {
     raf = 0;
-    if (!visible || reduceMotion.matches || document.hidden) return;
-    if (now - last >= FRAME) { last = now; draw((now - start) / 1000); }
+    if (!(visible || shoreVisible) || reduceMotion.matches || document.hidden) return;
+    if (now - last >= FRAME) {
+      last = now;
+      const t = (now - start) / 1000;
+      if (visible) draw(t);
+      if (shoreVisible) shoreFrame(t);
+    }
     raf = requestAnimationFrame(tick);
   }
   function kick() {
-    if (!raf && visible && !reduceMotion.matches && !document.hidden) raf = requestAnimationFrame(tick);
+    if (!raf && (visible || shoreVisible) && !reduceMotion.matches && !document.hidden) raf = requestAnimationFrame(tick);
   }
 
   function render() {
@@ -465,6 +506,11 @@
     visible = entries[0].isIntersecting;
     kick();
   }).observe(canvas);
+
+  if (shoreCanvas) new IntersectionObserver((entries) => {
+    shoreVisible = entries[0].isIntersecting;
+    kick();
+  }).observe(shoreCanvas);
 
   document.addEventListener("visibilitychange", kick);
   reduceMotion.addEventListener?.("change", render);
