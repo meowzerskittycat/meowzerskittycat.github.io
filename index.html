@@ -34,17 +34,21 @@
       var w = e.clientWidth, s = w >= 2400 ? 6 : w >= 1760 ? 5 : Math.min(4, Math.max(3, Math.floor(w / 320)));
       e.style.setProperty("--scene-px", s + "px");
       e.style.setProperty("--ui-px", Math.min(4, s) + "px");
-      // on touch screens the layout's screen height is locked at load: a browser that brings in
-      // its tab strip or toolbar after the page shows (or hides them on scroll) changes the
-      // viewport, and the scene would redraw at the new height and the name would jump. Only a
-      // new width (turning the phone) measures again
+      // on touch screens the layout's screen height is locked once the page shows: a browser that
+      // brings in its tab strip or toolbar after that (or hides them on scroll) changes the
+      // viewport, and the scene would redraw at the new height. While the page is still hidden
+      // it follows the screen freely; once shown, only turning the phone (or a width change of a
+      // real size, not the pixel of rounding a browser bar can cause) measures again
       if (matchMedia("(pointer: coarse)").matches) {
-        var lw = innerWidth, lock = function () {
+        var lw = innerWidth, port = innerHeight > innerWidth, lock = function () {
           var h = innerHeight / 100;
           if (h > 0) { e.style.setProperty("--vh", h + "px"); e.style.setProperty("--svh", h + "px"); }
+          lw = innerWidth; port = innerHeight > innerWidth;
         };
         lock();
-        addEventListener("resize", function () { if (innerWidth !== lw) { lw = innerWidth; lock(); } });
+        addEventListener("resize", function () {
+          if (e.classList.contains("wait") || (innerHeight > innerWidth) !== port || Math.abs(innerWidth - lw) > 60) lock();
+        });
       }
       e.classList.add("wait");
       // the first visit in a session shows the loading screen at once and holds it for one full
