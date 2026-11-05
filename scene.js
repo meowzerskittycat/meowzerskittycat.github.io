@@ -25,7 +25,7 @@
     snowMid: hex("#7fa7cc"),
     snowShade: hex("#46719c"),
     farRock: hex("#1b3c60"),
-    farShade: hex("#132e4e"),
+    farShade: hex("#0e2645"),
     hill: hex("#0f2745"),
     hillTree: hex("#0b1f3a"),
     near: hex("#0a1e36"),
@@ -122,6 +122,42 @@
       skyRows[y] = row;
     }
     buildStatic();
+    buildWater();
+  }
+
+  // the fjord keeps a fixed, small palette like the rest of the scene: a few depth bands, and in
+  // each band one colour per kind of thing reflected (dark shore, sky and rock, haze, shaded
+  // snow, lit snow). A continuous blend would mint a new in-between colour for every pixel.
+  let waterBand = null, waterPal = null, waterCls = null;
+  const WATER_EDGES = [0, 0.09, 0.2, 0.32, 0.44, 0.56, 0.67, 0.77, 0.86]; // the last band is the page colour itself
+  function buildWater() {
+    const depthRows = H - horizon;
+    const portrait = horizon >= H * 0.7;
+    const REP = [C.hill, SKY[SKY.length - 1], C.haze, C.snowShade, C.snowLit];
+    waterCls = new Map([[0, 1]]);
+    for (const c of [C.near, C.pine, C.hill, C.hillTree, C.cabin, C.farShade, C.earthshine, C.lamp, C.ember]) waterCls.set(pack(c), 0);
+    for (const c of [C.farRock, C.ice, ...SKY]) waterCls.set(pack(c), 1);
+    waterCls.set(pack(C.haze), 2);
+    for (const c of [C.hazeSnow, C.snowShade, C.snowMid]) waterCls.set(pack(c), 3);
+    for (const c of [C.snowLit, C.frost]) waterCls.set(pack(c), 4);
+    waterBand = new Uint8Array(depthRows);
+    for (let k = 0; k < depthRows; k++) {
+      const d = k / depthRows;
+      let b = 0;
+      while (b + 1 < WATER_EDGES.length && d >= WATER_EDGES[b + 1]) b++;
+      waterBand[k] = b;
+    }
+    waterPal = new Uint32Array(WATER_EDGES.length * REP.length);
+    for (let b = 0; b < WATER_EDGES.length; b++) {
+      const last = b === WATER_EDGES.length - 1;
+      const d = last ? 1 : (WATER_EDGES[b] + WATER_EDGES[b + 1]) / 2;
+      const fade = portrait ? 0.5 * (1 - smooth(0.5, 0.88, d)) : 0.32 * Math.pow(1 - d, 1.1);
+      const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
+      REP.forEach((s, k) => {
+        const c = last ? C.deep : s.map((v, i) => Math.round(v * fade + (C.deep[i] + (C.fjord[i] - C.deep[i]) * tint) * (1 - fade)));
+        waterPal[b * REP.length + k] = pack(c);
+      });
+    }
   }
 
   // ---------------------------------------------------------------- terrain
@@ -159,6 +195,12 @@
       const j = fbm(nFar, x * 0.23 + jagSeed, 3) - 0.5;
       top[x] = Math.round(best + j * jagAmp + (nRib(x * 0.9 + jagSeed) > 0.85 ? 1 : 0));
       owner[x] = who;
+    }
+    // no one-column notches: a single pixel dipping out of a line reads as a jaggy, not as rock
+    for (let x = 1; x < W - 1; x++) {
+      if (top[x] > top[x - 1] && top[x] > top[x + 1]) top[x] = Math.max(top[x - 1], top[x + 1]);
+      // and a summit ends in one tip pixel, not a needle
+      else if (top[x] < Math.min(top[x - 1], top[x + 1]) - 1) top[x] = Math.min(top[x - 1], top[x + 1]) - 1;
     }
     return { top, owner };
   }
@@ -218,7 +260,9 @@
           c = C.hill;
         } else if (y >= far.top[x]) {
           const p = far.owner[Math.max(0, Math.min(W - 1, Math.round(x - (y - far.top[x]) * 0.6)))];
-          const lit = x <= p.x + Math.floor((y - p.y) * 0.5) + jag; // west faces catch the moon, which hangs to the west of the range
+          // west faces catch the moon, which hangs to the west of the range; the split starts
+          // exactly at the summit and only meanders once it is a few rows down the face
+          const lit = x <= p.x + Math.floor((y - p.y) * 0.5) + Math.round(jag * Math.min(1, Math.max(0, (y - p.y) / 8)));
           const side = x >= p.x ? 1 : -1;
           // rock ribs run down the fall line at a clean 1:2 step, two pixels wide, so they read as
           // rock bands and never as a broken scratch; couloirs carry snow below the snowline
@@ -228,11 +272,15 @@
           const rib = nRib(along * 0.3 + p.x) > 0.8 && y - far.top[x] > 3 && y > p.y + (sl - p.y) * 0.35;
           // couloirs only hang from a real snowcap: on a low ridge with no cap they read as stray light beams
           const couloir = p.y < slx - hz * 0.08 && nCouloir(along * 0.35 + p.x * 0.3) > 0.78 && y < sl + hz * 0.06;
-          const snowy = (y < sl && !rib) || couloir || (y - far.top[x] < 1 && y < sl + hz * 0.05);
+          // the crest is every pixel the sky touches, from above or from the side, so where the
+          // slope drops two rows in one column the crest line still runs unbroken
+          const edgeW = y - far.top[x] < 1 || (x > 0 && y < far.top[x - 1]); // open to the moon's side
+          const edge = edgeW || (x < W - 1 && y < far.top[x + 1]);
+          const snowy = (y < sl && !rib) || couloir || (edge && y < sl + hz * 0.05);
           if (snowy) {
             if (!lit) c = C.snowShade;
             // a frost crest only above the snowline; lower ridges carry a quieter edge
-            else if (y - far.top[x] < 1) c = y < sl ? C.frost : C.snowMid;
+            else if (edgeW) c = y < sl ? C.frost : C.snowMid;
             else c = C.snowLit; // lit snow is one clean plane: no dotted texture
           } else c = lit ? C.farRock : C.farShade;
           // valley mist: the range's foot thins into haze above the foothills, so the planes part
@@ -276,6 +324,27 @@
           }
           return base[j];
         });
+        comp.forEach((j, k) => { base[j] = fill[k]; });
+      }
+      // and the reverse: a rock speck of three pixels or fewer walled in by snow is a hole in the
+      // snowfield, not a rock; it takes the snow beside it
+      const ROCKSET = new Set([C.farRock, C.farShade].map(pack));
+      const seenR = new Uint8Array(W * horizon);
+      for (let i = 0; i < W * horizon; i++) {
+        if (seenR[i] || !ROCKSET.has(base[i])) continue;
+        const comp = [i], stack = [i];
+        let walled = true;
+        seenR[i] = 1;
+        while (stack.length) {
+          const j = stack.pop(), jx = j % W;
+          for (const n of [jx > 0 ? j - 1 : -1, jx < W - 1 ? j + 1 : -1, j - W, j + W]) {
+            if (n < 0 || n >= W * horizon) { walled = false; continue; }
+            if (ROCKSET.has(base[n])) { if (!seenR[n]) { seenR[n] = 1; comp.push(n); stack.push(n); } }
+            else if (!SNOWSET.has(base[n])) walled = false;
+          }
+        }
+        if (!walled || comp.length > 3) continue;
+        const fill = comp.map((j) => base[j - 1] && SNOWSET.has(base[j - 1]) ? base[j - 1] : base[j + 1] && SNOWSET.has(base[j + 1]) ? base[j + 1] : base[j - W]);
         comp.forEach((j, k) => { base[j] = fill[k]; });
       }
     }
@@ -429,21 +498,19 @@
       const wob = Math.round(Math.sin((y - horizon) * 0.9 + t * 1.8) * (0.6 + d * 2.2));
       // a shallow fjord (wide screens) folds the mirror tighter so the peaks still reach it
       const sy = Math.max(0, horizon - 1 - Math.round((y - horizon) * mirror));
-      // thin calm-water breaks drift down through the mirror: rows where the reflection gives way to the water
-      const brk = nRay((y - horizon) * 0.8 - t * 0.6 + 300) > 0.7 ? 0.4 : 1;
-      const fade = brk * (horizon < H * 0.7 ? 0.32 * Math.pow(1 - d, 1.1) : 0.5 * (1 - smooth(0.5, 0.88, d)));
-      const tint = Math.pow(Math.max(0, 1 - d / 0.82), 0.6);
-      const f1 = 1 - fade;
-      const wr = (C.deep[0] + (C.fjord[0] - C.deep[0]) * tint) * f1;
-      const wg = (C.deep[1] + (C.fjord[1] - C.deep[1]) * tint) * f1;
-      const wb = (C.deep[2] + (C.fjord[2] - C.deep[2]) * tint) * f1;
+      // thin calm-water breaks drift down through the mirror: rows where the reflection steps one
+      // class quieter, so it gives way to the water without a hard gap
+      const brk = nRay((y - horizon) * 0.8 - t * 0.6 + 300) > 0.7 ? 1 : 0;
+      const pal = waterBand[y - horizon] * 5;
       const row = y * W, src = sy * W;
       for (let x = 0; x < W; x++) {
         const sx = x + wob < 0 ? 0 : x + wob >= W ? W - 1 : x + wob;
-        // read the mirror in pixel pairs: water carries no dither, so a checker seam above reflects as one flat band
-        const s = buf[src + (sx & ~1)];
-        const r = Math.round((s & 255) * fade + wr), g = Math.round(((s >> 8) & 255) * fade + wg), b = Math.round(((s >> 16) & 255) * fade + wb);
-        buf[row + x] = (255 << 24) | (b << 16) | (g << 8) | r;
+        // read the mirror in pixel pairs from the static scene (stars and the moon never
+        // reflect; the moon has its own glade), so a checker seam above reflects as one flat band
+        let k = waterCls.get(base[src + (sx & ~1)]);
+        if (k === undefined) k = 1;
+        if (brk && k > 1) k--;
+        buf[row + x] = waterPal[pal + k];
       }
       // a glint: each row has its own fixed spot that brightens and fades slowly, never jumping about
       const g = Math.floor(nRay(y * 3.1 + 500) * W * 1.3);
